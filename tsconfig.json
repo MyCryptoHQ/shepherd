@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "target": "es2017",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "module": "es2015",
+    "jsx": "react",
+    "allowJs": true,
+    "baseUrl": "./",
+    "lib": ["esnext", "dom"],
+    "allowSyntheticDefaultImports": false,
+    "paths": {
+      "@src*": ["src*"]
+    },
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": ["./src/"]
+}
