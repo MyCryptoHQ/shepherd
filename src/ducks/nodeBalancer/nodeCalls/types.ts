@@ -2,6 +2,10 @@ import { StaticNodeId } from '@src/types/nodes';
 
 export type AllNodeIds = StaticNodeId | string;
 
+export interface NodeCallsState {
+  [callId: string]: SuccessfulNodeCall | PendingNodeCall | FailedNodeCall;
+}
+
 export enum NODE_CALL {
   REQUESTED = 'NODE_CALL_REQUESTED',
   TIMEOUT = 'NODE_CALL_TIMEOUT',
@@ -16,6 +20,24 @@ export interface NodeCall {
   numOfTimeouts: number;
   minPriorityNodeList: AllNodeIds[];
   nodeWhiteList?: AllNodeIds[];
+}
+
+export interface SuccessfulNodeCall extends NodeCall {
+  result: string;
+  error: null;
+  pending: false;
+}
+
+export interface FailedNodeCall extends NodeCall {
+  result: null;
+  error: string;
+  pending: false;
+}
+
+export interface PendingNodeCall extends NodeCall {
+  result: null;
+  error: null;
+  pending: true;
 }
 
 export interface NodeCallRequestedAction {

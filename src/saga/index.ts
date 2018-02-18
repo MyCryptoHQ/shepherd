@@ -31,6 +31,7 @@ import {
   NodeCallSucceededAction,
   NodeCallFailedAction,
   NODE_CALL,
+  getNodeCallById,
 } from '@src/ducks/nodeBalancer/nodeCalls';
 import {
   balancerFlush,
@@ -59,6 +60,7 @@ import {
   getAllMethodsAvailable,
 } from '@src/ducks/nodeBalancer/selectors';
 import { RPCNode } from '@src/nodes';
+import { store } from '@src/ducks';
 
 // need to check this arbitary number
 const MAX_NODE_CALL_TIMEOUTS = 3;
@@ -259,11 +261,12 @@ function* checkNodeConnectivity(nodeId: string, poll: boolean = true) {
         return true;
       }
     } catch (error) {
+      console.info(error);
+
       if (!poll) {
         return false;
       }
       yield call(delay, 5000);
-      console.info(error);
     }
     console.log(`${nodeId} still offline`);
   }
@@ -351,38 +354,31 @@ function* spawnWorker(thisId: string, nodeId: string, chan: IChannels[string]) {
 export const nodeCallRequester = (() => {
   let callId = 0;
   return (rpcMethod: string) => {
-    return function*(...rpcArgs: string[]) {
-      // allow all nodes for now
-      const nodeCall: NodeCall = {
-        callId: ++callId,
-        numOfTimeouts: 0,
-        rpcArgs,
-        rpcMethod,
-        minPriorityNodeList: [],
-      };
+    return (...rpcArgs: string[]) => {
+      return new Promise((resolve, reject) => {
+        // allow all nodes for now
+        const nodeCall: NodeCall = {
+          callId: ++callId,
+          numOfTimeouts: 0,
+          rpcArgs,
+          rpcMethod,
+          minPriorityNodeList: [],
+        };
 
-      // make the request to the load balancer
-      const networkReq = nodeCallRequested(nodeCall);
-      console.log(networkReq);
-      yield put(networkReq);
+        // make the request to the load balancer
+        const networkReq = nodeCallRequested(nodeCall);
+        console.log(networkReq);
+        store.dispatch(networkReq);
 
-      //wait for either a success or error response
-      const response:
-        | NodeCallSucceededAction
-        | NodeCallFailedAction = yield take(
-        (action: NodeCallSucceededAction | NodeCallFailedAction) =>
-          (action.type === NODE_CALL.SUCCEEDED ||
-            action.type === NODE_CALL.FAILED) &&
-          action.payload.nodeCall.callId === networkReq.payload.callId,
-      );
-
-      // return the result as expected
-      if (response.type === NODE_CALL.SUCCEEDED) {
-        return response.payload.result;
-      } else {
-        // or throw an error
-        throw Error(response.payload.error);
-      }
+        const unsubscribe = store.subscribe(() => {
+          const state = store.getState();
+          const nodeCall = getNodeCallById(state, networkReq.payload.callId);
+          if (nodeCall && !nodeCall.pending) {
+            nodeCall.result ? resolve(nodeCall.result) : reject(nodeCall.error);
+            return unsubscribe();
+          }
+        });
+      });
     };
   };
 })();
@@ -394,18 +390,17 @@ function* flushHandler(_: BalancerFlushAction): SagaIterator {
   }
 }
 
-function* test(): SagaIterator {
-  yield call(delay, 1000);
-  const testNode = RPCNode('kek');
-  console.error('testing');
-  const result = yield call(testNode.ping);
-  console.log(result);
-}
-
+window.setTimeout(() => {
+  const testNode = RPCNode('kekekek');
+  for (let index = 0; index < 10; index++) {
+    testNode.ping().then(res => {
+      console.log(res);
+    });
+  }
+}, 1000);
 export function* nodeBalancer() {
   yield all([
     call(networkSwitch),
-    call(test),
     takeEvery(BALANCER.NETWORK_SWTICH_REQUESTED, networkSwitch),
     takeEvery(NODE.OFFLINE, watchOfflineNode),
     fork(handleNodeCallRequests),
