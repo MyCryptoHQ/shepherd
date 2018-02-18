@@ -5,7 +5,6 @@ import {
   channel,
   Task,
   Channel,
-  takeEvery,
 } from 'redux-saga';
 import {
   call,
@@ -19,6 +18,7 @@ import {
   flush,
   all,
   actionChannel,
+  takeEvery,
 } from 'redux-saga/effects';
 import {
   NodeCall,
@@ -33,12 +33,13 @@ import {
   NODE_CALL,
 } from '@src/ducks/nodeBalancer/nodeCalls';
 import {
-  balancerNetworkSwitchRequested,
   balancerFlush,
   NetworkSwitchSucceededAction,
   networkSwitchSucceeded,
   BalancerFlushAction,
   BALANCER,
+  setOffline,
+  setOnline,
 } from '@src/ducks/nodeBalancer/balancerConfig';
 import { IWorker, workerProcessing } from '@src/ducks/nodeBalancer/workers';
 import { NodeConfig } from '@src/types/nodes';
@@ -47,7 +48,17 @@ import {
   nodeOffline,
   nodeOnline,
   NodeOfflineAction,
+  getNodeStatsById,
+  NODE,
 } from '@src/ducks/nodeBalancer/nodeStats';
+import { getAllNodesOfCurrentNetwork } from '@src/ducks/selectors';
+import { isOffline } from '@src/ducks/nodeBalancer/balancerConfig/selectors';
+import { getNodeConfigById } from '@src/ducks/nodeConfigs/configs';
+import {
+  getAvailableNodeId,
+  getAllMethodsAvailable,
+} from '@src/ducks/nodeBalancer/selectors';
+import { RPCNode } from '@src/nodes';
 
 // need to check this arbitary number
 const MAX_NODE_CALL_TIMEOUTS = 3;
@@ -70,15 +81,13 @@ interface IChannels {
 const channels: IChannels = {};
 
 function* networkSwitch(): SagaIterator {
-  yield put(balancerNetworkSwitchRequested());
-
+  yield put(setOffline());
   //flush all existing requests
   yield put(balancerFlush());
 
-  const network: string = yield select(getSelectedNetwork);
   const nodes: {
     [x: string]: NodeConfig;
-  } = yield select(getAllNodesOfNetworkId, network);
+  } = yield select(getAllNodesOfCurrentNetwork);
 
   interface Workers {
     [workerId: string]: IWorker;
@@ -153,7 +162,7 @@ function* networkSwitch(): SagaIterator {
 
     return { nodeId, stats, workers };
   }
-
+  console.log('nodes', nodes);
   const nodeEntries = Object.entries(nodes).map(([nodeId, nodeConfig]) =>
     call(handleAddingNode, nodeId, nodeConfig),
   );
@@ -174,6 +183,7 @@ function* networkSwitch(): SagaIterator {
   );
 
   yield put(networkSwitchSucceeded(networkSwitchPayload));
+  yield put(setOnline());
 }
 
 function* handleNodeCallRequests(): SagaIterator {
@@ -181,7 +191,7 @@ function* handleNodeCallRequests(): SagaIterator {
   while (true) {
     const { payload }: NodeCallRequestedAction = yield take(requestChan);
     // check if the app is offline
-    if (yield select(getOffline)) {
+    if (yield select(isOffline)) {
       yield call(delay, 2000);
     }
     // wait until its back online
@@ -211,10 +221,7 @@ function* handleCallTimeouts({
     const isAllMethodsAvailable: boolean = yield select(getAllMethodsAvailable);
     if (!isAllMethodsAvailable) {
       // if not, set app state offline and flush channels
-      const appIsOffline: boolean = yield select(getOffline);
-      if (!appIsOffline) {
-        yield put(toggleOffline());
-      }
+      yield put(setOffline());
     }
   }
 
@@ -239,7 +246,7 @@ function* handleCallTimeouts({
  * @param {string} nodeId
  */
 function* checkNodeConnectivity(nodeId: string, poll: boolean = true) {
-  const nodeConfig: NodeConfig = yield select(getNodeById, nodeId);
+  const nodeConfig: NodeConfig = yield select(getNodeConfigById, nodeId);
   while (true) {
     try {
       console.log(`Polling ${nodeId} to see if its online...`);
@@ -272,10 +279,7 @@ function* watchOfflineNode({ payload: { nodeId } }: NodeOfflineAction) {
 
   // if they are, put app in online state
   if (isAllMethodsAvailable) {
-    const appIsOffline: boolean = yield select(getOffline);
-    if (appIsOffline) {
-      yield put(toggleOffline());
-    }
+    yield put(setOnline());
   }
 }
 
@@ -291,7 +295,10 @@ function* spawnWorker(thisId: string, nodeId: string, chan: IChannels[string]) {
   };
 
   //select the node config on initialization to avoid re-selecting on every request handled
-  const nodeConfig: NodeConfig | undefined = yield select(getNodeById, nodeId);
+  const nodeConfig: NodeConfig | undefined = yield select(
+    getNodeConfigById,
+    nodeId,
+  );
   if (!nodeConfig) {
     throw Error(`Node ${nodeId} not found when selecting from state`);
   }
@@ -387,11 +394,20 @@ function* flushHandler(_: BalancerFlushAction): SagaIterator {
   }
 }
 
+function* test(): SagaIterator {
+  yield call(delay, 1000);
+  const testNode = RPCNode('kek');
+  console.error('testing');
+  const result = yield call(testNode.ping);
+  console.log(result);
+}
+
 export function* nodeBalancer() {
   yield all([
     call(networkSwitch),
-    takeEvery(ConfigTypeKeys.CONFIG_NETWORK_CHANGE, networkSwitch),
-    takeEvery(TypeKeys.NODE_OFFLINE, watchOfflineNode),
+    call(test),
+    takeEvery(BALANCER.NETWORK_SWTICH_REQUESTED, networkSwitch),
+    takeEvery(NODE.OFFLINE, watchOfflineNode),
     fork(handleNodeCallRequests),
     takeEvery(NODE_CALL.TIMEOUT, handleCallTimeouts),
     takeEvery(BALANCER.FLUSH, flushHandler),

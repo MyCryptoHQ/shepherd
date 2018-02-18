@@ -1,5 +1,8 @@
 import { NetworkConfigState, networkConfigReducer } from './configs';
-import { CurrentNetworkIdState, getCurrentNetworkId } from './currentId';
+import {
+  CurrentNetworkIdState,
+  currentNetworkConfigReducer,
+} from './currentId';
 import { combineReducers } from 'redux';
 
 export * from './selectors';
@@ -11,5 +14,5 @@ export interface NetworkConfigState {
 
 export const networkConfigs = combineReducers({
   config: networkConfigReducer,
-  currentId: getCurrentNetworkId,
+  currentId: currentNetworkConfigReducer,
 });

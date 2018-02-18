@@ -4,8 +4,10 @@ import {
   ChangeNodeConfigAction,
 } from './types';
 
+const INITIAL_STATE = null;
+
 const currentConfigReducer = (
-  state: CurrentNodeIdState,
+  state: CurrentNodeIdState = INITIAL_STATE,
   action: ChangeNodeConfigAction,
 ) => {
   switch (action.type) {

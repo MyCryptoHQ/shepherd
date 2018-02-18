@@ -6,6 +6,8 @@ export enum BALANCER {
   FLUSH = 'BALANCER_FLUSH',
   AUTO = 'BALANCER_AUTO',
   MANUAL = 'BALANCER_MANUAL',
+  OFFLINE = 'BALANCER_OFFLINE',
+  ONLINE = 'BALANCER_ONLINE',
 }
 
 export interface BalancerConfigState {
@@ -27,6 +29,14 @@ export interface NetworkSwitchSucceededAction {
     nodeStats: NodeBalancerState['nodes'];
     workers: NodeBalancerState['workers'];
   };
+}
+
+export interface SetOfflineAction {
+  type: BALANCER.OFFLINE;
+}
+
+export interface SetOnlineAction {
+  type: BALANCER.ONLINE;
 }
 
 export interface BalancerAutoAction {

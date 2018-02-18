@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es2017",
+    "target": "es2015",
     "sourceMap": true,
     "strictNullChecks": true,
     "module": "es2015",
@@ -9,10 +9,11 @@
     "allowJs": true,
     "baseUrl": "./",
     "lib": ["esnext", "dom"],
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@src*": ["src*"]
     },
+
     "moduleResolution": "node",
     "noEmitOnError": false,
     "noUnusedLocals": true,

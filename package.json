@@ -2,12 +2,15 @@
   "name": "shepherd",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/app.js",
+  "ts:main": "src/index.ts",
+  "typings": "src/index.ts",
   "scripts": {
     "dev": "node fuse",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc --noEmit",
-    "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
+    "format":
+      "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
   },
   "repository": {
     "type": "git",
@@ -29,11 +32,16 @@
     "uglify-js": "^3.3.11"
   },
   "dependencies": {
+    "redux-devtools-extension": "2.13.2",
     "bn.js": "^4.11.8",
+    "browser-stream": "^0.1.10",
     "ethereumjs-abi": "^0.6.5",
+    "ethereumjs-util": "^5.1.4",
     "jsonschema": "^1.2.2",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.0",
-    "rlp": "^2.0.0"
+    "rlp": "^2.0.0",
+    "stream": "0.0.2",
+    "stream-browserify": "^2.0.1"
   }
 }

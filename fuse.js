@@ -2,8 +2,9 @@ const { FuseBox, WebIndexPlugin, JSONPlugin } = require('fuse-box');
 const fuse = FuseBox.init({
   homeDir: 'src',
   target: 'browser@es2017',
-  sourceMaps: { inline: false, vendor: false }, //Not needed as we are debugging with vscode
+  sourceMaps: { inline: true, sourceRoot: '.' }, //Not needed as we are debugging with vscode
   output: 'dist/$name.js',
+  modulesFolder: 'mods',
   log: true,
   debug: true,
   plugins: [WebIndexPlugin(), JSONPlugin()],

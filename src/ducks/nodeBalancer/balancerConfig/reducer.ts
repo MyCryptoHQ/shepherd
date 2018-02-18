@@ -18,6 +18,7 @@ const handleBalancerAuto: Reducer<BalancerConfigState> = (
   ...state,
   manual: false,
 });
+
 const handleBalancerManual: Reducer<BalancerConfigState> = (
   state: BalancerConfigState,
   _: BalancerAutoAction,

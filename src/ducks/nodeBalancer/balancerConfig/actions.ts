@@ -3,7 +3,9 @@ import {
   BalancerFlushAction,
   NetworkSwitchSucceededAction,
   BALANCER,
+  SetOnlineAction,
 } from './types';
+import { SetOfflineAction } from '@src/ducks/nodeBalancer/balancerConfig';
 
 export const balancerFlush = (): BalancerFlushAction => ({
   type: BALANCER.FLUSH,
@@ -19,3 +21,7 @@ export const networkSwitchSucceeded = (
   type: BALANCER.NETWORK_SWITCH_SUCCEEDED,
   payload,
 });
+
+export const setOffline = (): SetOfflineAction => ({ type: BALANCER.OFFLINE });
+
+export const setOnline = (): SetOnlineAction => ({ type: BALANCER.ONLINE });

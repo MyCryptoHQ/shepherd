@@ -1,4 +1,4 @@
-export type CurrentNodeIdState = string;
+export type CurrentNodeIdState = string | null;
 
 export enum NODE_CURRENT_CONFIG {
   CHANGE = 'NODE_CURRENT_CONFIG_CHANGE',

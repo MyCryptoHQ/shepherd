@@ -4,7 +4,7 @@ import { BalancerConfigState, balancerConfigReducer } from './balancerConfig';
 import { combineReducers } from 'redux';
 
 export interface NodeBalancerState {
-  nodes: NodeState;
+  nodeStats: NodeState;
   workers: WorkerState;
   balancerConfig: BalancerConfigState;
 }

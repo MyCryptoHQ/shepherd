@@ -1,2 +1,3 @@
-import { rootReducer } from '@src/ducks';
-console.log(rootReducer);
+export * from './ducks';
+import { RPCNode } from './nodes';
+export { RPCNode };
