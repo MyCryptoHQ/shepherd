@@ -1,6 +1,9 @@
 import { RootState } from '@src/ducks';
 import { Omit } from '@src/types';
-import { NodeCall } from '@src/ducks/nodeBalancer/nodeCalls';
+import {
+  NodeCall,
+  getPendingNodeCallsByNodeId,
+} from '@src/ducks/nodeBalancer/nodeCalls';
 import {
   getNodeStats,
   NodeStatsState,
@@ -80,7 +83,6 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
   );
 };
 
-// TODO: handle cases when no node is selected
 // available nodes -> nodes that support the method -> nodes that are whitelisted -> prioritized nodes -> workers not busy
 // TODO: include response time in prioritization
 export const getAvailableNodeId = (state: RootState, payload: NodeCall) => {
@@ -95,16 +97,16 @@ export const getAvailableNodeId = (state: RootState, payload: NodeCall) => {
 
   // filter nodes that are in the whitelist
   const isWhitelisted = nodeWhiteList
-    ? supportsMethod.filter(([nodeId, _]) => nodeWhiteList.includes(nodeId))
+    ? supportsMethod.filter(([nodeId]) => nodeWhiteList.includes(nodeId))
     : supportsMethod;
 
   // grab the nodes that are not included in min priority
   const prioritized1 = isWhitelisted.filter(
-    ([nodeId, _]) => !minPriorityNodeList.includes(nodeId),
+    ([nodeId]) => !minPriorityNodeList.includes(nodeId),
   );
 
   // grab the nodes that are included
-  const prioritized2 = isWhitelisted.filter(([nodeId, _]) =>
+  const prioritized2 = isWhitelisted.filter(([nodeId]) =>
     minPriorityNodeList.includes(nodeId),
   );
 
@@ -112,28 +114,27 @@ export const getAvailableNodeId = (state: RootState, payload: NodeCall) => {
   const listToPrioritizeByWorker =
     prioritized1.length > 0 ? prioritized1 : prioritized2;
 
-  let selectedNode: { nodeId: string; numOfRequestsCurrentProcessing: number };
+  let prevNode: {
+    nodeId: string;
+    numOfRequestsCurrentProcessing: number;
+  } | null = null;
 
-  for (const [nodeId, stats] of listToPrioritizeByWorker) {
-    const numOfRequestsCurrentProcessing = stats.currWorkersById.reduce(
-      (processing, wId) => {
-        const worker = getWorkerById(state, wId);
-        return worker.currentPayload ? processing + 1 : processing;
-      },
-      0,
+  for (const [currentNodeId] of listToPrioritizeByWorker) {
+    const numOfRequestsCurrentProcessing = getPendingNodeCallsByNodeId(
+      state,
+      currentNodeId,
     );
 
-    if (!selectedNode!) {
-      selectedNode = { nodeId, numOfRequestsCurrentProcessing };
-    } else {
-      if (
-        selectedNode!.numOfRequestsCurrentProcessing >
-        numOfRequestsCurrentProcessing
-      ) {
-        selectedNode = { nodeId, numOfRequestsCurrentProcessing };
-      }
+    // if there's no selected node yet (aka first iteration)
+    // or
+    // the current node has less requests processing, switch the next node to current node
+    if (
+      !prevNode ||
+      prevNode.numOfRequestsCurrentProcessing > numOfRequestsCurrentProcessing
+    ) {
+      prevNode = { nodeId: currentNodeId, numOfRequestsCurrentProcessing };
     }
   }
 
-  return selectedNode.nodeId;
+  return prevNode ? prevNode.nodeId : null;
 };

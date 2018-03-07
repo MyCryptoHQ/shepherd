@@ -105,12 +105,12 @@ const handleNodeCallTimeout: NReducer<NodeCallTimeoutAction> = (
 });
 
 const handleBalancerFlush: NReducer<BalancerFlushAction> = state =>
-  Object.entries(state).reduce(
+  Object.entries(state).reduce<NodeStatsState>(
     (obj, [nodeId, nodeStats]) => ({
       ...obj,
       [nodeId]: { ...nodeStats, requestFailures: 0 },
     }),
-    {} as NodeStatsState,
+    {},
   );
 
 export const nodeStats: NReducer<
