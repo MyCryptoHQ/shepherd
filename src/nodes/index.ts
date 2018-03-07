@@ -4,7 +4,6 @@ import PEtherscanNode from './etherscan';
 import PCustomNode from './custom';
 import PWeb3Node from './web3';
 import { nodeCallRequester } from '@src/saga';
-
 import { INode } from '@src/types';
 
 const handler: ProxyHandler<INode> = {

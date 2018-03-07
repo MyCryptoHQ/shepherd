@@ -5,14 +5,12 @@ import {
   isValidGetBalance,
   isValidEstimateGas,
   isValidCallRequest,
-  isValidTokenBalance,
   isValidTransactionCount,
   isValidCurrentBlock,
   isValidRawTxApi,
 } from '@src/validators';
 import { IHexStrTransaction, INode, TxObj } from '@src/types';
-import { TokenValue, Wei, stripHexPrefix } from '@src/ethUnits';
-import { Token } from '@src/types/networks';
+import { Wei, stripHexPrefix } from '@src/ethUnits';
 
 export default class RpcNode implements INode {
   public client: RPCClient;
@@ -51,48 +49,6 @@ export default class RpcNode implements INode {
       .catch(error => {
         throw new Error(error.message);
       });
-  }
-
-  public getTokenBalance(
-    address: string,
-    token: Token,
-  ): Promise<{ balance: TokenValue; error: string | null }> {
-    return this.client
-      .call(this.requests.getTokenBalance(address, token))
-      .then(isValidTokenBalance)
-      .then(({ result }) => {
-        return {
-          balance: TokenValue(result),
-          error: null,
-        };
-      })
-      .catch(err => ({
-        balance: TokenValue('0'),
-        error: 'Caught error:' + err,
-      }));
-  }
-
-  public getTokenBalances(
-    address: string,
-    tokens: Token[],
-  ): Promise<{ balance: TokenValue; error: string | null }[]> {
-    return this.client
-      .batch(tokens.map(t => this.requests.getTokenBalance(address, t)))
-      .then(response =>
-        response.map(item => {
-          if (isValidTokenBalance(item)) {
-            return {
-              balance: TokenValue(item.result),
-              error: null,
-            };
-          } else {
-            return {
-              balance: TokenValue('0'),
-              error: 'Invalid object shape',
-            };
-          }
-        }),
-      );
   }
 
   public getTransactionCount(address: string): Promise<string> {

@@ -14,13 +14,13 @@ export interface RootState {
   nodeConfigs: NodeConfigState;
 }
 
-export const rootReducer = combineReducers({
+export const rootReducer = combineReducers<RootState>({
   networkConfigs,
   nodeBalancer,
   nodeConfigs,
 });
 
-export const store = createStore(
+export const store = createStore<RootState>(
   rootReducer,
   composeWithDevTools(applyMiddleware(sagaMiddleware)),
 );

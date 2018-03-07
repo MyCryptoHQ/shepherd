@@ -1,16 +1,13 @@
-import ERC20 from '@src/erc20';
 import {
   CallRequest,
   EstimateGasRequest,
   GetBalanceRequest,
-  GetTokenBalanceRequest,
   GetTransactionCountRequest,
   SendRawTxRequest,
   GetCurrentBlockRequest,
 } from './types';
 import { hexEncodeData } from './utils';
 import { TxObj } from '@src/types';
-import { Token } from '@src/types/networks';
 
 export default class RPCRequests {
   public getNetVersion() {
@@ -51,22 +48,6 @@ export default class RPCRequests {
     return {
       method: 'eth_getTransactionCount',
       params: [address, 'pending'],
-    };
-  }
-
-  public getTokenBalance(
-    address: string,
-    token: Token,
-  ): GetTokenBalanceRequest | any {
-    return {
-      method: 'eth_call',
-      params: [
-        {
-          to: token.address,
-          data: ERC20.balanceOf.encodeInput({ _owner: address }),
-        },
-        'pending',
-      ],
     };
   }
 

@@ -1,14 +1,14 @@
 import Web3Node from '@src/nodes/web3';
 import RPCNode from '@src/nodes/rpc';
-import CustomNode from '@src/nodes/custom';
-import { StaticNetworkIds } from '@src/types/networks';
+import MCCNode from '@src/nodes/custom';
+import { DefaultNetworkIds } from '@src/types/networks';
 
-export interface CustomNodeConfig {
+export interface MCCNodeConfig {
   id: string;
   isCustom: true;
   name: string;
-  lib: CustomNode;
-  pLib: CustomNode;
+  lib: MCCNode;
+  pLib: MCCNode;
   service: 'your custom node';
   url: string;
   port: number;
@@ -21,7 +21,7 @@ export interface CustomNodeConfig {
 
 export interface StaticNodeConfig {
   isCustom: false;
-  network: StaticNetworkIds;
+  network: DefaultNetworkIds;
   lib: RPCNode | Web3Node;
   pLib: RPCNode | Web3Node;
   service: string;
@@ -43,4 +43,4 @@ export enum StaticNodeId {
 
 export type StaticNodeWithWeb3Id = StaticNodeId | 'web3';
 
-export type NodeConfig = CustomNodeConfig | StaticNodeConfig;
+export type NodeConfig = MCCNodeConfig | StaticNodeConfig;

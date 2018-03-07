@@ -1,6 +1,5 @@
 import BN from 'bn.js';
 import { TokenValue, Wei, Address } from '@src/ethUnits';
-import { Token } from '@src/types/networks';
 
 // Diff / Omit taken from https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766
 type Diff<T extends string, U extends string> = ({ [P in T]: P } &
@@ -15,11 +14,6 @@ interface TokenBalanceResult {
 export interface INode {
   ping(): Promise<boolean>;
   getBalance(address: string): Promise<Wei>;
-  getTokenBalance(address: string, token: Token): Promise<TokenBalanceResult>;
-  getTokenBalances(
-    address: string,
-    tokens: Token[],
-  ): Promise<TokenBalanceResult[]>;
   estimateGas(tx: Partial<IHexStrTransaction>): Promise<Wei>;
   getTransactionCount(address: string): Promise<string>;
   sendRawTx(tx: string): Promise<string>;

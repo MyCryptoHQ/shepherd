@@ -1,15 +1,12 @@
-import ERC20 from '@src/erc20';
 import RPCRequests from '../rpc/requests';
 import {
   CallRequest,
   EstimateGasRequest,
   GetBalanceRequest,
-  GetTokenBalanceRequest,
   GetTransactionCountRequest,
   SendRawTxRequest,
   GetCurrentBlockRequest,
 } from './types';
-import { Token } from '@src/types/networks';
 
 export default class EtherscanRequests extends RPCRequests {
   public sendRawTx(signedTx: string): SendRawTxRequest {
@@ -56,16 +53,6 @@ export default class EtherscanRequests extends RPCRequests {
       tag: 'latest',
       address,
     };
-  }
-
-  public getTokenBalance(
-    address: string,
-    token: Token,
-  ): GetTokenBalanceRequest {
-    return this.ethCall({
-      to: token.address,
-      data: ERC20.balanceOf.encodeInput({ _owner: address }),
-    });
   }
 
   public getCurrentBlock(): GetCurrentBlockRequest {

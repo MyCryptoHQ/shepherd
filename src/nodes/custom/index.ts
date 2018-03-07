@@ -1,10 +1,10 @@
 import RPCNode from '../rpc';
 import RPCClient from '../rpc/client';
-import { CustomNodeConfig } from '@src/types/nodes';
+import { MCCNodeConfig } from '@src/types/nodes';
 import { Omit } from '@src/types';
 
-export default class CustomNode extends RPCNode {
-  constructor(config: Omit<CustomNodeConfig, 'lib'>) {
+export default class MyCryptoCustomNode extends RPCNode {
+  constructor(config: Omit<MCCNodeConfig, 'lib'>) {
     super(config.id);
 
     const headers: { [key: string]: string } = {};

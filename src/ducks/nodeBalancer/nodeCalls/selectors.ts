@@ -5,7 +5,7 @@ import { NodeCall } from '@src/ducks/nodeBalancer/nodeCalls';
 export const getNodeCalls = (state: RootState) =>
   getNodeBalancer(state).nodeCalls;
 
-export const getNodeCallById = (state: RootState, id: string) =>
+export const getNodeCallById = (state: RootState, id: number) =>
   getNodeCalls(state)[id];
 
 export const getNodeCallByPayload = (state: RootState, addr: string) =>

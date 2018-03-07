@@ -23,8 +23,6 @@ export interface CallRequest extends EtherscanReqBase {
   data: string;
 }
 
-export type GetTokenBalanceRequest = CallRequest;
-
 export interface EstimateGasRequest extends EtherscanReqBase {
   module: 'proxy';
   action: 'eth_estimateGas';
@@ -50,7 +48,6 @@ export type EtherscanRequest =
   | SendRawTxRequest
   | GetBalanceRequest
   | CallRequest
-  | GetTokenBalanceRequest
   | EstimateGasRequest
   | GetTransactionCountRequest
   | GetCurrentBlockRequest;

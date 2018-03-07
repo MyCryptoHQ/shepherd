@@ -3,9 +3,9 @@ import {
   CurrentNetworkConfigAction,
   NETWORK_CURRENT_CONFIG,
 } from './types';
-import { StaticNetworkIds } from '@src/types/networks';
+import { DefaultNetworkIds } from '@src/types/networks';
 
-const INITIAL_STATE = StaticNetworkIds.ETH;
+const INITIAL_STATE = DefaultNetworkIds.ETH;
 
 const currentConfigReducer = (
   state: CurrentNetworkIdState = INITIAL_STATE,

@@ -59,7 +59,6 @@ import {
   getAvailableNodeId,
   getAllMethodsAvailable,
 } from '@src/ducks/nodeBalancer/selectors';
-import { RPCNode } from '@src/nodes';
 import { store } from '@src/ducks';
 
 // need to check this arbitary number
@@ -125,8 +124,6 @@ function* networkSwitch(): SagaIterator {
         sendCallRequest: true,
         getBalance: true,
         estimateGas: true,
-        getTokenBalance: true,
-        getTokenBalances: true,
         getTransactionCount: true,
         getCurrentBlock: true,
         sendRawTx: true,
