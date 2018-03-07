@@ -34,7 +34,7 @@ export interface GetAccountsRequest extends RPCRequestBase {
 }
 
 type TWeb3ProviderCallback = (
-  error,
+  error: any,
   result: JsonRpcResponse | JsonRpcResponse[],
 ) => any;
 type TSendAsync = (

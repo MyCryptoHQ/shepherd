@@ -60,6 +60,7 @@ import {
   getAllMethodsAvailable,
 } from '@src/ducks/nodeBalancer/selectors';
 import { store } from '@src/ducks';
+import RpcNode from '@src/nodes/rpc';
 
 // need to check this arbitary number
 const MAX_NODE_CALL_TIMEOUTS = 3;
@@ -303,6 +304,7 @@ function* spawnWorker(thisId: string, nodeId: string, chan: IChannels[string]) {
     getNodeConfigById,
     nodeId,
   );
+
   if (!nodeConfig) {
     throw Error(`Node ${nodeId} not found when selecting from state`);
   }
@@ -357,33 +359,30 @@ function* spawnWorker(thisId: string, nodeId: string, chan: IChannels[string]) {
 
 export const nodeCallRequester = (() => {
   let callId = 0;
-  return (rpcMethod: string) => {
-    return (...rpcArgs: string[]) => {
-      return new Promise((resolve, reject) => {
-        // allow all nodes for now
-        const nodeCall: NodeCall = {
-          callId: ++callId,
-          numOfTimeouts: 0,
-          rpcArgs,
-          rpcMethod,
-          minPriorityNodeList: [],
-        };
+  return (rpcMethod: keyof RpcNode) => (...rpcArgs: string[]) =>
+    new Promise((resolve, reject) => {
+      // allow all nodes for now
+      const nodeCall: NodeCall = {
+        callId: ++callId,
+        numOfTimeouts: 0,
+        rpcArgs,
+        rpcMethod,
+        minPriorityNodeList: [],
+      };
 
-        // make the request to the load balancer
-        const networkReq = nodeCallRequested(nodeCall);
-        store.dispatch(networkReq);
+      // make the request to the load balancer
+      const networkReq = nodeCallRequested(nodeCall);
+      store.dispatch(networkReq);
 
-        const unsubscribe = store.subscribe(() => {
-          const state = store.getState();
-          const nodeCall = getNodeCallById(state, networkReq.payload.callId);
-          if (nodeCall && !nodeCall.pending) {
-            nodeCall.result ? resolve(nodeCall.result) : reject(nodeCall.error);
-            return unsubscribe();
-          }
-        });
+      const unsubscribe = store.subscribe(() => {
+        const state = store.getState();
+        const nodeCall = getNodeCallById(state, networkReq.payload.callId);
+        if (nodeCall && !nodeCall.pending) {
+          nodeCall.result ? resolve(nodeCall.result) : reject(nodeCall.error);
+          return unsubscribe();
+        }
       });
-    };
-  };
+    });
 })();
 
 function* flushHandler(_: BalancerFlushAction): SagaIterator {

@@ -5,16 +5,10 @@ import PCustomNode from './custom';
 import PWeb3Node from './web3';
 import { nodeCallRequester } from '@src/saga';
 import { INode } from '@src/types';
+import RpcNode from './rpc';
 
 const handler: ProxyHandler<INode> = {
-  get: (target, methodName: string) => {
-    const nodeMethods = Object.getOwnPropertyNames(
-      Object.getPrototypeOf(target),
-    );
-    if (nodeMethods.includes(methodName)) {
-      return nodeCallRequester(methodName);
-    }
-  },
+  get: (_, methodName: keyof RpcNode) => nodeCallRequester(methodName),
 };
 
 const createNode = (ctor: any, args: any) => {
@@ -43,7 +37,7 @@ const x: INodeInterfaces = Object.entries(obj).reduce(
   (acc, [key, value]) => {
     return {
       ...acc,
-      [key](...args) {
+      [key](...args: any[]) {
         return createNode(value, args);
       },
     };

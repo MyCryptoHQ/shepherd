@@ -9,7 +9,6 @@ export enum DefaultNetworkIds {
 }
 
 export interface NetworkConfig {
-  isCustom: false; // used for type guards
   name: DefaultNetworkIds;
   chainId: number;
 }

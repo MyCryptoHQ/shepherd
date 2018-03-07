@@ -6,8 +6,8 @@ import {
   SendRawTxRequest,
   GetCurrentBlockRequest,
 } from './types';
-import { hexEncodeData } from './utils';
-import { TxObj } from '@src/types';
+import { TxObj, IHexStrTransaction } from '@src/types';
+import { stripHexPrefix } from '@src/ethUnits';
 
 export default class RPCRequests {
   public getNetVersion() {
@@ -21,7 +21,9 @@ export default class RPCRequests {
     };
   }
 
-  public estimateGas(transaction): EstimateGasRequest | any {
+  public estimateGas(
+    transaction: Partial<IHexStrTransaction>,
+  ): EstimateGasRequest | any {
     return {
       method: 'eth_estimateGas',
       params: [transaction],
@@ -31,7 +33,7 @@ export default class RPCRequests {
   public getBalance(address: string): GetBalanceRequest | any {
     return {
       method: 'eth_getBalance',
-      params: [hexEncodeData(address), 'pending'],
+      params: [`0x${stripHexPrefix(address)}`, 'pending'],
     };
   }
 

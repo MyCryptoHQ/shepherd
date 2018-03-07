@@ -1,4 +1,5 @@
 import { StaticNodeId } from '@src/types/nodes';
+import RpcNode from '@src/nodes/rpc';
 
 export type AllNodeIds = StaticNodeId | string;
 
@@ -15,7 +16,7 @@ export enum NODE_CALL {
 
 export interface NodeCall {
   callId: number;
-  rpcMethod: string;
+  rpcMethod: keyof RpcNode;
   rpcArgs: string[];
   numOfTimeouts: number;
   minPriorityNodeList: AllNodeIds[];

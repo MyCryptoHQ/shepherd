@@ -23,22 +23,16 @@
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
     "@types/node": "^9.4.6",
-    "fuse-box": "^3.1.3",
     "prettier": "^1.10.2",
     "tslint-config-prettier": "^1.8.0",
-    "typescript": "^2.7.2",
-    "uglify-es": "^3.3.9",
-    "uglify-js": "^3.3.11"
+    "typescript": "^2.7.2"
   },
   "dependencies": {
     "bn.js": "^4.11.8",
-    "ethereumjs-abi": "^0.6.5",
-    "ethereumjs-util": "^5.1.4",
     "jsonschema": "^1.2.2",
     "randombytes": "^2.0.6",
     "redux": "^3.7.2",
     "redux-devtools-extension": "2.13.2",
-    "redux-saga": "^0.16.0",
-    "rlp": "^2.0.0"
+    "redux-saga": "^0.16.0"
   }
 }

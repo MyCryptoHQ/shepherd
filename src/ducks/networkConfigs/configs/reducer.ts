@@ -9,38 +9,31 @@ const INITIAL_STATE: NetworkConfigState = {
   [DefaultNetworkIds.ETH]: {
     name: DefaultNetworkIds.ETH,
     chainId: 1,
-    isCustom: false,
   },
 
   [DefaultNetworkIds.Ropsten]: {
     name: DefaultNetworkIds.Ropsten,
     chainId: 3,
-    isCustom: false,
   },
   [DefaultNetworkIds.Kovan]: {
     name: DefaultNetworkIds.Kovan,
     chainId: 42,
-    isCustom: false,
   },
   [DefaultNetworkIds.Rinkeby]: {
     name: DefaultNetworkIds.Rinkeby,
     chainId: 4,
-    isCustom: false,
   },
   [DefaultNetworkIds.ETC]: {
     name: DefaultNetworkIds.ETC,
     chainId: 61,
-    isCustom: false,
   },
   [DefaultNetworkIds.UBQ]: {
     name: DefaultNetworkIds.UBQ,
     chainId: 8,
-    isCustom: false,
   },
   [DefaultNetworkIds.EXP]: {
     name: DefaultNetworkIds.EXP,
     chainId: 2,
-    isCustom: false,
   },
 };
 

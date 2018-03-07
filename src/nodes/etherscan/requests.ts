@@ -7,6 +7,7 @@ import {
   SendRawTxRequest,
   GetCurrentBlockRequest,
 } from './types';
+import { IHexStrTransaction } from '@src/types';
 
 export default class EtherscanRequests extends RPCRequests {
   public sendRawTx(signedTx: string): SendRawTxRequest {
@@ -17,7 +18,12 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public estimateGas(transaction): EstimateGasRequest {
+  public estimateGas(
+    transaction: Pick<
+      IHexStrTransaction & { from: string },
+      'to' | 'data' | 'from' | 'value'
+    >,
+  ): EstimateGasRequest {
     return {
       module: 'proxy',
       action: 'eth_estimateGas',
@@ -37,7 +43,9 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public ethCall(transaction): CallRequest {
+  public ethCall(
+    transaction: Pick<IHexStrTransaction, 'to' | 'data'>,
+  ): CallRequest {
     return {
       module: 'proxy',
       action: 'eth_call',

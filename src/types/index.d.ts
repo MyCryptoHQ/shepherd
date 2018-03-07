@@ -1,15 +1,11 @@
 import BN from 'bn.js';
-import { TokenValue, Wei, Address } from '@src/ethUnits';
+import { Wei } from '@src/ethUnits';
 
 // Diff / Omit taken from https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766
 type Diff<T extends string, U extends string> = ({ [P in T]: P } &
   { [P in U]: never } & { [x: string]: never })[T];
-type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
 
-interface TokenBalanceResult {
-  balance: TokenValue;
-  error: string | null;
-}
+type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
 
 export interface INode {
   ping(): Promise<boolean>;
@@ -24,20 +20,6 @@ export interface INode {
 export interface TxObj {
   to: string;
   data: string;
-}
-
-export interface ITransaction {
-  to: Address;
-  from?: Address;
-  value?: Wei | null;
-  data?: Buffer | null;
-  gasLimit: Wei;
-  gasPrice: Wei;
-  nonce: BN;
-  chainId: number;
-  v;
-  r;
-  s;
 }
 
 export interface IHexStrTransaction {

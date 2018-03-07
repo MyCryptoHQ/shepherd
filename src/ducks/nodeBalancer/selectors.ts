@@ -57,7 +57,9 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
 
   // goes through each available node and reduces all of their
   // available methods into a mapping that contains all supported methods
-  const availableMethods = Object.values(availableNodes).reduce(
+  const availableMethods = Object.values(availableNodes).reduce<{
+    [availableMethod: string]: boolean;
+  }>(
     (methods, { supportedMethods }) => ({
       ...methods,
       ...Object.entries(supportedMethods).reduce(
