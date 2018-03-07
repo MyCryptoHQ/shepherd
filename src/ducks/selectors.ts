@@ -8,13 +8,12 @@ export const getAllNodesOfCurrentNetwork = (state: RootState) => {
   const networkId = getCurrentNetworkId(state);
   const nodeConfigs = getNodeConfigs(state);
 
-  return Object.entries(nodeConfigs).reduce(
-    (allNodes, [currNodeId, currNodeConfig]) => {
-      if (currNodeConfig.network !== networkId) {
-        return allNodes;
-      }
-      return { ...allNodes, [currNodeId]: currNodeConfig };
-    },
-    allNodesOfNetworkId,
-  );
+  return Object.entries(
+    nodeConfigs,
+  ).reduce((allNodes, [currNodeId, currNodeConfig]) => {
+    if (currNodeConfig.network !== networkId) {
+      return allNodes;
+    }
+    return { ...allNodes, [currNodeId]: currNodeConfig };
+  }, allNodesOfNetworkId);
 };

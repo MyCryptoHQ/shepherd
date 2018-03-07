@@ -20,6 +20,7 @@ export interface NodeCall {
   numOfTimeouts: number;
   minPriorityNodeList: AllNodeIds[];
   nodeWhiteList?: AllNodeIds[];
+  nodeId?: string;
 }
 
 export interface SuccessfulNodeCall extends NodeCall {

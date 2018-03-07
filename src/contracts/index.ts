@@ -4,22 +4,26 @@ import { ContractOutputMappings } from './types';
 const ABIFUNC_METHOD_NAMES = ['encodeInput', 'decodeInput', 'decodeOutput'];
 
 enum ABIMethodTypes {
-  FUNC = 'function'
+  FUNC = 'function',
 }
 export type TContract = typeof Contract;
 
 export default class Contract {
   public static getFunctions = (contract: Contract) =>
-    Object.getOwnPropertyNames(contract).reduce((accu, currContractMethodName) => {
+    Object.getOwnPropertyNames(
+      contract,
+    ).reduce((accu, currContractMethodName) => {
       const currContractMethod = contract[currContractMethodName];
       const methodNames = Object.getOwnPropertyNames(currContractMethod);
 
       const isFunc = ABIFUNC_METHOD_NAMES.reduce(
         (isAbiFunc, currAbiFuncMethodName) =>
           isAbiFunc && methodNames.includes(currAbiFuncMethodName),
-        true
+        true,
       );
-      return isFunc ? { ...accu, [currContractMethodName]: currContractMethod } : accu;
+      return isFunc
+        ? { ...accu, [currContractMethodName]: currContractMethod }
+        : accu;
     }, {});
 
   public abi;
@@ -39,7 +43,7 @@ export default class Contract {
           decodeOutput,
           constant,
           outputs,
-          inputs
+          inputs,
         } = new AbiFunction(currentABIMethod, outputMappings[name]);
 
         const funcToAssign = {
@@ -49,8 +53,8 @@ export default class Contract {
             decodeOutput,
             constant,
             outputs,
-            inputs
-          }
+            inputs,
+          },
         };
         Object.assign(this, funcToAssign);
       }

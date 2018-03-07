@@ -1,4 +1,4 @@
-import randomBytes from 'randombytes';
+import { randomBytes } from 'crypto';
 import RPCClient from '../rpc/client';
 
 export default class InfuraClient extends RPCClient {

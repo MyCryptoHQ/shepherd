@@ -26,7 +26,7 @@ export interface BalancerNetworkSwitchRequestedAction {
 export interface NetworkSwitchSucceededAction {
   type: BALANCER.NETWORK_SWITCH_SUCCEEDED;
   payload: {
-    nodeStats: NodeBalancerState['nodes'];
+    nodeStats: NodeBalancerState['nodeStats'];
     workers: NodeBalancerState['workers'];
   };
 }
@@ -49,6 +49,8 @@ export interface BalancerManualAction {
 }
 
 export type BalancerAction =
+  | SetOfflineAction
+  | SetOnlineAction
   | BalancerFlushAction
   | BalancerAutoAction
   | BalancerManualAction

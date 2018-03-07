@@ -40,7 +40,7 @@ interface INodeInterfaces {
   Web3Node: Nodefactory<PWeb3Node>;
 }
 
-const x = Object.entries(obj).reduce(
+const x: INodeInterfaces = Object.entries(obj).reduce(
   (acc, [key, value]) => {
     return {
       ...acc,

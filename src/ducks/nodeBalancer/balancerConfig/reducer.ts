@@ -8,7 +8,7 @@ import {
 
 const INITIAL_STATE: BalancerConfigState = {
   manual: false,
-  offline: false,
+  offline: true,
 };
 
 const handleBalancerAuto: Reducer<BalancerConfigState> = (
@@ -36,6 +36,11 @@ const balancerConfig: Reducer<BalancerConfigState> = (
       return handleBalancerAuto(state, action);
     case BALANCER.MANUAL:
       return handleBalancerManual(state, action);
+    case BALANCER.OFFLINE:
+      return { ...state, offline: true };
+    case BALANCER.ONLINE:
+      return { ...state, offline: false };
+
     default:
       return state;
   }

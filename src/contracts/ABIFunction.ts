@@ -39,7 +39,7 @@ export default class AbiFunction {
       const currType = this.inputTypes[index];
       return {
         ...argObj,
-        [currName]: this.parsePostDecodedValue(currType, currArg)
+        [currName]: this.parsePostDecodedValue(currType, currArg),
       };
     }, {});
   };
@@ -63,7 +63,7 @@ export default class AbiFunction {
       const currType = this.outputTypes[index];
       return {
         ...argObj,
-        [currName]: this.parsePostDecodedValue(currType, currArg)
+        [currName]: this.parsePostDecodedValue(currType, currArg),
       };
     }, {});
   };
@@ -74,14 +74,18 @@ export default class AbiFunction {
     this.inputTypes = this.inputs.map(({ type }) => type);
     this.outputTypes = this.outputs.map(({ type }) => type);
     this.inputNames = this.inputs.map(({ name }) => name);
-    this.outputNames = this.outputs.map(({ name }, i) => outputMappings[i] || name || `${i}`);
+    this.outputNames = this.outputs.map(
+      ({ name }, i) => outputMappings[i] || name || `${i}`,
+    );
 
-    this.methodSelector = abi.methodID(this.name, this.inputTypes).toString('hex');
+    this.methodSelector = abi
+      .methodID(this.name, this.inputTypes)
+      .toString('hex');
   }
 
   private parsePostDecodedValue = (type: string, value: any) => {
     const valueMapping = {
-      address: val => toChecksumAddress(val.toString(16))
+      address: val => toChecksumAddress(val.toString(16)),
     };
 
     return valueMapping[type]
@@ -101,7 +105,7 @@ export default class AbiFunction {
 
       return {
         ...accumulator,
-        [name]: { processInput: inputHandler, type, name }
+        [name]: { processInput: inputHandler, type, name },
       };
     }, {});
 
@@ -119,8 +123,8 @@ export default class AbiFunction {
           `Expected argument "${name}" of type "${type}" missing, suppliedArgs: ${JSON.stringify(
             suppliedArgs,
             null,
-            2
-          )}`
+            2,
+          )}`,
         );
       }
       const value = suppliedArgs[name];
