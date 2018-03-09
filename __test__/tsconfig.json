@@ -6,7 +6,7 @@
     "strictNullChecks": true,
     "module": "es2015",
     "allowJs": true,
-    "baseUrl": "./",
+    "baseUrl": "../",
     "lib": ["esnext"],
     "allowSyntheticDefaultImports": true,
     "paths": {
@@ -14,9 +14,9 @@
     },
     "moduleResolution": "node",
     "noEmitOnError": false,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["./src/", "./test/"]
+  "include": ["../src/", "."]
 }

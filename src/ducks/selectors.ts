@@ -1,19 +1,20 @@
 import { RootState } from '@src/ducks';
 import { getCurrentNetworkId } from '@src/ducks/networkConfigs/currentId';
-import { getNodeConfigs } from '@src/ducks/nodeConfigs/configs';
-import { NodeConfig } from '@src/types/nodes';
+import { getProviderConfigs } from '@src/ducks/providerConfigs/configs';
+import { ProviderConfig } from '@src/types/providers';
 
-export const getAllNodesOfCurrentNetwork = (state: RootState) => {
-  const allNodesOfNetworkId: { [key: string]: NodeConfig } = {};
+export const getAllProvidersOfCurrentNetwork = (state: RootState) => {
+  const allProvidersOfNetworkId: { [key: string]: ProviderConfig } = {};
   const networkId = getCurrentNetworkId(state);
-  const nodeConfigs = getNodeConfigs(state);
+  const providerConfigs = getProviderConfigs(state);
 
-  return Object.entries(
-    nodeConfigs,
-  ).reduce((allNodes, [currNodeId, currNodeConfig]) => {
-    if (currNodeConfig.network !== networkId) {
-      return allNodes;
-    }
-    return { ...allNodes, [currNodeId]: currNodeConfig };
-  }, allNodesOfNetworkId);
+  return Object.entries(providerConfigs).reduce(
+    (allProviders, [currProviderId, currProviderConfig]) => {
+      if (currProviderConfig.network !== networkId) {
+        return allProviders;
+      }
+      return { ...allProviders, [currProviderId]: currProviderConfig };
+    },
+    allProvidersOfNetworkId,
+  );
 };

@@ -1,14 +1,14 @@
-import { IWorker } from '@src/ducks/nodeBalancer/workers';
+import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { Channel } from 'redux-saga';
-import { NodeCall } from '@src/ducks/nodeBalancer/nodeCalls';
+import { ProviderCall } from '@src/ducks/providerBalancer/providerCalls';
 
 interface Workers {
   [workerId: string]: IWorker;
 }
 
 /**
- * Each channel id is a 1-1 mapping of a nodeId
+ * Each channel id is a 1-1 mapping of a providerId
  */
 interface IChannels {
-  [key: string]: Channel<NodeCall>;
+  [key: string]: Channel<ProviderCall>;
 }

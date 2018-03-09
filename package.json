@@ -6,8 +6,7 @@
   "ts:main": "src/index.ts",
   "typings": "src/index.ts",
   "scripts": {
-    "dev": "node fuse",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "tsc": "tsc --noEmit",
     "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
   },
@@ -22,17 +21,39 @@
   },
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
+    "@types/jest": "^22.2.0",
     "@types/node": "^9.4.6",
+    "jest": "^22.4.2",
     "prettier": "^1.10.2",
+    "ts-jest": "^22.4.1",
     "tslint-config-prettier": "^1.8.0",
     "typescript": "^2.7.2"
   },
   "dependencies": {
     "bn.js": "^4.11.8",
+    "btoa": "^1.1.2",
+    "isomorphic-fetch": "^2.2.1",
     "jsonschema": "^1.2.2",
     "randombytes": "^2.0.6",
     "redux": "^3.7.2",
     "redux-devtools-extension": "2.13.2",
-    "redux-saga": "^0.16.0"
+    "redux-saga": "^0.16.0",
+    "url-search-params": "^0.10.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "ts",
+      "tsx"
+    ],
+    "transform": {
+      "\\.(ts|tsx)$": "<rootDir>/provider_modules/ts-jest/preprocessor.js"
+    },
+    "moduleNameMapper": {
+      "@src/(.*)": "<rootDir>/src/$1"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$"
   }
 }

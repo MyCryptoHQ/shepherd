@@ -103,7 +103,7 @@ declare module 'bn.js' {
     ): Buffer | Array<any>;
 
     /**
-     * @description  convert to Node.js Buffer (if available). For compatibility with browserify and similar tools, use this instead: a.toArrayLike(Buffer, endian, length)
+     * @description  convert to Provider.js Buffer (if available). For compatibility with browserify and similar tools, use this instead: a.toArrayLike(Buffer, endian, length)
      */
     toBuffer(endian?: Endianness, length?: number): Buffer;
 

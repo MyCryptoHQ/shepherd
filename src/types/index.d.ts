@@ -1,5 +1,5 @@
-import BN from 'bn.js';
-import { Wei } from '@src/ethUnits';
+import * as BN from 'bn.js';
+import { Wei } from '@src/utils';
 
 // Diff / Omit taken from https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766
 type Diff<T extends string, U extends string> = ({ [P in T]: P } &
@@ -7,7 +7,11 @@ type Diff<T extends string, U extends string> = ({ [P in T]: P } &
 
 type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
 
-export interface INode {
+export interface IProviderContructor<T = any> {
+  new (args?: T): IProvider;
+}
+
+export interface IProvider {
   ping(): Promise<boolean>;
   getBalance(address: string): Promise<Wei>;
   estimateGas(tx: Partial<IHexStrTransaction>): Promise<Wei>;
@@ -16,6 +20,8 @@ export interface INode {
   sendCallRequest(txObj: TxObj): Promise<string>;
   getCurrentBlock(): Promise<string>;
 }
+
+export type StrIdx<T> = { [key: string]: T };
 
 export interface TxObj {
   to: string;

@@ -1,4 +1,4 @@
-import { JsonRpcResponse } from '@src/nodes/rpc/types';
+import { JsonRpcResponse } from '@src/providers/rpc/types';
 import { Validator } from 'jsonschema';
 
 export function isValidHex(str: string): boolean {
@@ -17,7 +17,7 @@ export function isValidHex(str: string): boolean {
 const v = new Validator();
 
 export const schema = {
-  RpcNode: {
+  RpcProvider: {
     type: 'object',
     additionalProperties: false,
     properties: {
@@ -34,7 +34,7 @@ export const schema = {
 
 function isValidResult(
   response: JsonRpcResponse,
-  schemaFormat: typeof schema.RpcNode,
+  schemaFormat: typeof schema.RpcProvider,
 ): boolean {
   return v.validate(response, schemaFormat).valid;
 }
@@ -73,7 +73,7 @@ enum API_NAME {
 
 const isValidEthCall = (
   response: JsonRpcResponse,
-  schemaType: typeof schema.RpcNode,
+  schemaType: typeof schema.RpcProvider,
 ) => (apiName: API_NAME, cb?: (res: JsonRpcResponse) => any) => {
   if (!isValidResult(response, schemaType)) {
     if (cb) {
@@ -85,39 +85,39 @@ const isValidEthCall = (
 };
 
 export const isValidGetBalance = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Get_Balance);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Balance);
 
 export const isValidEstimateGas = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Estimate_Gas);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Estimate_Gas);
 
 export const isValidCallRequest = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Call_Request);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Call_Request);
 
 export const isValidTransactionCount = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Transaction_Count);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Transaction_Count);
 
 export const isValidTransactionByHash = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Transaction_By_Hash);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Transaction_By_Hash);
 
 export const isValidTransactionReceipt = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Transaction_Receipt);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Transaction_Receipt);
 
 export const isValidCurrentBlock = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Current_Block);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Current_Block);
 
 export const isValidRawTxApi = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Raw_Tx);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Raw_Tx);
 
 export const isValidSendTransaction = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Send_Transaction);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Send_Transaction);
 
 export const isValidSignMessage = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Sign_Message);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Sign_Message);
 
 export const isValidGetAccounts = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Get_Accounts);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Accounts);
 
 export const isValidGetNetVersion = (response: JsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcNode)(API_NAME.Net_Version);
+  isValidEthCall(response, schema.RpcProvider)(API_NAME.Net_Version);
 export const isValidTxHash = (hash: string) =>
   hash.substring(0, 2) === '0x' && hash.length === 66 && isValidHex(hash);
