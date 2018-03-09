@@ -1,15 +1,29 @@
-import { ProviderConfig } from '@src/types/providers';
+import RpcProvider from '@src/providers/rpc';
 
-export type ProviderConfigState = { [key: string]: ProviderConfig };
+export interface IProviderConfig {
+  concurrency: number;
+  requestFailureThreshold: number;
+  timeoutThresholdMs: number;
+  supportedMethods: { [rpcMethod in keyof RpcProvider]: boolean };
+  network: string;
+}
+
+export type ProviderConfigState = { [key: string]: IProviderConfig };
 
 export enum PROVIDER_CONFIG {
   ADD = 'PROVIDER_CONFIG_ADD',
+  CHANGE = 'PROVIDER_CONFIG_CHANGE',
   REMOVE = 'PROVIDER_CONFIG_REMOVE',
 }
 
 export interface AddProviderConfigAction {
   type: PROVIDER_CONFIG.ADD;
-  payload: { id: string; config: ProviderConfig };
+  payload: { id: string; config: IProviderConfig };
+}
+
+export interface ChangeProviderConfigAction {
+  type: PROVIDER_CONFIG.CHANGE;
+  payload: { id: string; config: Partial<IProviderConfig> };
 }
 
 export interface RemoveProviderConfigAction {
@@ -19,4 +33,5 @@ export interface RemoveProviderConfigAction {
 
 export type ProviderConfigAction =
   | AddProviderConfigAction
+  | ChangeProviderConfigAction
   | RemoveProviderConfigAction;

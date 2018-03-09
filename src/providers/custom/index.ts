@@ -1,19 +1,26 @@
 import RPCProvider from '../rpc';
 import RPCClient from '../rpc/client';
-import { MCCProviderConfig } from '@src/types/providers';
-import { Omit } from '@src/types';
 import btoa from 'btoa';
+import { StrIdx } from '@src/types';
+
+interface IMyCryptoCustomProviderConfig {
+  url: string;
+  auth?: {
+    username: string;
+    password: string;
+  };
+}
 
 export default class MyCryptoCustomProvider extends RPCProvider {
-  constructor(config: Omit<MCCProviderConfig, 'lib'>) {
-    super(config.id);
+  constructor(config: IMyCryptoCustomProviderConfig) {
+    super(config.url);
 
-    const headers: { [key: string]: string } = {};
+    const headers: StrIdx<string> = {};
     if (config.auth) {
       const { username, password } = config.auth;
       headers.Authorization = `Basic ${btoa(`${username}:${password}`)}`;
     }
 
-    this.client = new RPCClient(config.id, headers);
+    this.client = new RPCClient(config.url, headers);
   }
 }

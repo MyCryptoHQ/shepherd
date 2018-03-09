@@ -1,5 +1,5 @@
 import { RootState } from '@src/ducks';
-import { Omit } from '@src/types';
+import { Omit, StrIdx } from '@src/types';
 import {
   ProviderCall,
   getPendingProviderCallsByProviderId,
@@ -9,6 +9,7 @@ import {
   ProviderStatsState,
 } from '@src/ducks/providerBalancer/providerStats';
 import RpcProvider from '@src/providers/rpc';
+import { getProviderConfigById } from '@src/ducks/providerConfigs/configs';
 
 export const getProviderBalancer = (state: RootState) => state.providerBalancer;
 
@@ -55,27 +56,28 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     'sendRawTx',
   ];
 
-  const availableProviders = getAvailableProviders(state);
+  const availableProviderIds = Object.keys(getAvailableProviders(state));
 
   // goes through each available provider and reduces all of their
   // available methods into a mapping that contains all supported methods
-  const availableMethods = Object.values(availableProviders).reduce<{
-    [availableMethod: string]: boolean;
-  }>(
-    (methods, { supportedMethods }) => ({
-      ...methods,
-      ...Object.entries(supportedMethods).reduce(
-        // creates a mapping of all supported methods, excluding unsupported ones
-        (accu, [rpcMethod, isSupported]) => ({
-          ...accu,
-          ...(isSupported ? { [rpcMethod]: true } : {}),
-        }),
-        {},
-      ),
-    }),
-    {},
-  );
+  let availableMethods: StrIdx<boolean> = {};
 
+  for (const providerId of availableProviderIds) {
+    const providerConfig = getProviderConfigById(state, providerId);
+    if (!providerConfig) {
+      continue;
+    }
+
+    // for the current provider config, OR each rpcMethod against the map
+    Object.entries(providerConfig.supportedMethods).forEach(
+      ([rpcMethod, isSupported]) => {
+        availableMethods[rpcMethod] =
+          availableMethods[rpcMethod] || isSupported;
+      },
+    );
+  }
+
+  // check that all methods are supported by the set of all available providers
   return allMethods.reduce(
     (allAvailable, curMethod) => allAvailable && availableMethods[curMethod],
     true,
@@ -90,12 +92,13 @@ export const getAvailableProviderId = (
 ) => {
   const { providerWhiteList, rpcMethod, minPriorityProviderList } = payload;
   const availableProviders = getAvailableProviders(state);
-
   const availableProvidersArr = Object.entries(availableProviders);
+
   // filter by providers that can support this method
-  const supportsMethod = availableProvidersArr.filter(
-    ([_, stats]) => stats.supportedMethods[rpcMethod],
-  );
+  const supportsMethod = availableProvidersArr.filter(([providerId]) => {
+    const config = getProviderConfigById(state, providerId);
+    return config && config.supportedMethods[rpcMethod];
+  });
 
   // filter providers that are in the whitelist
   const isWhitelisted = providerWhiteList

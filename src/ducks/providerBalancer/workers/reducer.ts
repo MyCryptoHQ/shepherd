@@ -6,7 +6,7 @@ import {
 } from '../providerCalls/types';
 import { Reducer } from 'redux';
 import {
-  NetworkSwitchSucceededAction,
+  BalancerNetworkSwitchSucceededAction,
   BalancerAction,
   BALANCER,
 } from '../balancerConfig/types';
@@ -24,7 +24,7 @@ const INITIAL_STATE: WorkerState = {};
 
 const handleNetworkSwitch: WReducer = (
   _: WorkerState,
-  { payload }: NetworkSwitchSucceededAction,
+  { payload }: BalancerNetworkSwitchSucceededAction,
 ) => payload.workers;
 
 const handleWorkerKilled: WReducer = (

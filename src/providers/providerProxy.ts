@@ -7,7 +7,7 @@ import {
 } from '@src/ducks/providerBalancer/providerCalls';
 import { store } from '@src/ducks';
 
-const providerCallRequester = (() => {
+const providerCallDispatcher = (() => {
   let callId = 0;
   return (rpcMethod: keyof RpcProvider) => (...rpcArgs: string[]) =>
     new Promise((resolve, reject) => {
@@ -45,7 +45,7 @@ const handler: ProxyHandler<IProvider> = {
     if (!Object.getOwnPropertyNames(target).includes(methodName)) {
       return target[methodName];
     }
-    return providerCallRequester(methodName);
+    return providerCallDispatcher(methodName);
   },
 };
 

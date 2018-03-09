@@ -10,10 +10,18 @@ const providerConfigs = (
   state: ProviderConfigState = INITIAL_STATE,
   action: ProviderConfigAction,
 ) => {
-  // console.log(action);
   switch (action.type) {
     case PROVIDER_CONFIG.ADD:
       return { ...state, [action.payload.id]: action.payload.config };
+
+    case PROVIDER_CONFIG.CHANGE:
+      return {
+        ...state,
+        [action.payload.id]: {
+          ...state[action.payload.id],
+          ...action.payload.config,
+        },
+      };
 
     case PROVIDER_CONFIG.REMOVE:
       const stateCopy = { ...state };

@@ -1,35 +1,21 @@
 import { IProviderContructor } from '@src/types';
-import { IProviderStorage } from '@src/providers/providerStorage';
-import { IProviderConfig } from '@src/ducks/providerBalancer/providerStats';
-// shepherd.config({callTimeout })
-// const myNode = shepherd.init({providers })
-// shepherd.add({provider})
-// shepherd.remove({provider})
-// shepherd.modify({provider: { supportedMethods, maxWorkers } })
-// shepherd.only({provider})
-// shepherd.delegate([{provider}], [methods] )
+import { IProviderConfig } from '@src/ducks/providerConfigs/configs';
+import { providerStorage } from './providerStorage';
 
-function addProviderFactory(
-  store: IProviderStorage,
+export function addProvider(
   providerName: string,
   Provider: IProviderContructor,
 ) {
-  return store.set(providerName, Provider);
+  return providerStorage.setClass(providerName, Provider);
 }
 
-function addNetwork() {}
-
-function useProvider(
-  store: IProviderStorage,
+export function useProvider(
   providerName: string,
-  args: any[],
   config: IProviderConfig,
+  ...args: any[]
 ) {
-  const Provider = store.get(providerName);
+  const Provider = providerStorage.getClass(providerName);
   const provider = new Provider(...args);
-  const payload = {
-    providerName,
-    provider,
-    config,
-  };
+  providerStorage.setInstance(providerName, provider);
+  return config;
 }

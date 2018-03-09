@@ -1,9 +1,9 @@
-import { AllProviderIds, ProviderCall } from '../providerCalls/types';
+import { ProviderCall } from '../providerCalls/types';
 import { Task } from 'redux-saga';
 
 export interface IWorker {
   task: Task;
-  assignedProvider: AllProviderIds;
+  assignedProvider: string;
   currentPayload: ProviderCall | null;
 }
 
@@ -20,7 +20,7 @@ export enum WORKER {
 export interface WorkerSpawnedAction {
   type: WORKER.SPAWNED;
   payload: {
-    providerId: AllProviderIds;
+    providerId: string;
     workerId: string;
     task: Task;
   };
@@ -37,7 +37,7 @@ export interface WorkerProcessingAction {
 export interface WorkerKilledAction {
   type: WORKER.KILLED;
   payload: {
-    providerId: AllProviderIds;
+    providerId: string;
     workerId: string;
     error: Error;
   };

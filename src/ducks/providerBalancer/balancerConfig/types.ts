@@ -3,6 +3,8 @@ import { ProviderBalancerState } from '@src/ducks/providerBalancer';
 export enum BALANCER {
   NETWORK_SWTICH_REQUESTED = 'BALANCER_NETWORK_SWTICH_REQUESTED',
   NETWORK_SWITCH_SUCCEEDED = 'BALANCER_NETWORK_SWITCH_SUCCEEDED',
+  SET_PROVIDER_CALL_RETRY_THRESHOLD = 'BALANCER_SET_PROVIDER_CALL_RETRY_THRESHOLD',
+  INIT = 'BALANCER_INIT',
   FLUSH = 'BALANCER_FLUSH',
   AUTO = 'BALANCER_AUTO',
   MANUAL = 'BALANCER_MANUAL',
@@ -11,8 +13,14 @@ export enum BALANCER {
 }
 
 export interface BalancerConfigState {
+  network: string;
   manual: boolean;
   offline: boolean;
+  providerCallRetryThreshold: number;
+}
+
+export interface BalancerInitAction {
+  type: BALANCER.INIT;
 }
 
 export interface BalancerFlushAction {
@@ -21,13 +29,22 @@ export interface BalancerFlushAction {
 
 export interface BalancerNetworkSwitchRequestedAction {
   type: BALANCER.NETWORK_SWTICH_REQUESTED;
+  payload: { network: string };
 }
 
-export interface NetworkSwitchSucceededAction {
+export interface BalancerNetworkSwitchSucceededAction {
   type: BALANCER.NETWORK_SWITCH_SUCCEEDED;
   payload: {
     providerStats: ProviderBalancerState['providerStats'];
     workers: ProviderBalancerState['workers'];
+    network: string;
+  };
+}
+
+export interface BalancerSetProviderCallRetryThresholdAction {
+  type: BALANCER.SET_PROVIDER_CALL_RETRY_THRESHOLD;
+  payload: {
+    threshold: number;
   };
 }
 
@@ -52,7 +69,8 @@ export type BalancerAction =
   | SetOfflineAction
   | SetOnlineAction
   | BalancerFlushAction
+  | BalancerSetProviderCallRetryThresholdAction
   | BalancerAutoAction
   | BalancerManualAction
   | BalancerNetworkSwitchRequestedAction
-  | NetworkSwitchSucceededAction;
+  | BalancerNetworkSwitchSucceededAction;

@@ -1,24 +1,8 @@
-import { AllProviderIds } from '../providerCalls/types';
-import RpcProvider from '@src/providers/rpc';
-
-export type IProviderConfig = Pick<
-  IProviderStats,
-  | 'requestFailureThreshold'
-  | 'supportedMethods'
-  | 'maxWorkers'
-  | 'timeoutThresholdMs'
-> & { network: string };
-
 export interface IProviderStats {
-  isCustom: boolean;
-  maxWorkers: number;
   currWorkersById: string[];
-  timeoutThresholdMs: number;
   isOffline: boolean;
   requestFailures: number;
-  requestFailureThreshold: number;
   avgResponseTime: number;
-  supportedMethods: { [rpcMethod in keyof RpcProvider]: boolean };
 }
 
 export interface ProviderStatsState {
@@ -35,27 +19,27 @@ export enum PROVIDER {
 export interface ProviderOnlineAction {
   type: PROVIDER.ONLINE;
   payload: {
-    providerId: AllProviderIds;
+    providerId: string;
   };
 }
 
 export interface ProviderOfflineAction {
   type: PROVIDER.OFFLINE;
   payload: {
-    providerId: AllProviderIds;
+    providerId: string;
   };
 }
 
 export interface ProviderAddedAction {
   type: PROVIDER.ADDED;
   payload: {
-    providerId: AllProviderIds;
+    providerId: string;
   } & IProviderStats;
 }
 
 export interface ProviderRemovedAction {
   type: PROVIDER.REMOVED;
-  payload: { providerId: AllProviderIds };
+  payload: { providerId: string };
 }
 
 export type ProviderAction =

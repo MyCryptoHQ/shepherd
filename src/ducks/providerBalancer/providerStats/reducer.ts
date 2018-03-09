@@ -1,5 +1,5 @@
 import {
-  NetworkSwitchSucceededAction,
+  BalancerNetworkSwitchSucceededAction,
   BalancerFlushAction,
   BALANCER,
   BalancerAction,
@@ -30,7 +30,7 @@ type NReducer<T> = (state: ProviderStatsState, action: T) => ProviderStatsState;
 // hard code in the providers for now
 const INITIAL_STATE: ProviderStatsState = {};
 
-const handleNetworkSwitch: NReducer<NetworkSwitchSucceededAction> = (
+const handleNetworkSwitch: NReducer<BalancerNetworkSwitchSucceededAction> = (
   _,
   { payload: { providerStats } },
 ) => providerStats;

@@ -17,15 +17,19 @@ import {
   providerOffline,
   getProviderStatsById,
 } from '@src/ducks/providerBalancer/providerStats';
-import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import {
+  isOffline,
+  getProviderCallRetryThreshold,
+} from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getAvailableProviderId,
   getAllMethodsAvailable,
 } from '@src/ducks/providerBalancer/selectors';
 import { channels } from '@src/saga';
-
-// need to check this arbitary number
-const MAX_PROVIDER_CALL_TIMEOUTS = 3;
+import {
+  IProviderConfig,
+  getProviderConfigById,
+} from '@src/ducks/providerConfigs/configs';
 
 export function* handleProviderCallRequests(): SagaIterator {
   const requestChan = yield actionChannel(
@@ -57,11 +61,16 @@ export function* handleCallTimeouts({
     getProviderStatsById,
     providerId,
   );
-  if (!providerStats) {
-    throw Error('Could not find provider stats');
+  const providerConfig: IProviderConfig | undefined = yield select(
+    getProviderConfigById,
+    providerId,
+  );
+
+  if (!providerStats || !providerConfig) {
+    throw Error('Could not find provider stats or config');
   }
   // if the provider has reached maximum failures, declare it as offline
-  if (providerStats.requestFailures >= providerStats.requestFailureThreshold) {
+  if (providerStats.requestFailures >= providerConfig.requestFailureThreshold) {
     yield put(providerOffline({ providerId }));
 
     //check if all methods are still available after this provider goes down
@@ -73,8 +82,12 @@ export function* handleCallTimeouts({
     }
   }
 
+  const providerCallRetryThreshold = yield select(
+    getProviderCallRetryThreshold,
+  );
+
   // if the payload exceeds timeout limits, return a response failure
-  if (providerCall.numOfTimeouts > MAX_PROVIDER_CALL_TIMEOUTS) {
+  if (providerCall.numOfTimeouts > providerCallRetryThreshold) {
     yield put(providerCallFailed({ error: error.message, providerCall }));
   } else {
     // else consider it a timeout on the request to be retried

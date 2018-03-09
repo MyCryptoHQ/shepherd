@@ -8,3 +8,9 @@ export const isManualMode = (state: RootState) =>
   getBalancerConfig(state).manual;
 
 export const isOffline = (state: RootState) => getBalancerConfig(state).offline;
+
+export const getNetwork = (state: RootState) =>
+  getBalancerConfig(state).network;
+
+export const getProviderCallRetryThreshold = (state: RootState) =>
+  getBalancerConfig(state).providerCallRetryThreshold;

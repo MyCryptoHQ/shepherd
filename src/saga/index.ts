@@ -11,14 +11,15 @@ import {
 import { PROVIDER_CALL } from '@src/ducks/providerBalancer/providerCalls';
 import {
   balancerFlush,
-  NetworkSwitchSucceededAction,
-  networkSwitchSucceeded,
+  BalancerNetworkSwitchSucceededAction,
+  balancerNetworkSwitchSucceeded,
   BalancerFlushAction,
   BALANCER,
   setOffline,
   setOnline,
+  BalancerNetworkSwitchRequestedAction,
+  balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
-import { ProviderConfig } from '@src/types/providers';
 import {
   IProviderStats,
   PROVIDER,
@@ -34,26 +35,26 @@ import {
   handleProviderCallRequests,
   handleCallTimeouts,
 } from '@src/saga/providerCalls';
-import { PROVIDER_CONFIG } from '@src/ducks/providerConfigs/configs';
-
-/**
- *  For now we're going to hard code the initial provider configuration in,
- *  ideally on initialization, a ping call gets sent to every provider in the current network
- *  to determine which providers are offline on app start using 'ProviderAdded'
- *  then spawn workers for each provider from there using 'WorkerSpawned'
- *
- */
+import {
+  PROVIDER_CONFIG,
+  IProviderConfig,
+} from '@src/ducks/providerConfigs/configs';
+import { StrIdx } from '@src/types';
+import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 
 export const channels: IChannels = {};
 
-function* networkSwitch(): SagaIterator {
+function* networkSwitch({
+  payload,
+}: BalancerNetworkSwitchRequestedAction): SagaIterator {
   yield put(setOffline());
+
   //flush all existing requests
   yield put(balancerFlush());
 
-  const providers: {
-    [x: string]: ProviderConfig;
-  } = yield select(getAllProvidersOfCurrentNetwork);
+  const providers: StrIdx<IProviderConfig> = yield select(
+    getAllProvidersOfCurrentNetwork,
+  );
 
   const providerEntries = Object.entries(providers).map(
     ([providerId, providerConfig]) =>
@@ -67,22 +68,60 @@ function* networkSwitch(): SagaIterator {
     workers: Workers;
   }[] = yield all(providerEntries);
 
-  const networkSwitchPayload = processedProviders.reduce<
-    NetworkSwitchSucceededAction['payload']
-  >(
-    (accu, currProvider) => ({
-      providerStats: {
-        ...accu.providerStats,
+  type NetworkPayload = BalancerNetworkSwitchSucceededAction['payload'];
+
+  const initialState: NetworkPayload = {
+    providerStats: {},
+    workers: {},
+    network: payload.network,
+  };
+
+  const networkSwitchPayload = processedProviders.reduce(
+    (accu, currProvider) => {
+      const curProviderStats: NetworkPayload['providerStats'] = {
         [currProvider.providerId]: currProvider.stats,
-      },
-      workers: { ...accu.workers, ...currProvider.workers },
-    }),
-    { providerStats: {}, workers: {} },
+      };
+
+      const providerStats: NetworkPayload['providerStats'] = {
+        ...accu.providerStats,
+        ...curProviderStats,
+      };
+
+      const workers: NetworkPayload['workers'] = {
+        ...accu.workers,
+        ...currProvider.workers,
+      };
+
+      return {
+        ...accu,
+        providerStats,
+        workers,
+      };
+    },
+    initialState,
   );
 
-  yield put(networkSwitchSucceeded(networkSwitchPayload));
+  yield put(balancerNetworkSwitchSucceeded(networkSwitchPayload));
 
   yield put(setOnline());
+}
+
+function* init(): SagaIterator {
+  // this network will be either the default or user supplied one
+  const network: string = yield select(getNetwork);
+
+  // feed it manually into the network switch call and wait for it to finish
+  yield call(networkSwitch, balancerNetworkSwitchRequested({ network }));
+
+  // then spin up the rest of the sagas
+  yield all([
+    takeEvery(BALANCER.NETWORK_SWTICH_REQUESTED, networkSwitch),
+    takeEvery(PROVIDER.OFFLINE, watchOfflineProvider),
+    fork(handleProviderCallRequests),
+    takeEvery(PROVIDER_CALL.TIMEOUT, handleCallTimeouts),
+    takeEvery(BALANCER.FLUSH, flushHandler),
+    takeEvery(PROVIDER_CONFIG.ADD, handleAddingProvider),
+  ]);
 }
 
 function* flushHandler(_: BalancerFlushAction): SagaIterator {
@@ -93,13 +132,5 @@ function* flushHandler(_: BalancerFlushAction): SagaIterator {
 }
 
 export function* providerBalancer() {
-  yield all([
-    call(networkSwitch),
-    takeEvery(BALANCER.NETWORK_SWTICH_REQUESTED, networkSwitch),
-    takeEvery(PROVIDER.OFFLINE, watchOfflineProvider),
-    fork(handleProviderCallRequests),
-    takeEvery(PROVIDER_CALL.TIMEOUT, handleCallTimeouts),
-    takeEvery(BALANCER.FLUSH, flushHandler),
-    takeEvery(PROVIDER_CONFIG.ADD, handleAddingProvider),
-  ]);
+  yield fork(init);
 }

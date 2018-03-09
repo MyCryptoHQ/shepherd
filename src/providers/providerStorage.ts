@@ -1,84 +1,63 @@
-import { StrIdx, IProviderContructor } from '@src/types';
+import { StrIdx, IProviderContructor, IProvider } from '@src/types';
 import RPCProvider from '@src/providers/rpc';
 import EtherscanProvider from '@src/providers/etherscan';
 import InfuraProvider from '@src/providers/infura';
-// import { DefaultNetworkIds } from '@src/types/networks';
 
-export interface IProviderStorage {
-  set(providerName: string, Provider: IProviderContructor): IProviderContructor;
-  get(providerName: string): IProviderContructor;
-}
-
-interface ProviderStorageContructor {
-  new (providers: StrIdx<IProviderContructor>): IProviderStorage;
+interface IProviderStorage {
+  setClass(
+    providerName: string,
+    Provider: IProviderContructor,
+  ): IProviderContructor;
+  getClass(providerName: string): IProviderContructor;
+  setInstance(providerName: string, provider: IProvider): IProvider;
+  getInstance(providerName: string): IProvider;
 }
 
 class ProviderStorage implements IProviderStorage {
-  constructor(providers: StrIdx<IProviderContructor>) {
-    this.availableImplementations = providers;
+  constructor(providers: StrIdx<IProviderContructor> = {}) {
+    this.classes = providers;
+    this.instances = {};
   }
 
-  private availableImplementations: Partial<StrIdx<IProviderContructor>>;
+  private instances: Partial<StrIdx<IProvider>>;
+  private classes: Partial<StrIdx<IProviderContructor>>;
 
-  public set(providerName: string, Provider: IProviderContructor) {
-    this.availableImplementations[providerName] = Provider;
+  public setClass(providerName: string, Provider: IProviderContructor) {
+    this.classes[providerName] = Provider;
     return Provider;
   }
 
-  public get(providerName: string) {
-    const Provider = this.availableImplementations[providerName];
+  public getClass(providerName: string) {
+    const Provider = this.classes[providerName];
     if (!Provider) {
       throw Error(`${providerName} implementation does not exist in storage`);
     }
     return Provider;
   }
+
+  public setInstance(providerName: string, provider: IProvider) {
+    this.instances[providerName] = provider;
+    return provider;
+  }
+
+  public getInstance(providerName: string) {
+    const provider = this.instances[providerName];
+    if (!provider) {
+      throw Error(`${providerName} instance does not exist in storage`);
+    }
+    return provider;
+  }
 }
 
-function createProviderStorage(
-  ctor: ProviderStorageContructor,
-  providers: StrIdx<IProviderContructor>,
-) {
-  return new ctor(providers);
-}
-
-export function initProviderStorage(
-  customProviders: StrIdx<IProviderContructor>,
-) {
-  const defaultProviders: StrIdx<IProviderContructor> = {
-    eth_mycrypto:
-      // network: DefaultNetworkIds.ETH,
-      RPCProvider, //('https://api.mycryptoapi.com/eth'),
-    eth_ethscan:
-      // network: DefaultNetworkIds.ETH,
-      EtherscanProvider, //('https://api.etherscan.io/api'),
-    eth_infura:
-      // network: DefaultNetworkIds.ETH,
-      InfuraProvider, //('https://mainnet.infura.io/mew'),
-    rop_infura:
-      // network: DefaultNetworkIds.Ropsten,
-      InfuraProvider, //('https://ropsten.infura.io/mew'),
-    kov_ethscan:
-      // network: DefaultNetworkIds.Kovan,
-      EtherscanProvider, //('https://kovan.etherscan.io/api'),
-    rin_ethscan:
-      // network: DefaultNetworkIds.Rinkeby,
-      EtherscanProvider, //('https://rinkeby.etherscan.io/api'),
-    rin_infura:
-      // network: DefaultNetworkIds.Rinkeby,
-      InfuraProvider, //('https://rinkeby.infura.io/mew'),
-    etc_epool:
-      // network: DefaultNetworkIds.ETC,
-      RPCProvider, //('https://mewapi.epool.io'),
-    ubq:
-      // network: DefaultNetworkIds.UBQ,
-      RPCProvider, //('https://pyrus2.ubiqscan.io'),
-    exp_tech:
-      // network: DefaultNetworkIds.EXP,:
-      RPCProvider, //('https://provider.expanse.tech/'),
-  };
-
-  return createProviderStorage(ProviderStorage, {
-    ...defaultProviders,
-    ...customProviders,
-  });
-}
+export const providerStorage = new ProviderStorage({
+  eth_mycrypto: RPCProvider,
+  eth_ethscan: EtherscanProvider,
+  eth_infura: InfuraProvider,
+  rop_infura: InfuraProvider,
+  kov_ethscan: EtherscanProvider,
+  rin_ethscan: EtherscanProvider,
+  rin_infura: InfuraProvider,
+  etc_epool: RPCProvider,
+  ubq: RPCProvider,
+  exp_tech: RPCProvider,
+});

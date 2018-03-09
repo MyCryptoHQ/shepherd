@@ -1,4 +1,3 @@
-import { networkConfigs, NetworkConfigState } from '@src/ducks/networkConfigs';
 import {
   providerBalancer,
   ProviderBalancerState,
@@ -15,13 +14,11 @@ import { providerBalancer as providerBalancerSaga } from '../saga';
 const sagaMiddleware = createSagaMiddleware();
 
 export interface RootState {
-  networkConfigs: NetworkConfigState;
   providerBalancer: ProviderBalancerState;
   providerConfigs: ProviderConfigState;
 }
 
 export const rootReducer = combineReducers<RootState>({
-  networkConfigs,
   providerBalancer,
   providerConfigs,
 });
@@ -32,3 +29,5 @@ export const store = createStore<RootState>(
 );
 
 sagaMiddleware.run(providerBalancerSaga);
+
+export { providerBalancerSaga };

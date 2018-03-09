@@ -2,12 +2,11 @@ import {
   providerOnline,
   ProviderOfflineAction,
 } from '@src/ducks/providerBalancer/providerStats';
-import { ProviderConfig } from '@src/types/providers';
 import { call, select, put, apply, race } from 'redux-saga/effects';
-import { getProviderConfigById } from '@src/ducks/providerConfigs/configs';
 import { delay } from 'redux-saga';
 import { getAllMethodsAvailable } from '@src/ducks/providerBalancer/selectors';
 import { setOnline } from '@src/ducks/providerBalancer/balancerConfig';
+import { providerStorage } from '@src/providers';
 
 /**
  * @description polls the offline state of a provider, then returns control to caller when it comes back online
@@ -17,15 +16,12 @@ export function* checkProviderConnectivity(
   providerId: string,
   poll: boolean = true,
 ) {
-  const providerConfig: ProviderConfig = yield select(
-    getProviderConfigById,
-    providerId,
-  );
+  const provider = providerStorage.getInstance(providerId);
   while (true) {
     try {
       console.log(`Polling ${providerId} to see if its online...`);
       const { lb } = yield race({
-        lb: apply(providerConfig.pLib, providerConfig.pLib.getCurrentBlock),
+        lb: apply(provider, provider.getCurrentBlock),
         to: call(delay, 5000),
       });
       if (lb) {

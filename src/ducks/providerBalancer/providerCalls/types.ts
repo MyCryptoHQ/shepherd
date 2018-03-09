@@ -1,14 +1,9 @@
-import { StaticProviderId } from '@src/types/providers';
 import RpcProvider from '@src/providers/rpc';
+import { StrIdx } from '@src/types';
 
-export type AllProviderIds = StaticProviderId | string;
-
-export interface ProviderCallsState {
-  [callId: string]:
-    | SuccessfulProviderCall
-    | PendingProviderCall
-    | FailedProviderCall;
-}
+export type ProviderCallsState = StrIdx<
+  SuccessfulProviderCall | PendingProviderCall | FailedProviderCall
+>;
 
 export enum PROVIDER_CALL {
   REQUESTED = 'PROVIDER_CALL_REQUESTED',
@@ -22,8 +17,8 @@ export interface ProviderCall {
   rpcMethod: keyof RpcProvider;
   rpcArgs: string[];
   numOfTimeouts: number;
-  minPriorityProviderList: AllProviderIds[];
-  providerWhiteList?: AllProviderIds[];
+  minPriorityProviderList: string[];
+  providerWhiteList?: string[];
   providerId?: string;
 }
 
@@ -52,7 +47,7 @@ export interface ProviderCallRequestedAction {
 
 export interface ProviderCallTimeoutAction {
   type: PROVIDER_CALL.TIMEOUT;
-  payload: ProviderCall & { providerId: AllProviderIds; error: Error };
+  payload: ProviderCall & { providerId: string; error: Error };
 }
 
 export interface ProviderCallFailedAction {

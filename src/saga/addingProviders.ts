@@ -1,4 +1,3 @@
-import { ProviderConfig } from '@src/types/providers';
 import {
   call,
   spawn,
@@ -10,7 +9,6 @@ import {
 } from 'redux-saga/effects';
 import {
   IProviderStats,
-  getProviderStatsById,
   providerAdded,
 } from '@src/ducks/providerBalancer/providerStats';
 import {
@@ -29,8 +27,11 @@ import { IChannels, Workers } from '@src/saga/types';
 import {
   getProviderConfigById,
   AddProviderConfigAction,
+  IProviderConfig,
 } from '@src/ducks/providerConfigs/configs';
 import { checkProviderConnectivity } from '@src/saga/providerHealth';
+import { IProvider } from '@src/types';
+import { providerStorage } from '@src/providers';
 
 export function* handleAddingProvider({
   payload: { config, id },
@@ -63,7 +64,7 @@ export function* handleAddingProvider({
  */
 export function* handleAddingProviderHelper(
   providerId: string,
-  providerConfig: ProviderConfig,
+  providerConfig: IProviderConfig,
 ) {
   const startTime = new Date();
   console.log(channel);
@@ -77,21 +78,8 @@ export function* handleAddingProviderHelper(
   const stats: IProviderStats = {
     avgResponseTime,
     isOffline: !providerIsOnline,
-    isCustom: providerConfig.isCustom,
-    timeoutThresholdMs: 2000,
     currWorkersById: [],
-    maxWorkers: 5,
     requestFailures: 0,
-    requestFailureThreshold: 2,
-    supportedMethods: {
-      ping: true,
-      sendCallRequest: true,
-      getBalance: true,
-      estimateGas: true,
-      getTransactionCount: true,
-      getCurrentBlock: true,
-      sendRawTx: true,
-    },
   };
 
   const providerChannel: Channel<ProviderCall> = yield call(
@@ -104,7 +92,7 @@ export function* handleAddingProviderHelper(
   const workers: Workers = {};
   for (
     let workerNumber = stats.currWorkersById.length;
-    workerNumber < stats.maxWorkers;
+    workerNumber < providerConfig.concurrency;
     workerNumber++
   ) {
     const workerId = `${providerId}_worker_${workerNumber}`;
@@ -143,14 +131,9 @@ function* spawnWorker(
   };
 
   //select the provider config on initialization to avoid re-selecting on every request handled
-  const providerConfig: ProviderConfig | undefined = yield select(
-    getProviderConfigById,
+  const provider: IProvider | undefined = providerStorage.getInstance(
     providerId,
   );
-
-  if (!providerConfig) {
-    throw Error(`Provider ${providerId} not found when selecting from state`);
-  }
 
   let currentPayload: ProviderCall;
   while (true) {
@@ -158,33 +141,32 @@ function* spawnWorker(
       // take from the assigned action channel
       const payload: ProviderCall = yield take(chan);
       currentPayload = payload;
+
       // after taking a request, declare processing state
       yield put(
         workerProcessing({ currentPayload: payload, workerId: thisId }),
       );
 
-      const providerStats: Readonly<IProviderStats> | undefined = yield select(
-        getProviderStatsById,
+      const providerConfig: IProviderConfig | null = yield select(
+        getProviderConfigById,
         providerId,
       );
 
-      if (!providerStats) {
+      if (!providerConfig) {
         throw createInternalError(
           `Could not find stats for provider ${providerId}`,
         );
       }
 
-      const lib = providerConfig.pLib;
-
       // make the call in the allotted timeout time
       // this will create an infinite loop
       const { result, timeout } = yield race({
         result: apply(
-          lib,
-          lib[payload.rpcMethod] as any,
+          provider,
+          provider[payload.rpcMethod] as any,
           payload.rpcArgs as any,
         ),
-        timeout: call(delay, providerStats.timeoutThresholdMs),
+        timeout: call(delay, providerConfig.timeoutThresholdMs),
       });
 
       //TODO: clean this up
