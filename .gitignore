@@ -3,3 +3,4 @@ dist
 .fusebox
 .vscode
 mods
+coverage
