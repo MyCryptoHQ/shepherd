@@ -1,35 +1,35 @@
 import {
-  PROVIDER,
-  ProviderOnlineAction,
-  ProviderOfflineAction,
-  ProviderAddedAction,
-  ProviderRemovedAction,
+  PROVIDER_STATS,
+  ProviderStatsOnlineAction,
+  ProviderStatsOfflineAction,
+  ProviderStatsAddedAction,
+  ProviderStatsRemovedAction,
 } from './types';
 
 export const providerOnline = (
-  payload: ProviderOnlineAction['payload'],
-): ProviderOnlineAction => ({
-  type: PROVIDER.ONLINE,
+  payload: ProviderStatsOnlineAction['payload'],
+): ProviderStatsOnlineAction => ({
+  type: PROVIDER_STATS.ONLINE,
   payload,
 });
 
 export const providerOffline = (
-  payload: ProviderOfflineAction['payload'],
-): ProviderOfflineAction => ({
-  type: PROVIDER.OFFLINE,
+  payload: ProviderStatsOfflineAction['payload'],
+): ProviderStatsOfflineAction => ({
+  type: PROVIDER_STATS.OFFLINE,
   payload,
 });
 
 export const providerAdded = (
-  payload: ProviderAddedAction['payload'],
-): ProviderAddedAction => ({
-  type: PROVIDER.ADDED,
+  payload: ProviderStatsAddedAction['payload'],
+): ProviderStatsAddedAction => ({
+  type: PROVIDER_STATS.ADDED,
   payload,
 });
 
 export const providerRemoved = (
-  payload: ProviderRemovedAction['payload'],
-): ProviderRemovedAction => ({
-  type: PROVIDER.REMOVED,
+  payload: ProviderStatsRemovedAction['payload'],
+): ProviderStatsRemovedAction => ({
+  type: PROVIDER_STATS.REMOVED,
   payload,
 });

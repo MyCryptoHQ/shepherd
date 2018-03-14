@@ -29,7 +29,7 @@ export const balancerNetworkSwitchSucceeded = (
   payload,
 });
 
-export const balancerSetProviderCallTimeoutThreshold = (
+export const balancerSetProviderCallRetryThreshold = (
   payload: BalancerSetProviderCallRetryThresholdAction['payload'],
 ): BalancerSetProviderCallRetryThresholdAction => ({
   type: BALANCER.SET_PROVIDER_CALL_RETRY_THRESHOLD,

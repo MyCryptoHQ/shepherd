@@ -1,6 +1,10 @@
 import { IProviderContructor } from '@src/types';
-import { IProviderConfig } from '@src/ducks/providerConfigs/configs';
+import {
+  IProviderConfig,
+  addProviderConfig,
+} from '@src/ducks/providerConfigs/configs';
 import { providerStorage } from './providerStorage';
+import { store } from '@src/ducks';
 
 export function addProvider(
   providerName: string,
@@ -17,5 +21,7 @@ export function useProvider(
   const Provider = providerStorage.getClass(providerName);
   const provider = new Provider(...args);
   providerStorage.setInstance(providerName, provider);
+  const action = addProviderConfig({ config: config, id: providerName });
+  store.dispatch(action);
   return config;
 }

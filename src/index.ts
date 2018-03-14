@@ -14,7 +14,7 @@ import { createProviderProxy, addProvider, useProvider } from './providers';
 import { IProvider, StrIdx, IProviderContructor } from '@src/types';
 import {
   balancerNetworkSwitchRequested,
-  balancerSetProviderCallTimeoutThreshold,
+  balancerSetProviderCallRetryThreshold,
   balancerInit,
 } from '@src/ducks/providerBalancer/balancerConfig';
 
@@ -43,7 +43,7 @@ export function init(config: IInitConfig) {
   }
   if (config.callRetryThreshold) {
     store.dispatch(
-      balancerSetProviderCallTimeoutThreshold({
+      balancerSetProviderCallRetryThreshold({
         threshold: config.callRetryThreshold,
       }),
     );

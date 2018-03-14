@@ -21,15 +21,16 @@ import {
   isOffline,
   getProviderCallRetryThreshold,
 } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import {
-  getAvailableProviderId,
-  getAllMethodsAvailable,
-} from '@src/ducks/providerBalancer/selectors';
+
 import { channels } from '@src/saga';
 import {
   IProviderConfig,
   getProviderConfigById,
 } from '@src/ducks/providerConfigs/configs';
+import {
+  getAvailableProviderId,
+  getAllMethodsAvailable,
+} from '@src/ducks/selectors';
 
 export function* handleProviderCallRequests(): SagaIterator {
   const requestChan = yield actionChannel(
@@ -55,7 +56,7 @@ export function* handleProviderCallRequests(): SagaIterator {
 }
 
 export function* handleCallTimeouts({
-  payload: { error, providerId, ...providerCall },
+  payload: { error, providerId, providerCall },
 }: ProviderCallTimeoutAction): SagaIterator {
   const providerStats: Readonly<IProviderStats> | undefined = yield select(
     getProviderStatsById,

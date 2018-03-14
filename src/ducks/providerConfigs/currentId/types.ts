@@ -1,12 +1,12 @@
 export type CurrentProviderIdState = string | null;
 
 export enum PROVIDER_CURRENT_CONFIG {
-  CHANGE = 'PROVIDER_CURRENT_CONFIG_CHANGE',
+  SWITCH = 'PROVIDER_CURRENT_CONFIG_SWITCH',
 }
 
-export interface ChangeProviderConfigAction {
-  type: PROVIDER_CURRENT_CONFIG.CHANGE;
+export interface SwitchCurrentProviderConfigAction {
+  type: PROVIDER_CURRENT_CONFIG.SWITCH;
   payload: { id: string };
 }
 
-export type CurrentProviderConfigAction = ChangeProviderConfigAction;
+export type CurrentProviderConfigAction = SwitchCurrentProviderConfigAction;

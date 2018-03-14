@@ -17,11 +17,7 @@ import {
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { Channel, buffers, channel, Task, delay } from 'redux-saga';
-import {
-  IWorker,
-  workerProcessing,
-  workerSpawned,
-} from '@src/ducks/providerBalancer/workers';
+import { IWorker, workerProcessing } from '@src/ducks/providerBalancer/workers';
 import { channels } from '@src/saga';
 import { IChannels, Workers } from '@src/saga/types';
 import {
@@ -42,18 +38,13 @@ export function* handleAddingProvider({
     workers: Workers;
   } = yield call(handleAddingProviderHelper, id, config);
 
-  // these two ops might need to be done in one op
-  yield put(providerAdded({ ...res.stats, providerId: res.providerId }));
-
-  for (const [workerId, worker] of Object.entries(res.workers)) {
-    yield put(
-      workerSpawned({
-        providerId: worker.assignedProvider,
-        workerId,
-        task: worker.task,
-      }),
-    );
-  }
+  yield put(
+    providerAdded({
+      stats: res.stats,
+      providerId: res.providerId,
+      workers: res.workers,
+    }),
+  );
 }
 
 /**
@@ -67,7 +58,6 @@ export function* handleAddingProviderHelper(
   providerConfig: IProviderConfig,
 ) {
   const startTime = new Date();
-  console.log(channel);
   const providerIsOnline: boolean = yield call(
     checkProviderConnectivity,
     providerId,
@@ -159,7 +149,6 @@ function* spawnWorker(
       }
 
       // make the call in the allotted timeout time
-      // this will create an infinite loop
       const { result, timeout } = yield race({
         result: apply(
           provider,
@@ -186,7 +175,13 @@ function* spawnWorker(
         e.name = `NetworkError_${e.name}`;
       }
       console.error(e);
-      yield put(providerCallTimeout({ ...currentPayload!, providerId, error }));
+      yield put(
+        providerCallTimeout({
+          providerCall: currentPayload!,
+          providerId,
+          error,
+        }),
+      );
     }
   }
 }

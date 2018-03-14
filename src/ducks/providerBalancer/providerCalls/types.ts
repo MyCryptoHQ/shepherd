@@ -47,7 +47,7 @@ export interface ProviderCallRequestedAction {
 
 export interface ProviderCallTimeoutAction {
   type: PROVIDER_CALL.TIMEOUT;
-  payload: ProviderCall & { providerId: string; error: Error };
+  payload: { providerId: string; error: Error; providerCall: ProviderCall };
 }
 
 export interface ProviderCallFailedAction {

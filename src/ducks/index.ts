@@ -28,6 +28,8 @@ export const store = createStore<RootState>(
   composeWithDevTools(applyMiddleware(sagaMiddleware)),
 );
 
+export const INITIAL_ROOT_STATE = rootReducer(undefined as any, {} as any);
+
 sagaMiddleware.run(providerBalancerSaga);
 
 export { providerBalancerSaga };

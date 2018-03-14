@@ -14,7 +14,7 @@ export interface ProviderBalancerState {
   providerCalls: ProviderCallsState;
 }
 
-export const providerBalancer = combineReducers({
+export const providerBalancer = combineReducers<ProviderBalancerState>({
   providerStats: providerStatsReducer,
   workers: workerReducer,
   balancerConfig: balancerConfigReducer,

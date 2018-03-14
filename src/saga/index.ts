@@ -7,6 +7,7 @@ import {
   flush,
   all,
   takeEvery,
+  take,
 } from 'redux-saga/effects';
 import { PROVIDER_CALL } from '@src/ducks/providerBalancer/providerCalls';
 import {
@@ -22,7 +23,7 @@ import {
 } from '@src/ducks/providerBalancer/balancerConfig';
 import {
   IProviderStats,
-  PROVIDER,
+  PROVIDER_STATS,
 } from '@src/ducks/providerBalancer/providerStats';
 import { getAllProvidersOfCurrentNetwork } from '@src/ducks/selectors';
 import { Workers, IChannels } from '@src/saga/types';
@@ -107,6 +108,9 @@ function* networkSwitch({
 }
 
 function* init(): SagaIterator {
+  // wait for init call
+  yield take(BALANCER.INIT);
+
   // this network will be either the default or user supplied one
   const network: string = yield select(getNetwork);
 
@@ -116,7 +120,7 @@ function* init(): SagaIterator {
   // then spin up the rest of the sagas
   yield all([
     takeEvery(BALANCER.NETWORK_SWTICH_REQUESTED, networkSwitch),
-    takeEvery(PROVIDER.OFFLINE, watchOfflineProvider),
+    takeEvery(PROVIDER_STATS.OFFLINE, watchOfflineProvider),
     fork(handleProviderCallRequests),
     takeEvery(PROVIDER_CALL.TIMEOUT, handleCallTimeouts),
     takeEvery(BALANCER.FLUSH, flushHandler),

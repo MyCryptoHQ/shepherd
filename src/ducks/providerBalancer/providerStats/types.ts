@@ -1,3 +1,6 @@
+import { IWorker } from '@src/ducks/providerBalancer/workers';
+import { StrIdx } from '@src/types';
+
 export interface IProviderStats {
   currWorkersById: string[];
   isOffline: boolean;
@@ -9,41 +12,43 @@ export interface ProviderStatsState {
   [providerId: string]: Readonly<IProviderStats>;
 }
 
-export enum PROVIDER {
-  ONLINE = 'PROVIDER_ONLINE',
-  OFFLINE = 'PROVIDER_OFFLINE',
-  ADDED = 'PROVIDER_ADDED',
-  REMOVED = 'PROVIDER_REMOVED',
+export enum PROVIDER_STATS {
+  ONLINE = 'PROVIDER_STATS_ONLINE',
+  OFFLINE = 'PROVIDER_STATS_OFFLINE',
+  ADDED = 'PROVIDER_STATS_ADDED',
+  REMOVED = 'PROVIDER_STATS_REMOVED',
 }
 
-export interface ProviderOnlineAction {
-  type: PROVIDER.ONLINE;
+export interface ProviderStatsOnlineAction {
+  type: PROVIDER_STATS.ONLINE;
   payload: {
     providerId: string;
   };
 }
 
-export interface ProviderOfflineAction {
-  type: PROVIDER.OFFLINE;
+export interface ProviderStatsOfflineAction {
+  type: PROVIDER_STATS.OFFLINE;
   payload: {
     providerId: string;
   };
 }
 
-export interface ProviderAddedAction {
-  type: PROVIDER.ADDED;
+export interface ProviderStatsAddedAction {
+  type: PROVIDER_STATS.ADDED;
   payload: {
     providerId: string;
-  } & IProviderStats;
+    stats: IProviderStats;
+    workers: StrIdx<IWorker>;
+  };
 }
 
-export interface ProviderRemovedAction {
-  type: PROVIDER.REMOVED;
+export interface ProviderStatsRemovedAction {
+  type: PROVIDER_STATS.REMOVED;
   payload: { providerId: string };
 }
 
-export type ProviderAction =
-  | ProviderOnlineAction
-  | ProviderOfflineAction
-  | ProviderAddedAction
-  | ProviderRemovedAction;
+export type ProviderStatsAction =
+  | ProviderStatsOnlineAction
+  | ProviderStatsOfflineAction
+  | ProviderStatsAddedAction
+  | ProviderStatsRemovedAction;

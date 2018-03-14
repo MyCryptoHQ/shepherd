@@ -8,7 +8,7 @@ export interface ProviderConfigState {
   currentId: CurrentProviderIdState;
 }
 
-export const providerConfigs = combineReducers({
+export const providerConfigs = combineReducers<ProviderConfigState>({
   config: providerConfigReducer,
-  currentConfig: currentProviderIdReducer,
+  currentId: currentProviderIdReducer,
 });

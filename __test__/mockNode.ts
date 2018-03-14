@@ -1,6 +1,6 @@
 import { promisify } from 'util';
 import { setTimeout } from 'timers';
-import { MockCall, generateMockCalls } from './generateTestData';
+import { generateMockCalls } from './generateTestData';
 import { addProviderConfig, handler, store } from '../src';
 
 interface State {

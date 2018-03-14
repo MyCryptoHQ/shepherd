@@ -11,12 +11,12 @@ import {
   WorkerAction,
 } from '../workers/types';
 import {
-  ProviderOnlineAction,
-  ProviderOfflineAction,
-  ProviderAddedAction,
-  ProviderRemovedAction,
-  PROVIDER,
-  ProviderAction,
+  ProviderStatsOnlineAction,
+  ProviderStatsOfflineAction,
+  ProviderStatsAddedAction,
+  ProviderStatsRemovedAction,
+  PROVIDER_STATS,
+  ProviderStatsAction,
 } from './types';
 import {
   ProviderCallTimeoutAction,
@@ -33,13 +33,34 @@ const INITIAL_STATE: ProviderStatsState = {};
 const handleNetworkSwitch: NReducer<BalancerNetworkSwitchSucceededAction> = (
   _,
   { payload: { providerStats } },
-) => providerStats;
+) => {
+  // validation
+
+  for (const [providerId, provider] of Object.entries(providerStats)) {
+    if (provider.avgResponseTime < 0) {
+      throw Error(`Provider ${providerId} has a response time of below 0`);
+    }
+    if (provider.requestFailures !== 0) {
+      throw Error(`Provider ${providerId} has non-zero request failures`);
+    }
+  }
+
+  return providerStats;
+};
 
 const handleWorkerKilled: NReducer<WorkerKilledAction> = (
   state,
   { payload: { providerId, workerId } },
 ) => {
   const providerToChange = state[providerId];
+  if (!providerToChange) {
+    throw Error(`Provider ${providerId} does not exist`);
+  }
+
+  if (!providerToChange.currWorkersById.includes(workerId)) {
+    throw Error(`Worker ${workerId} does not exist`);
+  }
+
   const nextProviderProviderStatsState = {
     ...providerToChange,
     currWorkersById: providerToChange.currWorkersById.filter(
@@ -53,7 +74,17 @@ const handleWorkerSpawned: NReducer<WorkerSpawnedAction> = (
   state,
   { payload: { providerId, workerId } },
 ) => {
+  // check for existence of provider
   const providerToChange = state[providerId];
+  if (!providerToChange) {
+    throw Error(`Provider ${providerId} does not exist`);
+  }
+
+  // check for duplicates
+  if (providerToChange.currWorkersById.includes(workerId)) {
+    throw Error(`Worker ${workerId} already exists`);
+  }
+
   const nextProviderProviderStatsState = {
     ...providerToChange,
     currWorkersById: [...providerToChange.currWorkersById, workerId],
@@ -61,53 +92,86 @@ const handleWorkerSpawned: NReducer<WorkerSpawnedAction> = (
   return { ...state, [providerId]: nextProviderProviderStatsState };
 };
 
-const handleProviderOnline: NReducer<ProviderOnlineAction> = (
+const handleProviderOnline: NReducer<ProviderStatsOnlineAction> = (
   state,
   { payload: { providerId } },
-) => ({
-  ...state,
-  [providerId]: {
-    ...state[providerId],
-    isOffline: false,
-  },
-});
+) => {
+  // check for existence of provider
+  const providerToChange = state[providerId];
+  if (!providerToChange) {
+    throw Error(`Provider ${providerId} does not exist`);
+  }
 
-const handleProviderOffline: NReducer<ProviderOfflineAction> = (
+  return {
+    ...state,
+    [providerId]: {
+      ...providerToChange,
+      isOffline: false,
+    },
+  };
+};
+
+const handleProviderOffline: NReducer<ProviderStatsOfflineAction> = (
   state,
   { payload: { providerId } },
-) => ({
-  ...state,
-  [providerId]: {
-    ...state[providerId],
-    isOffline: true,
-    requestFailures: 0,
-  },
-});
+) => {
+  // check for existence of provider
+  const providerToChange = state[providerId];
+  if (!providerToChange) {
+    throw Error(`Provider ${providerId} does not exist`);
+  }
 
-const handleProviderAdded: NReducer<ProviderAddedAction> = (
+  return {
+    ...state,
+    [providerId]: {
+      ...providerToChange,
+      isOffline: true,
+      requestFailures: 0,
+    },
+  };
+};
+
+const handleProviderAdded: NReducer<ProviderStatsAddedAction> = (
   state: ProviderStatsState,
-  { payload: { providerId, ...providerStats } },
-) => ({ ...state, [providerId]: { ...providerStats } });
+  { payload: { providerId, stats } },
+) => {
+  if (state[providerId]) {
+    throw Error(`Provider ${providerId} already exists`);
+  }
 
-const handleProviderRemoved: NReducer<ProviderRemovedAction> = (
+  return { ...state, [providerId]: stats };
+};
+
+const handleProviderRemoved: NReducer<ProviderStatsRemovedAction> = (
   state,
   { payload },
 ) => {
+  if (!state[payload.providerId]) {
+    throw Error(`Provider ${payload.providerId} does not exist`);
+  }
   const stateCopy = { ...state };
-  Reflect.deleteProperty(state, payload.providerId);
+  Reflect.deleteProperty(stateCopy, payload.providerId);
   return stateCopy;
 };
 
 const handleProviderCallTimeout: NReducer<ProviderCallTimeoutAction> = (
   state: ProviderStatsState,
   { payload: { providerId } }: ProviderCallTimeoutAction,
-) => ({
-  ...state,
-  [providerId]: {
-    ...state[providerId],
-    requestFailures: state[providerId].requestFailures + 1,
-  },
-});
+) => {
+  // check for existence of provider
+  const providerToChange = state[providerId];
+  if (!providerToChange) {
+    throw Error(`Provider ${providerId} does not exist`);
+  }
+
+  return {
+    ...state,
+    [providerId]: {
+      ...providerToChange,
+      requestFailures: providerToChange.requestFailures + 1,
+    },
+  };
+};
 
 const handleBalancerFlush: NReducer<BalancerFlushAction> = state =>
   Object.entries(state).reduce<ProviderStatsState>(
@@ -119,20 +183,20 @@ const handleBalancerFlush: NReducer<BalancerFlushAction> = state =>
   );
 
 export const providerStats: NReducer<
-  ProviderAction | WorkerAction | ProviderCallAction | BalancerAction
+  ProviderStatsAction | WorkerAction | ProviderCallAction | BalancerAction
 > = (state = INITIAL_STATE, action): ProviderStatsState => {
   switch (action.type) {
     case WORKER.KILLED:
       return handleWorkerKilled(state, action);
     case WORKER.SPAWNED:
       return handleWorkerSpawned(state, action);
-    case PROVIDER.ONLINE:
+    case PROVIDER_STATS.ONLINE:
       return handleProviderOnline(state, action);
-    case PROVIDER.OFFLINE:
+    case PROVIDER_STATS.OFFLINE:
       return handleProviderOffline(state, action);
-    case PROVIDER.ADDED:
+    case PROVIDER_STATS.ADDED:
       return handleProviderAdded(state, action);
-    case PROVIDER.REMOVED:
+    case PROVIDER_STATS.REMOVED:
       return handleProviderRemoved(state, action);
     case PROVIDER_CALL.TIMEOUT:
       return handleProviderCallTimeout(state, action);

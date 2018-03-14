@@ -10,7 +10,8 @@
     "lib": ["esnext", "dom"],
     "allowSyntheticDefaultImports": true,
     "paths": {
-      "@src*": ["src*"]
+      "@src*": ["src*"],
+      "@test*": ["__test__*"]
     },
     "moduleResolution": "node",
     "noEmitOnError": false,
@@ -18,5 +19,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["./src/", "./test/"]
+  "include": ["./src/", "./__test__/"]
 }

@@ -1,5 +1,11 @@
-import { ChangeProviderConfigAction, PROVIDER_CURRENT_CONFIG } from './types';
+import {
+  SwitchCurrentProviderConfigAction,
+  PROVIDER_CURRENT_CONFIG,
+} from './types';
 
-export const changeProviderConfig = (
-  payload: ChangeProviderConfigAction['payload'],
-): ChangeProviderConfigAction => ({ type: PROVIDER_CURRENT_CONFIG.CHANGE, payload });
+export const switchCurrentProviderConfig = (
+  payload: SwitchCurrentProviderConfigAction['payload'],
+): SwitchCurrentProviderConfigAction => ({
+  type: PROVIDER_CURRENT_CONFIG.SWITCH,
+  payload,
+});

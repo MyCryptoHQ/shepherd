@@ -8,7 +8,8 @@
   "scripts": {
     "test": "jest",
     "tsc": "tsc --noEmit",
-    "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
+    "format":
+      "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
   },
   "repository": {
     "type": "git",
@@ -42,18 +43,13 @@
     "url-search-params": "^0.10.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "ts",
-      "tsx"
-    ],
+    "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
     "transform": {
-      "\\.(ts|tsx)$": "<rootDir>/provider_modules/ts-jest/preprocessor.js"
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "moduleNameMapper": {
-      "@src/(.*)": "<rootDir>/src/$1"
+      "@src/(.*)": "<rootDir>/src/$1",
+      "@test/(.*)": "<rootDir>/__test__/$1"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$"
   }
