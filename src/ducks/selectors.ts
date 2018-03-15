@@ -31,6 +31,16 @@ export const getAllProvidersOfCurrentNetwork = (state: RootState) => {
   );
 };
 
+export const getOnlineProviderIdsOfCurrentNetwork = (state: RootState) => {
+  const network = getNetwork(state);
+  const onlineProviders = getOnlineProviders(state);
+  const providersOfCurrentNetwork = Object.keys(onlineProviders).filter(id => {
+    const config = getProviderConfigById(state, id);
+    return config && config.network === network;
+  });
+  return providersOfCurrentNetwork;
+};
+
 export const getAllMethodsAvailable = (state: RootState): boolean => {
   const allMethods: (keyof RpcProvider)[] = [
     'ping',
@@ -42,7 +52,7 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     'sendRawTx',
   ];
 
-  const availableProviderIds = Object.keys(getOnlineProviders(state));
+  const availableProviderIds = getOnlineProviderIdsOfCurrentNetwork(state);
 
   // goes through each available provider and reduces all of their
   // available methods into a mapping that contains all supported methods
@@ -84,17 +94,15 @@ export const getAvailableProviderId = (
   state: RootState,
   payload: IProviderCall,
 ) => {
-  const onlineProviders = getOnlineProviders(state);
-  const onlineProvidersArr = Object.entries(onlineProviders);
+  const onlineProviders = getOnlineProviderIdsOfCurrentNetwork(state);
 
   // filter by providers that can support this method
-  const supportsMethod = onlineProvidersArr.filter(([providerId]) =>
+  const supportsMethod = onlineProviders.filter(providerId =>
     providerSupportsMethod(state, providerId, payload.rpcMethod),
   );
 
-  // filter providers that are in the whitelist
+  // filter providers that are in the whitelist if it exists, else continue with providers that support the method
   const payloadProviderWhitelist = payload.providerWhiteList;
-
   const isWhitelisted = payloadProviderWhitelist
     ? filterAgainstArr(supportsMethod, payloadProviderWhitelist)
     : supportsMethod;
@@ -103,7 +111,7 @@ export const getAvailableProviderId = (
   const prioritized1 = filterAgainstArr(
     isWhitelisted,
     payload.minPriorityProviderList,
-    false,
+    true,
   );
 
   // grab the providers that are included
@@ -121,7 +129,7 @@ export const getAvailableProviderId = (
     numOfRequestsCurrentProcessing: number;
   } | null = null;
 
-  for (const [currentProviderId] of listToPrioritizeByWorker) {
+  for (const currentProviderId of listToPrioritizeByWorker) {
     const numOfRequestsCurrentProcessing = getPendingProviderCallsByProviderId(
       state,
       currentProviderId,

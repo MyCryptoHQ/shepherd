@@ -3,8 +3,7 @@ import * as providerConfigsActions from './providerConfigs/configs/actions';
 import * as balancerConfigActions from './providerBalancer/balancerConfig/actions';
 import * as providerCallsActions from './providerBalancer/providerCalls/actions';
 import * as providerStatsActions from './providerBalancer/providerStats/actions';
-import * as workersActions from './providerBalancer/workers/actions';
-import { rootReducer, store } from '@src/ducks';
+import { rootReducer } from '@src/ducks';
 import { StrIdx } from '@src/types';
 import { IProviderConfig } from '@src/ducks/providerConfigs/configs';
 import {
@@ -14,19 +13,34 @@ import {
   makeMockCall,
 } from '@test/utils';
 
+const addAllProviderConfigs = (
+  _storage: any,
+  configs: StrIdx<IProviderConfig>,
+) => {
+  for (const [id, config] of Object.entries(configs)) {
+    const action = providerConfigsActions.addProviderConfig({ id, config });
+    _storage = rootReducer(_storage, action);
+  }
+  return _storage;
+};
+
+const addAllProviderStats = (_storage: any, providerIds: string[]) => {
+  providerIds.forEach(id => {
+    const actionCreator = providerStatsActions.providerAdded;
+    const workerId = `${id}_worker`;
+    const action = actionCreator({
+      providerId: id,
+      stats: makeMockStats({ currWorkersById: [workerId] }),
+      workers: { [workerId]: makeMockWorker({ assignedProvider: id }) },
+    });
+
+    _storage = rootReducer(_storage, action);
+  });
+  return _storage;
+};
+
 let storage: any = undefined;
 describe('Ducks tests', () => {
-  const addAllProviderConfigs = (
-    _storage: any,
-    configs: StrIdx<IProviderConfig>,
-  ) => {
-    for (const [id, config] of Object.entries(configs)) {
-      const action = providerConfigsActions.addProviderConfig({ id, config });
-      _storage = rootReducer(_storage, action);
-    }
-    return _storage;
-  };
-
   describe('getAllProvidersOfCurrentNetwork selector', () => {
     const providers: StrIdx<IProviderConfig> = {
       eth1: makeMockProviderConfig(),
@@ -64,8 +78,90 @@ describe('Ducks tests', () => {
     });
   });
 
+  describe('getOnlineProviderIdsOfCurrentNetwork selector', () => {
+    const selector = selectors.getOnlineProviderIdsOfCurrentNetwork;
+
+    const configs: StrIdx<IProviderConfig> = {
+      eth1: makeMockProviderConfig({
+        supportedMethods: { estimateGas: false },
+      }),
+      eth2: makeMockProviderConfig(),
+
+      etc1: makeMockProviderConfig({ network: 'ETC' }),
+      exp1: makeMockProviderConfig({ network: 'EXP' }),
+    };
+
+    it('should select no providers', () => {
+      storage = undefined;
+      storage = addAllProviderConfigs(storage, configs);
+      expect(selector(storage)).toEqual([]);
+    });
+
+    it('should select online providers of eth network', () => {
+      storage = undefined;
+      storage = addAllProviderConfigs(storage, configs);
+      storage = addAllProviderStats(storage, Object.keys(configs));
+      expect(selector(storage)).toEqual(['eth1', 'eth2']);
+    });
+
+    it('should select online providers of eth network', () => {
+      storage = rootReducer(
+        storage,
+        providerStatsActions.providerOffline({ providerId: 'eth1' }),
+      );
+      expect(selector(storage)).toEqual(['eth2']);
+    });
+
+    it('should select online providers of etc network', () => {
+      storage = undefined;
+      storage = rootReducer(
+        storage,
+        balancerConfigActions.balancerNetworkSwitchSucceeded({
+          network: 'ETC',
+          providerStats: {},
+          workers: {},
+        }),
+      );
+      storage = addAllProviderConfigs(storage, configs);
+      storage = addAllProviderStats(storage, Object.keys(configs));
+      expect(selector(storage)).toEqual(['etc1']);
+    });
+  });
+
   describe('getAllMethodsAvailable selector', () => {
     const selector = selectors.getAllMethodsAvailable;
+
+    it('should return false', () => {
+      storage = undefined;
+
+      storage = rootReducer(
+        storage,
+        providerStatsActions.providerAdded({
+          providerId: 'p1',
+          stats: makeMockStats({ currWorkersById: ['worker1'] }),
+          workers: { worker1: makeMockWorker({ assignedProvider: 'p1' }) },
+        }),
+      );
+      expect(selector(storage)).toEqual(false);
+    });
+
+    it('should return false', () => {
+      storage = undefined;
+
+      storage = addAllProviderConfigs(storage, {
+        p1: makeMockProviderConfig({ network: 'ETC' }),
+      });
+
+      storage = rootReducer(
+        storage,
+        providerStatsActions.providerAdded({
+          providerId: 'p1',
+          stats: makeMockStats({ currWorkersById: ['worker1'] }),
+          workers: { worker1: makeMockWorker({ assignedProvider: 'p1' }) },
+        }),
+      );
+      expect(selector(storage)).toEqual(false);
+    });
 
     it('should return true', () => {
       storage = undefined;
@@ -192,8 +288,161 @@ describe('Ducks tests', () => {
 
   describe('getAvailableProviderId selector', () => {
     const selector = selectors.getAvailableProviderId;
-    it('', () => {
-      const call = makeMockCall();
+
+    describe('testing priority filters of minPriorityProviderList and providerWhiteList ', () => {
+      // setup a map of provider configs
+      const configs: StrIdx<IProviderConfig> = {
+        eth1: makeMockProviderConfig({
+          supportedMethods: { estimateGas: false },
+        }),
+        eth2: makeMockProviderConfig({ supportedMethods: { ping: false } }),
+        eth3: makeMockProviderConfig({
+          supportedMethods: { getTransactionCount: false },
+        }),
+        etc1: makeMockProviderConfig({ network: 'ETC' }),
+        exp1: makeMockProviderConfig({ network: 'EXP' }),
+      };
+
+      it('should prioritize properly', () => {
+        storage = undefined;
+        storage = addAllProviderConfigs(storage, configs);
+        storage = addAllProviderStats(storage, Object.keys(configs));
+        const call = makeMockCall({ rpcMethod: 'getBalance' });
+        expect(selector(storage, call)).toEqual('eth1');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          providerWhiteList: ['eth3'],
+        });
+        expect(selector(storage, call)).toEqual('eth3');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          providerWhiteList: ['eth3'],
+        });
+        expect(selector(storage, call)).toEqual('eth3');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          minPriorityProviderList: ['eth1'],
+        });
+        expect(selector(storage, call)).toEqual('eth2');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          minPriorityProviderList: ['eth1', 'eth2', 'eth3'],
+        });
+        expect(selector(storage, call)).toEqual('eth1');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          minPriorityProviderList: ['eth1', 'eth3'],
+        });
+        expect(selector(storage, call)).toEqual('eth2');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          minPriorityProviderList: ['eth1'],
+          providerWhiteList: ['eth1'],
+        });
+        expect(selector(storage, call)).toEqual('eth1');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          rpcMethod: 'getBalance',
+          providerWhiteList: ['metamask'],
+        });
+        expect(selector(storage, call)).toEqual(null);
+      });
+    });
+
+    describe('testing prioritiation based on number of current requests given otherwise equal providers', () => {
+      // setup a map of provider configs
+      const configs: StrIdx<IProviderConfig> = {
+        eth1: makeMockProviderConfig(),
+        eth2: makeMockProviderConfig(),
+        eth3: makeMockProviderConfig(),
+      };
+
+      it('should prioritize properly', () => {
+        storage = undefined;
+        storage = addAllProviderConfigs(storage, configs);
+        storage = addAllProviderStats(storage, Object.keys(configs));
+        const call = makeMockCall({
+          callId: 1,
+          rpcMethod: 'getBalance',
+          providerId: 'eth1',
+        });
+        storage = rootReducer(
+          storage,
+          providerCallsActions.providerCallRequested(call),
+        );
+        expect(selector(storage, call)).toEqual('eth2');
+      });
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          callId: 2,
+          rpcMethod: 'getBalance',
+          providerId: 'eth2',
+        });
+        storage = rootReducer(
+          storage,
+          providerCallsActions.providerCallRequested(call),
+        );
+        expect(selector(storage, call)).toEqual('eth3');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          callId: 3,
+          rpcMethod: 'getBalance',
+          providerId: 'eth3',
+        });
+        storage = rootReducer(
+          storage,
+          providerCallsActions.providerCallRequested(call),
+        );
+        expect(selector(storage, call)).toEqual('eth1');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          callId: 4,
+          rpcMethod: 'getBalance',
+          providerId: 'eth2',
+        });
+        storage = rootReducer(
+          storage,
+          providerCallsActions.providerCallRequested(call),
+        );
+        expect(selector(storage, call)).toEqual('eth1');
+      });
+
+      it('should prioritize properly', () => {
+        const call = makeMockCall({
+          callId: 5,
+          rpcMethod: 'getBalance',
+          providerId: 'eth1',
+        });
+        storage = rootReducer(
+          storage,
+          providerCallsActions.providerCallRequested(call),
+        );
+        expect(selector(storage, call)).toEqual('eth3');
+      });
     });
   });
 });

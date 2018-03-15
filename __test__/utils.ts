@@ -57,7 +57,7 @@ export const makeMockCall = (
     minPriorityProviderList: [],
     numOfTimeouts: 0,
     providerId: 'mock1',
-    providerWhiteList: [],
+
     rpcArgs: [],
     rpcMethod: 'ping',
   };
