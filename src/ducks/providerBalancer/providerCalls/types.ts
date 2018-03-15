@@ -12,7 +12,7 @@ export enum PROVIDER_CALL {
   FAILED = 'PROVIDER_CALL_FAILED',
 }
 
-export interface ProviderCall {
+export interface IProviderCall {
   callId: number;
   rpcMethod: keyof RpcProvider;
   rpcArgs: string[];
@@ -22,19 +22,19 @@ export interface ProviderCall {
   providerId?: string;
 }
 
-export interface SuccessfulProviderCall extends ProviderCall {
+export interface SuccessfulProviderCall extends IProviderCall {
   result: string;
   error: null;
   pending: false;
 }
 
-export interface FailedProviderCall extends ProviderCall {
+export interface FailedProviderCall extends IProviderCall {
   result: null;
   error: string;
   pending: false;
 }
 
-export interface PendingProviderCall extends ProviderCall {
+export interface PendingProviderCall extends IProviderCall {
   result: null;
   error: null;
   pending: true;
@@ -42,22 +42,22 @@ export interface PendingProviderCall extends ProviderCall {
 
 export interface ProviderCallRequestedAction {
   type: PROVIDER_CALL.REQUESTED;
-  payload: ProviderCall;
+  payload: IProviderCall;
 }
 
 export interface ProviderCallTimeoutAction {
   type: PROVIDER_CALL.TIMEOUT;
-  payload: { providerId: string; error: Error; providerCall: ProviderCall };
+  payload: { providerId: string; error: Error; providerCall: IProviderCall };
 }
 
 export interface ProviderCallFailedAction {
   type: PROVIDER_CALL.FAILED;
-  payload: { error: string; providerCall: ProviderCall };
+  payload: { error: string; providerCall: IProviderCall };
 }
 
 export interface ProviderCallSucceededAction {
   type: PROVIDER_CALL.SUCCEEDED;
-  payload: { result: string; providerCall: ProviderCall };
+  payload: { result: string; providerCall: IProviderCall };
 }
 
 export type ProviderCallAction =

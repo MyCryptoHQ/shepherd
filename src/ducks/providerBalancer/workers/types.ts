@@ -1,10 +1,10 @@
-import { ProviderCall } from '../providerCalls/types';
+import { IProviderCall } from '../providerCalls/types';
 import { Task } from 'redux-saga';
 
 export interface IWorker {
   task: Task;
   assignedProvider: string;
-  currentPayload: ProviderCall | null;
+  currentPayload: IProviderCall | null;
 }
 
 export interface WorkerState {
@@ -30,7 +30,7 @@ export interface WorkerProcessingAction {
   type: WORKER.PROCESSING;
   payload: {
     workerId: string;
-    currentPayload: ProviderCall;
+    currentPayload: IProviderCall;
   };
 }
 

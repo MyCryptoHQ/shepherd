@@ -1,7 +1,7 @@
 import { SagaIterator, buffers } from 'redux-saga';
 import { put, take, select, actionChannel } from 'redux-saga/effects';
 import {
-  ProviderCall,
+  IProviderCall,
   ProviderCallRequestedAction,
   ProviderCallTimeoutAction,
   providerCallFailed,
@@ -94,7 +94,7 @@ export function* handleCallTimeouts({
     // else consider it a timeout on the request to be retried
     // might want to make this a seperate action
     // add providerId to min priority to avoid it if possible
-    const nextProviderCall: ProviderCall = {
+    const nextProviderCall: IProviderCall = {
       ...providerCall,
       minPriorityProviderList: [
         ...providerCall.minPriorityProviderList,

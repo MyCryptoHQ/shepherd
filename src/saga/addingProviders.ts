@@ -12,7 +12,7 @@ import {
   providerAdded,
 } from '@src/ducks/providerBalancer/providerStats';
 import {
-  ProviderCall,
+  IProviderCall,
   providerCallSucceeded,
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
@@ -72,7 +72,7 @@ export function* handleAddingProviderHelper(
     requestFailures: 0,
   };
 
-  const providerChannel: Channel<ProviderCall> = yield call(
+  const providerChannel: Channel<IProviderCall> = yield call(
     channel,
     buffers.expanding(10),
   );
@@ -125,11 +125,11 @@ function* spawnWorker(
     providerId,
   );
 
-  let currentPayload: ProviderCall;
+  let currentPayload: IProviderCall;
   while (true) {
     try {
       // take from the assigned action channel
-      const payload: ProviderCall = yield take(chan);
+      const payload: IProviderCall = yield take(chan);
       currentPayload = payload;
 
       // after taking a request, declare processing state

@@ -1,7 +1,7 @@
 import { IProvider } from '@src/types';
 import RpcProvider from './rpc';
 import {
-  ProviderCall,
+  IProviderCall,
   providerCallRequested,
   getProviderCallById,
 } from '@src/ducks/providerBalancer/providerCalls';
@@ -12,7 +12,7 @@ const providerCallDispatcher = (() => {
   return (rpcMethod: keyof RpcProvider) => (...rpcArgs: string[]) =>
     new Promise((resolve, reject) => {
       // allow all providers for now
-      const providerCall: ProviderCall = {
+      const providerCall: IProviderCall = {
         callId: ++callId,
         numOfTimeouts: 0,
         rpcArgs,

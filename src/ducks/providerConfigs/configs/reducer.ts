@@ -25,15 +25,20 @@ const handleProviderConfigChange: PCReducer = (
   state,
   { payload }: ChangeProviderConfigAction,
 ) => {
-  if (!state[payload.id]) {
-    throw Error(`Provider config ${payload.id} does not exist`);
+  const { config, id } = payload;
+  if (!state[id]) {
+    throw Error(`Provider config ${id} does not exist`);
   }
 
   return {
     ...state,
-    [payload.id]: {
-      ...state[payload.id],
-      ...payload.config,
+    [id]: {
+      ...state[id],
+      ...config,
+      supportedMethods: {
+        ...state[id].supportedMethods,
+        ...config.supportedMethods,
+      },
     },
   };
 };

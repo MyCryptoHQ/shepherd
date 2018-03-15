@@ -2,7 +2,7 @@ import { INITIAL_ROOT_STATE } from '@src/ducks';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { providerCallsReducer } from './reducer';
-import { ProviderCall } from './types';
+import { IProviderCall } from './types';
 import { StrIdx } from '@src/types';
 
 const stateAssigner = (reducerResult: any) => {
@@ -11,7 +11,7 @@ const stateAssigner = (reducerResult: any) => {
   return stateCopy;
 };
 
-export const mockCall: ProviderCall = {
+export const mockCall: IProviderCall = {
   callId: 0,
   minPriorityProviderList: [],
   numOfTimeouts: 0,
