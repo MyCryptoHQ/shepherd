@@ -14,7 +14,7 @@ export enum BALANCER {
 
 export interface BalancerConfigState {
   network: string;
-  manual: boolean;
+  manual: false | string;
   offline: boolean;
   providerCallRetryThreshold: number;
 }
@@ -48,11 +48,11 @@ export interface BalancerSetProviderCallRetryThresholdAction {
   };
 }
 
-export interface SetOfflineAction {
+export interface BalancerOfflineAction {
   type: BALANCER.OFFLINE;
 }
 
-export interface SetOnlineAction {
+export interface BalancerOnlineAction {
   type: BALANCER.ONLINE;
 }
 
@@ -66,8 +66,8 @@ export interface BalancerManualAction {
 }
 
 export type BalancerAction =
-  | SetOfflineAction
-  | SetOnlineAction
+  | BalancerOfflineAction
+  | BalancerOnlineAction
   | BalancerFlushAction
   | BalancerSetProviderCallRetryThresholdAction
   | BalancerAutoAction
