@@ -1,17 +1,18 @@
 import * as selectors from './selectors';
-import * as providerConfigsActions from './providerConfigs/configs/actions';
+import * as providerConfigsActions from './providerConfigs/actions';
 import * as balancerConfigActions from './providerBalancer/balancerConfig/actions';
 import * as providerCallsActions from './providerBalancer/providerCalls/actions';
 import * as providerStatsActions from './providerBalancer/providerStats/actions';
 import { rootReducer } from '@src/ducks';
 import { StrIdx } from '@src/types';
-import { IProviderConfig } from '@src/ducks/providerConfigs/configs';
+
 import {
   makeMockProviderConfig,
   makeMockStats,
   makeMockWorker,
   makeMockCall,
 } from '@test/utils';
+import { IProviderConfig } from '@src/ducks/providerConfigs';
 
 const addAllProviderConfigs = (
   _storage: any,

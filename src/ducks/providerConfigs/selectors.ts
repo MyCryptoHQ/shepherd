@@ -1,8 +1,16 @@
 import { RootState } from '@src/ducks';
-import { getProviderConfigById } from '@src/ducks/providerConfigs/configs';
-import { getCurrentProviderId } from '@src/ducks/providerConfigs/currentId';
+import RpcProvider from '@src/providers/rpc';
 
-export const getProviders = (state: RootState) => state.providerConfigs;
+export const getProviderConfigs = (state: RootState) => state.providerConfigs;
 
-export const getCurrentProviderConfig = (state: RootState) =>
-  getProviderConfigById(state, getCurrentProviderId(state));
+export const getProviderConfigById = (state: RootState, id: string | null) =>
+  id ? getProviderConfigs(state)[id] : null;
+
+export const providerSupportsMethod = (
+  state: RootState,
+  id: string,
+  method: keyof RpcProvider,
+): boolean => {
+  const config = getProviderConfigById(state, id);
+  return !!(config && config.supportedMethods[method]);
+};

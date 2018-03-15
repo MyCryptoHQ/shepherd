@@ -36,10 +36,7 @@ import {
   handleProviderCallRequests,
   handleCallTimeouts,
 } from '@src/saga/providerCalls';
-import {
-  PROVIDER_CONFIG,
-  IProviderConfig,
-} from '@src/ducks/providerConfigs/configs';
+import { PROVIDER_CONFIG, IProviderConfig } from '@src/ducks/providerConfigs';
 import { StrIdx } from '@src/types';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 

@@ -3,7 +3,7 @@ import {
   PROVIDER_CONFIG,
   RemoveProviderConfigAction,
 } from './types';
-import { ChangeProviderConfigAction } from '@src/ducks/providerConfigs/configs';
+import { ChangeProviderConfigAction } from '@src/ducks/providerConfigs';
 
 export const addProviderConfig = (
   payload: AddProviderConfigAction['payload'],

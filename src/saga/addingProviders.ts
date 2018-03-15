@@ -24,7 +24,7 @@ import {
   getProviderConfigById,
   AddProviderConfigAction,
   IProviderConfig,
-} from '@src/ducks/providerConfigs/configs';
+} from '@src/ducks/providerConfigs';
 import { checkProviderConnectivity } from '@src/saga/providerHealth';
 import { IProvider } from '@src/types';
 import { providerStorage } from '@src/providers';

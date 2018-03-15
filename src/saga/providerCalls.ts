@@ -26,7 +26,7 @@ import { channels } from '@src/saga';
 import {
   IProviderConfig,
   getProviderConfigById,
-} from '@src/ducks/providerConfigs/configs';
+} from '@src/ducks/providerConfigs';
 import {
   getAvailableProviderId,
   getAllMethodsAvailable,

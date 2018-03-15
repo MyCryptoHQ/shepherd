@@ -4,7 +4,7 @@ import {
   IProviderConfig,
   getProviderConfigById,
   providerSupportsMethod,
-} from '@src/ducks/providerConfigs/configs';
+} from '@src/ducks/providerConfigs';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getPendingProviderCallsByProviderId,

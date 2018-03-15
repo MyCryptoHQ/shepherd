@@ -1,9 +1,9 @@
 import { INITIAL_ROOT_STATE } from '@src/ducks';
 import * as actions from './actions';
 import * as selectors from './selectors';
-import { IProviderConfig } from '@src/ducks/providerConfigs/configs';
 import { StrIdx } from '@src/types';
 import providerConfigReducer from './reducer';
+import { IProviderConfig } from '@src/ducks/providerConfigs';
 
 const states: StrIdx<any> = {};
 
@@ -11,7 +11,7 @@ const stateAssigner = (reducerResult: any) => {
   const stateCopy: typeof INITIAL_ROOT_STATE = JSON.parse(
     JSON.stringify(INITIAL_ROOT_STATE),
   );
-  stateCopy.providerConfigs.config = reducerResult;
+  stateCopy.providerConfigs = reducerResult;
   return stateCopy;
 };
 

@@ -1,14 +1,4 @@
-import { ProviderConfigState, providerConfigReducer } from './configs';
-import { CurrentProviderIdState, currentProviderIdReducer } from './currentId';
-
-import { combineReducers } from 'redux';
-
-export interface ProviderConfigState {
-  config: ProviderConfigState;
-  currentId: CurrentProviderIdState;
-}
-
-export const providerConfigs = combineReducers<ProviderConfigState>({
-  config: providerConfigReducer,
-  currentId: currentProviderIdReducer,
-});
+export * from './actions';
+export * from './selectors';
+export * from './types';
+export { default as providerConfigs } from './reducer';

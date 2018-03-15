@@ -1,9 +1,9 @@
-import { IProviderConfig } from '@src/ducks/providerConfigs/configs';
 import { DeepPartial, StrIdx } from '@src/types';
 import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
 import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { IProviderCall } from '@src/ducks/providerBalancer/providerCalls';
 import { Task } from 'redux-saga';
+import { IProviderConfig } from '@src/ducks/providerConfigs';
 
 export const makeMockProviderConfig = (
   options: DeepPartial<IProviderConfig> = {},

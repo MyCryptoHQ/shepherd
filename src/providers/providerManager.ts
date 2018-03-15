@@ -1,8 +1,5 @@
 import { IProviderContructor } from '@src/types';
-import {
-  IProviderConfig,
-  addProviderConfig,
-} from '@src/ducks/providerConfigs/configs';
+import { IProviderConfig, addProviderConfig } from '@src/ducks/providerConfigs';
 import { providerStorage } from './providerStorage';
 import { store } from '@src/ducks';
 
