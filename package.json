@@ -8,8 +8,7 @@
   "scripts": {
     "test": "jest",
     "tsc": "tsc --noEmit",
-    "format":
-      "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
+    "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
   },
   "repository": {
     "type": "git",
@@ -28,6 +27,7 @@
     "jest": "^22.4.2",
     "prettier": "^1.10.2",
     "ts-jest": "^22.4.1",
+    "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.8.0",
     "typescript": "^2.7.2"
   },
@@ -43,7 +43,13 @@
     "url-search-params": "^0.10.0"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "ts",
+      "tsx"
+    ],
     "transform": {
       "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },

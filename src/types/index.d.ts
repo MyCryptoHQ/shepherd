@@ -1,6 +1,8 @@
 import * as BN from 'bn.js';
 import { Wei } from '@src/utils';
 
+type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
+
 // Diff / Omit taken from https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766
 type Diff<T extends string, U extends string> = ({ [P in T]: P } &
   { [P in U]: never } & { [x: string]: never })[T];

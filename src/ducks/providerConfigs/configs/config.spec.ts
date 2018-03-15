@@ -87,6 +87,28 @@ describe('Provider config tests', () => {
       );
     });
 
+    it('should handle changing a provider config -- merging supported methods', () => {
+      const action = actions.changeProviderConfig({
+        id: 'mock1',
+        config: { supportedMethods: { estimateGas: false } },
+      });
+      const selector = selectors.getProviderConfigById;
+
+      states.providerConfigChange = providerConfigReducer(
+        states.providerConfigAdd,
+        action,
+      );
+      const state = stateAssigner(states.providerConfigChange);
+
+      expect(selector(state, 'mock1')).toEqual({
+        ...mockConfig,
+        supportedMethods: {
+          ...mockConfig.supportedMethods,
+          estimateGas: false,
+        },
+      });
+    });
+
     it('should handle removing a provider config', () => {
       const action = actions.removeProviderConfig({ id: 'mock1' });
       const selector = selectors.getProviderConfigById;

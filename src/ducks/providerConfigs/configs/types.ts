@@ -1,4 +1,5 @@
 import RpcProvider from '@src/providers/rpc';
+import { DeepPartial } from '@src/types';
 
 export interface IProviderConfig {
   concurrency: number;
@@ -23,7 +24,7 @@ export interface AddProviderConfigAction {
 
 export interface ChangeProviderConfigAction {
   type: PROVIDER_CONFIG.CHANGE;
-  payload: { id: string; config: Partial<IProviderConfig> };
+  payload: { id: string; config: DeepPartial<IProviderConfig> };
 }
 
 export interface RemoveProviderConfigAction {
