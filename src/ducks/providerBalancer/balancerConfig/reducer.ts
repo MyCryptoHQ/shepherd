@@ -6,6 +6,7 @@ import {
   BALANCER,
 } from './types';
 import { DefaultNetworkIds } from '@src/types/networks';
+import { BalancerManualAction } from '@src/ducks/providerBalancer/balancerConfig';
 
 const INITIAL_STATE: BalancerConfigState = {
   manual: false,
@@ -24,10 +25,10 @@ const handleBalancerAuto: Reducer<BalancerConfigState> = (
 
 const handleBalancerManual: Reducer<BalancerConfigState> = (
   state: BalancerConfigState,
-  _: BalancerAutoAction,
+  { payload }: BalancerManualAction,
 ) => ({
   ...state,
-  manual: true,
+  manual: payload.providerId,
 });
 
 const balancerConfig: Reducer<BalancerConfigState> = (

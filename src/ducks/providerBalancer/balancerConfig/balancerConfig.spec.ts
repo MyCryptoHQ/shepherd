@@ -5,7 +5,7 @@ import * as selectors from './selectors';
 describe('Balancer config tests', () => {
   describe('Selectors on inital state tests ', () => {
     it('should select manual mode as false', () => {
-      expect(selectors.isManualMode(INITIAL_ROOT_STATE)).toEqual(false);
+      expect(selectors.getManualMode(INITIAL_ROOT_STATE)).toEqual(false);
     });
 
     it('should select offline as true', () => {
@@ -50,9 +50,20 @@ describe('Balancer config tests', () => {
     it('should set the balancer to offline', () => {
       const action = actions.setOffline();
       const selector = selectors.isOffline;
-
       expect(selector(rootReducer(undefined as any, action))).toEqual(true);
     });
+
+    it('should set the balancer to manual and then back to auto', () => {
+      let state: any = undefined;
+      const selector = selectors.getManualMode;
+      state = rootReducer(state, actions.setManual({ providerId: 'metamask' }));
+
+      expect(selector(state)).toEqual('metamask');
+
+      state = rootReducer(state, actions.setAuto());
+      expect(selector(state)).toEqual(false);
+    });
+
     it('should set the network after a successful network switch', () => {
       const action = actions.balancerNetworkSwitchSucceeded({
         network: 'ETC',

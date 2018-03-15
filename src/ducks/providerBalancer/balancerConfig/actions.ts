@@ -3,12 +3,14 @@ import {
   BalancerFlushAction,
   BalancerNetworkSwitchSucceededAction,
   BALANCER,
-  SetOnlineAction,
+  BalancerOnlineAction,
   BalancerSetProviderCallRetryThresholdAction,
+  BalancerManualAction,
 } from './types';
 import {
-  SetOfflineAction,
+  BalancerOfflineAction,
   BalancerInitAction,
+  BalancerAutoAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
 
 export const balancerFlush = (): BalancerFlushAction => ({
@@ -38,6 +40,16 @@ export const balancerSetProviderCallRetryThreshold = (
 
 export const balancerInit = (): BalancerInitAction => ({ type: BALANCER.INIT });
 
-export const setOffline = (): SetOfflineAction => ({ type: BALANCER.OFFLINE });
+export const setOffline = (): BalancerOfflineAction => ({
+  type: BALANCER.OFFLINE,
+});
 
-export const setOnline = (): SetOnlineAction => ({ type: BALANCER.ONLINE });
+export const setOnline = (): BalancerOnlineAction => ({
+  type: BALANCER.ONLINE,
+});
+
+export const setAuto = (): BalancerAutoAction => ({ type: BALANCER.AUTO });
+
+export const setManual = (
+  payload: BalancerManualAction['payload'],
+): BalancerManualAction => ({ type: BALANCER.MANUAL, payload });
