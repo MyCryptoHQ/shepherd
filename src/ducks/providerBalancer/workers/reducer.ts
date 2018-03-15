@@ -119,7 +119,7 @@ const handleProviderCallSucceeded: WReducer = (
   const { providerCall: { callId } } = payload;
   const worker = Object.entries(state).find(
     ([_, { currentPayload }]) =>
-      currentPayload ? currentPayload.callId === callId : false,
+      !!(currentPayload && currentPayload.callId === callId),
   );
 
   if (!worker) {
@@ -138,7 +138,7 @@ const handleProviderCallTimeout: WReducer = (
   const { providerCall } = payload;
   const worker = Object.entries(state).find(
     ([_, { currentPayload }]) =>
-      currentPayload ? currentPayload.callId === providerCall.callId : false,
+      !!(currentPayload && currentPayload.callId === providerCall.callId),
   );
 
   if (!worker) {
