@@ -22,13 +22,15 @@ export interface IProviderCall {
   providerId?: string;
 }
 
+export type ProviderCallWithPid = IProviderCall & { providerId: string };
+
 export interface SuccessfulProviderCall extends IProviderCall {
   result: string;
   error: null;
   pending: false;
 }
 
-export interface FailedProviderCall extends IProviderCall {
+export interface FailedProviderCall extends ProviderCallWithPid {
   result: null;
   error: string;
   pending: false;
@@ -47,17 +49,17 @@ export interface ProviderCallRequestedAction {
 
 export interface ProviderCallTimeoutAction {
   type: PROVIDER_CALL.TIMEOUT;
-  payload: { providerId: string; error: Error; providerCall: IProviderCall };
+  payload: { error: Error; providerCall: ProviderCallWithPid };
 }
 
 export interface ProviderCallFailedAction {
   type: PROVIDER_CALL.FAILED;
-  payload: { error: string; providerCall: IProviderCall };
+  payload: { error: string; providerCall: ProviderCallWithPid };
 }
 
 export interface ProviderCallSucceededAction {
   type: PROVIDER_CALL.SUCCEEDED;
-  payload: { result: string; providerCall: IProviderCall };
+  payload: { result: string; providerCall: ProviderCallWithPid };
 }
 
 export type ProviderCallAction =

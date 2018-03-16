@@ -1,13 +1,6 @@
-import {
-  IProviderStats,
-  providerOffline,
-  getProviderStatsById,
-} from '@src/ducks/providerBalancer/providerStats';
-import {
-  IProviderConfig,
-  getProviderConfigById,
-} from '@src/ducks/providerConfigs';
-import { put, select, takeEvery, call } from 'redux-saga/effects';
+import { providerOffline } from '@src/ducks/providerBalancer/providerStats';
+import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
+import { put, select, takeEvery, call, apply, race } from 'redux-saga/effects';
 import {
   IProviderCall,
   ProviderCallTimeoutAction,
@@ -15,60 +8,42 @@ import {
   providerCallRequested,
   PROVIDER_CALL,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { getProviderCallRetryThreshold } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import { createRetryCall } from '@src/saga/sagaUtils';
+import {
+  createRetryCall,
+  createInternalError,
+  makeRetVal,
+} from '@src/saga/sagaUtils';
+import { providerExceedsRequestFailureThreshold } from '@src/ducks/selectors';
+import { callExceedsBalancerRetryThreshold } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import { IProvider } from '@src/types';
+import { delay, Channel, buffers, channel, SagaIterator } from 'redux-saga';
+import { channels } from '@src/saga';
 
-function* providerExceedsRequestFailureThreshold({
-  payload: { providerId },
-}: ProviderCallTimeoutAction) {
-  const providerStats: Readonly<IProviderStats> | undefined = yield select(
-    getProviderStatsById,
-    providerId,
-  );
-  const providerConfig: IProviderConfig | undefined = yield select(
-    getProviderConfigById,
-    providerId,
-  );
-
-  if (!providerStats || !providerConfig) {
-    throw Error('Could not find provider stats or config');
-  }
-
-  // if the provider has reached maximum failures, declare it as offline
-  if (providerStats.requestFailures >= providerConfig.requestFailureThreshold) {
-    return true;
-  }
-
-  return false;
-}
-
-function* callExceedsBalancerRetryThreshold({
-  payload: { providerCall },
-}: ProviderCallTimeoutAction) {
-  const providerCallRetryThreshold = yield select(
-    getProviderCallRetryThreshold,
+export function* addProviderChannel(providerId: string): SagaIterator {
+  const providerChannel: Channel<IProviderCall> = yield call(
+    channel,
+    buffers.expanding(10),
   );
 
-  // checks the current call to see if it has failed more than the configured number
-  if (providerCall.numOfRetries > providerCallRetryThreshold) {
-    return true;
-  }
+  channels[providerId] = providerChannel;
 
-  return false;
+  return providerChannel;
 }
 
 function* handleCallTimeouts(action: ProviderCallTimeoutAction) {
-  const { payload: { error, providerCall, providerId } } = action;
+  const { payload: { error, providerCall } } = action;
+  const { providerId } = providerCall;
 
-  const shouldSetProviderOffline: boolean = yield call(
+  const shouldSetProviderOffline: boolean = yield select(
     providerExceedsRequestFailureThreshold,
     action,
   );
+
   if (shouldSetProviderOffline) {
     yield put(providerOffline({ providerId }));
   }
 
-  const callFailed: boolean = yield call(
+  const callFailed: boolean = yield select(
     callExceedsBalancerRetryThreshold,
     action,
   );
@@ -87,3 +62,32 @@ function* handleCallTimeouts(action: ProviderCallTimeoutAction) {
 export const callTimeoutWatcher = [
   takeEvery(PROVIDER_CALL.TIMEOUT, handleCallTimeouts),
 ];
+
+export function* sendRequestToProvider(
+  providerId: string,
+  rpcMethod: keyof IProvider,
+  rpcArgs: any,
+) {
+  try {
+    const { provider, timeoutThreshold } = yield select(
+      getProviderInstAndTimeoutThreshold,
+      providerId,
+    );
+
+    // make the call in the allotted timeout time
+    const { result } = yield race({
+      result: apply(provider, provider[rpcMethod] as any, rpcArgs),
+      timeout: call(delay, timeoutThreshold),
+    });
+
+    if (!result) {
+      const error = createInternalError(`Request timed out for ${providerId}`);
+      return makeRetVal(error);
+    }
+
+    return makeRetVal(null, result);
+  } catch (error) {
+    error.name += 'NetworkError_';
+    return makeRetVal(error);
+  }
+}

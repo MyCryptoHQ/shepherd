@@ -9,32 +9,26 @@ import {
   takeEvery,
   take,
 } from 'redux-saga/effects';
-import { PROVIDER_CALL } from '@src/ducks/providerBalancer/providerCalls';
 import {
   balancerFlush,
-  BalancerNetworkSwitchSucceededAction,
   balancerNetworkSwitchSucceeded,
   BalancerFlushAction,
   BALANCER,
   setOffline,
-  setOnline,
   BalancerNetworkSwitchRequestedAction,
   balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import {
-  IProviderStats,
   PROVIDER_STATS,
+  ProcessedProvider,
 } from '@src/ducks/providerBalancer/providerStats';
 import { getAllProvidersOfCurrentNetwork } from '@src/ducks/selectors';
-import { Workers, IChannels } from '@src/saga/types';
+import { IChannels } from '@src/saga/types';
 import {
   handleAddingProviderHelper,
   handleAddingProvider,
 } from '@src/saga/addingProviders';
-import {
-  watchOfflineProvider,
-  setBalancerOnlineState,
-} from '@src/saga/providerHealth';
+import { watchOfflineProvider } from '@src/saga/providerHealth';
 import {
   handleProviderCallRequests,
   handleCallTimeouts,
@@ -42,6 +36,7 @@ import {
 import { PROVIDER_CONFIG, IProviderConfig } from '@src/ducks/providerConfigs';
 import { StrIdx } from '@src/types';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import { reduceProcessedProviders } from '@src/saga/sagaUtils';
 
 export const channels: IChannels = {};
 
@@ -63,47 +58,14 @@ function* networkSwitch({
   );
 
   // process adding all providers in parallel
-  const processedProviders: {
-    providerId: string;
-    stats: IProviderStats;
-    workers: Workers;
-  }[] = yield all(providerEntries);
+  const processedProviders: ProcessedProvider[] = yield all(providerEntries);
 
-  type NetworkPayload = BalancerNetworkSwitchSucceededAction['payload'];
-
-  const initialState: NetworkPayload = {
-    providerStats: {},
-    workers: {},
-    network: payload.network,
-  };
-
-  const networkSwitchPayload = processedProviders.reduce(
-    (accu, currProvider) => {
-      const curProviderStats: NetworkPayload['providerStats'] = {
-        [currProvider.providerId]: currProvider.stats,
-      };
-
-      const providerStats: NetworkPayload['providerStats'] = {
-        ...accu.providerStats,
-        ...curProviderStats,
-      };
-
-      const workers: NetworkPayload['workers'] = {
-        ...accu.workers,
-        ...currProvider.workers,
-      };
-
-      return {
-        ...accu,
-        providerStats,
-        workers,
-      };
-    },
-    initialState,
+  const networkSwitchPayload = reduceProcessedProviders(
+    processedProviders,
+    payload.network,
   );
 
   yield put(balancerNetworkSwitchSucceeded(networkSwitchPayload));
-  yield call(setBalancerOnlineState);
 }
 
 function* init(): SagaIterator {

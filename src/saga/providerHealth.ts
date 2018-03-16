@@ -8,6 +8,7 @@ import { delay, SagaIterator } from 'redux-saga';
 import {
   setOnline,
   setOffline,
+  BALANCER,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { providerStorage } from '@src/providers';
 import { getAllMethodsAvailable } from '@src/ducks/selectors';
@@ -17,29 +18,32 @@ import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors'
  * @description polls the offline state of a provider, then returns control to caller when it comes back online
  * @param {string} providerId
  */
-export function* checkProviderConnectivity(
-  providerId: string,
-  poll: boolean = true,
-) {
+export function* checkProviderConnectivity(providerId: string) {
   const provider = providerStorage.getInstance(providerId);
+  try {
+    console.log(`Polling ${providerId} to see if its online...`);
+    const { lb } = yield race({
+      lb: apply(provider, provider.getCurrentBlock),
+      to: call(delay, 5000),
+    });
+
+    return !!lb;
+  } catch (error) {
+    console.info(error);
+  }
+
+  return false;
+}
+
+function* pollProviderUntilConnected(providerId: string): SagaIterator {
   while (true) {
-    try {
-      console.log(`Polling ${providerId} to see if its online...`);
-      const { lb } = yield race({
-        lb: apply(provider, provider.getCurrentBlock),
-        to: call(delay, 5000),
-      });
-      if (lb) {
-        console.log(`${providerId} online!`);
-        return true;
-      }
-    } catch (error) {
-      console.info(error);
+    const connected: boolean = yield call(
+      checkProviderConnectivity,
+      providerId,
+    );
+    if (connected) {
+      return true;
     }
-    if (!poll) {
-      return false;
-    }
-    console.log(`${providerId} still offline`);
     yield call(delay, 5000);
   }
 }
@@ -47,13 +51,17 @@ export function* checkProviderConnectivity(
 export function* watchOfflineProvider({
   payload: { providerId },
 }: ProviderStatsOfflineAction) {
-  yield call(checkProviderConnectivity, providerId);
+  yield call(pollProviderUntilConnected, providerId);
   yield put(providerOnline({ providerId }));
 }
 
 export const watchBalancerOnlineState = [
   takeEvery(
-    [PROVIDER_STATS.ONLINE, PROVIDER_STATS.OFFLINE],
+    [
+      PROVIDER_STATS.ONLINE,
+      PROVIDER_STATS.OFFLINE,
+      BALANCER.NETWORK_SWITCH_SUCCEEDED,
+    ],
     setBalancerOnlineState,
   ),
 ];

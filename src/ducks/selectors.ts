@@ -9,11 +9,33 @@ import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors
 import {
   getPendingProviderCallsByProviderId,
   IProviderCall,
+  ProviderCallTimeoutAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { StrIdx } from '@src/types';
 import RpcProvider from '@src/providers/rpc';
-import { getOnlineProviders } from '@src/ducks/providerBalancer/providerStats';
+import {
+  getOnlineProviders,
+  getProviderStatsById,
+} from '@src/ducks/providerBalancer/providerStats';
 import { filterAgainstArr } from '@src/ducks/utils';
+
+export const providerExceedsRequestFailureThreshold = (
+  state: RootState,
+  { payload }: ProviderCallTimeoutAction,
+) => {
+  const { providerCall: { providerId } } = payload;
+  const providerStats = getProviderStatsById(state, providerId);
+  const providerConfig = getProviderConfigById(state, providerId);
+
+  if (!providerStats || !providerConfig) {
+    throw Error('Could not find provider stats or config');
+  }
+
+  // if the provider has reached maximum failures, declare it as offline
+  return (
+    providerStats.requestFailures >= providerConfig.requestFailureThreshold
+  );
+};
 
 export const getAllProvidersOfCurrentNetwork = (state: RootState) => {
   const allProvidersOfNetworkId: StrIdx<IProviderConfig> = {};

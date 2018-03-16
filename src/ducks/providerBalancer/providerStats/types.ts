@@ -42,6 +42,8 @@ export interface ProviderStatsAddedAction {
   };
 }
 
+export type ProcessedProvider = ProviderStatsAddedAction['payload'];
+
 export interface ProviderStatsRemovedAction {
   type: PROVIDER_STATS.REMOVED;
   payload: { providerId: string };

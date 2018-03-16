@@ -1,29 +1,18 @@
+import { call, spawn, select, take, put } from 'redux-saga/effects';
 import {
-  call,
-  spawn,
-  select,
-  take,
-  put,
-  apply,
-  race,
-  fork,
-} from 'redux-saga/effects';
-import {
-  IProviderStats,
   providerAdded,
   providerOffline,
+  ProcessedProvider,
 } from '@src/ducks/providerBalancer/providerStats';
 import {
   IProviderCall,
   providerCallSucceeded,
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { Channel, buffers, channel, Task, delay } from 'redux-saga';
-import { IWorker, workerProcessing } from '@src/ducks/providerBalancer/workers';
-import { channels } from '@src/saga';
+import { Task } from 'redux-saga';
+import { workerProcessing } from '@src/ducks/providerBalancer/workers';
 import { IChannels, Workers } from '@src/saga/types';
 import {
-  getProviderConfigById,
   AddProviderConfigAction,
   IProviderConfig,
 } from '@src/ducks/providerConfigs';
@@ -31,9 +20,19 @@ import {
   checkProviderConnectivity,
   watchOfflineProvider,
 } from '@src/saga/providerHealth';
-import { IProvider } from '@src/types';
-import { providerStorage } from '@src/providers';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import {
+  trackTime,
+  makeProviderStats,
+  makeWorkerId,
+  makeWorker,
+  addProviderIdToCall,
+
+} from '@src/saga/sagaUtils';
+import {
+  sendRequestToProvider,
+  addProviderChannel,
+} from '@src/saga/sagaHelpers';
 
 export function* handleAddingProvider({
   payload: { config, id },
@@ -43,159 +42,110 @@ export function* handleAddingProvider({
     return;
   }
 
-  const res: {
-    providerId: string;
-    stats: IProviderStats;
-    workers: Workers;
-  } = yield call(handleAddingProviderHelper, id, config);
-
-  yield put(
-    providerAdded({
-      stats: res.stats,
-      providerId: res.providerId,
-      workers: res.workers,
-    }),
+  const processedProvider: ProcessedProvider = yield call(
+    handleAddingProviderHelper,
+    id,
+    config,
   );
+
+  yield put(providerAdded(processedProvider));
 }
 
 /**
  *
  * @description Handles checking if a provider is online or not, and adding it to the provider balancer
  * @param {string} providerId
- * @param {ProviderConfig} providerConfig
+ * @param {ProviderConfig} config
  */
 export function* handleAddingProviderHelper(
   providerId: string,
-  providerConfig: IProviderConfig,
+  { concurrency }: IProviderConfig,
 ) {
-  const startTime = new Date();
+  const timer = trackTime();
   const providerIsOnline: boolean = yield call(
     checkProviderConnectivity,
     providerId,
-    false,
   );
-  const endTime = new Date();
-  const avgResponseTime = +endTime - +startTime;
-  const stats: IProviderStats = {
-    avgResponseTime,
-    isOffline: !providerIsOnline,
-    currWorkersById: [],
-    requestFailures: 0,
-  };
+
+  const stats = makeProviderStats(timer, !providerIsOnline);
+
   if (!providerIsOnline) {
     yield spawn(watchOfflineProvider, providerOffline({ providerId }));
   }
 
-  const providerChannel: Channel<IProviderCall> = yield call(
-    channel,
-    buffers.expanding(10),
+  const { workers, workerIds } = yield call(
+    spawnWorkers,
+    providerId,
+    stats.currWorkersById,
+    concurrency,
   );
 
-  channels[providerId] = providerChannel;
+  stats.currWorkersById = workerIds;
 
+  return { providerId, stats, workers };
+}
+
+function* spawnWorkers(
+  providerId: string,
+  currentWorkers: string[],
+  maxNumOfWorkers: number,
+) {
+  const providerChannel = yield call(addProviderChannel, providerId);
   const workers: Workers = {};
+
   for (
-    let workerNumber = stats.currWorkersById.length;
-    workerNumber < providerConfig.concurrency;
+    let workerNumber = currentWorkers.length;
+    workerNumber < maxNumOfWorkers;
     workerNumber++
   ) {
-    const workerId = `${providerId}_worker_${workerNumber}`;
+    const workerId = makeWorkerId(providerId, workerNumber);
     const workerTask: Task = yield spawn(
       spawnWorker,
       workerId,
       providerId,
       providerChannel,
     );
-    console.log(`Worker ${workerId} spawned for ${providerId}`);
-    stats.currWorkersById.push(workerId);
-    const worker: IWorker = {
-      assignedProvider: providerId,
-      currentPayload: null,
-      task: workerTask,
-    };
-    workers[workerId] = worker;
+
+    workers[workerId] = makeWorker(providerId, workerTask);
   }
 
-  return { providerId, stats, workers };
+  return { workers, workerIds: [...currentWorkers, ...Object.keys(workers)] };
 }
-
 function* spawnWorker(
   thisId: string,
   providerId: string,
   chan: IChannels[string],
 ) {
-  /**
-   * @description used to differentiate between errors from worker code vs a network call error
-   * @param message
-   */
-  const createInternalError = (message: string) => {
-    const e = Error(message);
-    e.name = 'InternalError';
-    return e;
-  };
-
-  //select the provider config on initialization to avoid re-selecting on every request handled
-  const provider: IProvider | undefined = providerStorage.getInstance(
-    providerId,
-  );
-
-  let currentPayload: IProviderCall;
   while (true) {
-    try {
-      // take from the assigned action channel
-      const payload: IProviderCall = yield take(chan);
-      currentPayload = payload;
+    // take from the assigned action channel
+    const payload: IProviderCall = yield take(chan);
+    const { rpcArgs, rpcMethod } = payload;
+    const callWithPid = addProviderIdToCall(payload, providerId);
 
-      // after taking a request, declare processing state
-      yield put(
-        workerProcessing({ currentPayload: payload, workerId: thisId }),
-      );
+    // after taking a request, declare processing state
+    yield put(
+      workerProcessing({ currentPayload: callWithPid, workerId: thisId }),
+    );
 
-      const providerConfig: IProviderConfig | null = yield select(
-        getProviderConfigById,
-        providerId,
-      );
+    const { result, error } = yield call(
+      sendRequestToProvider,
+      providerId,
+      rpcMethod,
+      rpcArgs,
+    );
 
-      if (!providerConfig) {
-        throw createInternalError(
-          `Could not find stats for provider ${providerId}`,
-        );
-      }
-
-      // make the call in the allotted timeout time
-      const { result, timeout } = yield race({
-        result: apply(
-          provider,
-          provider[payload.rpcMethod] as any,
-          payload.rpcArgs as any,
-        ),
-        timeout: call(delay, providerConfig.timeoutThresholdMs),
+    if (result) {
+      const action = providerCallSucceeded({
+        result,
+        providerCall: callWithPid,
       });
-
-      //TODO: clean this up
-      if (timeout || !result) {
-        throw createInternalError(`Request timed out for ${providerId}`);
-      }
-      console.log('Finished', thisId, payload.callId);
-      yield put(
-        providerCallSucceeded({
-          result,
-          providerCall: { ...payload, providerId: thisId },
-        }),
-      );
-    } catch (error) {
-      const e: Error = error;
-      if (!(e.name === 'InternalError')) {
-        e.name = `NetworkError_${e.name}`;
-      }
-      console.error(e);
-      yield put(
-        providerCallTimeout({
-          providerCall: currentPayload!,
-          providerId,
-          error,
-        }),
-      );
+      return yield put(action);
+    } else {
+      const action = providerCallTimeout({
+        providerCall: callWithPid,
+        error,
+      });
+      return yield put(action);
     }
   }
 }

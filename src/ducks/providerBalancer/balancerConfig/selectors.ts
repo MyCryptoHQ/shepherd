@@ -1,5 +1,6 @@
 import { RootState } from '@src/ducks';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
+import { ProviderCallTimeoutAction } from '@src/ducks/providerBalancer/providerCalls';
 
 export const getBalancerConfig = (state: RootState) =>
   getProviderBalancer(state).balancerConfig;
@@ -14,3 +15,13 @@ export const getNetwork = (state: RootState) =>
 
 export const getProviderCallRetryThreshold = (state: RootState) =>
   getBalancerConfig(state).providerCallRetryThreshold;
+
+export const callExceedsBalancerRetryThreshold = (
+  state: RootState,
+  { payload: { providerCall } }: ProviderCallTimeoutAction,
+) => {
+  const providerCallRetryThreshold = getProviderCallRetryThreshold(state);
+
+  // checks the current call to see if it has failed more than the configured number
+  return providerCall.numOfRetries > providerCallRetryThreshold;
+};

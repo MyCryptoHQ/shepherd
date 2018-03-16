@@ -1,22 +1,12 @@
 import { SagaIterator, buffers } from 'redux-saga';
 import { put, take, select, actionChannel } from 'redux-saga/effects';
 import {
-  IProviderCall,
   ProviderCallRequestedAction,
-  ProviderCallTimeoutAction,
-  providerCallFailed,
-  providerCallRequested,
   PROVIDER_CALL,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
-
-import {
-  isOffline,
-  getProviderCallRetryThreshold,
-} from '@src/ducks/providerBalancer/balancerConfig/selectors';
-
+import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { channels } from '@src/saga';
-
 import { getAvailableProviderId } from '@src/ducks/selectors';
 
 export function* handleProviderCallRequests(): SagaIterator {
