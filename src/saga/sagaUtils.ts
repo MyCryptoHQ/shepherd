@@ -6,7 +6,6 @@ import {
 import { Task } from 'redux-saga';
 import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { BalancerNetworkSwitchSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
-import { Workers } from '@src/saga/types';
 
 export const createRetryCall = (
   currentCall: IProviderCall,

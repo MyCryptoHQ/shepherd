@@ -1,5 +1,6 @@
 import { IProviderCall } from '../providerCalls/types';
 import { Task } from 'redux-saga';
+import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
 
 export interface IWorker {
   task: Task;
@@ -30,7 +31,7 @@ export interface WorkerProcessingAction {
   type: WORKER.PROCESSING;
   payload: {
     workerId: string;
-    currentPayload: IProviderCall;
+    currentPayload: ProviderCallWithPid;
   };
 }
 
