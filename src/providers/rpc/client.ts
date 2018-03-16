@@ -1,10 +1,11 @@
 import { JsonRpcResponse, RPCRequest } from './types';
 import { randomBytes } from 'crypto';
+import { StrIdx } from '@src/types';
 
 export default class RPCClient {
   public endpoint: string;
-  public headers: { [key: string]: string };
-  constructor(endpoint: string, headers: { [key: string]: string } = {}) {
+  public headers: StrIdx<string>;
+  constructor(endpoint: string, headers: StrIdx<string> = {}) {
     this.endpoint = endpoint;
     this.headers = headers;
   }
@@ -41,7 +42,7 @@ export default class RPCClient {
     }).then(r => r.json());
   };
 
-  private createHeaders = (headerObject: { [key: string]: string }) => {
+  private createHeaders = (headerObject: StrIdx<string>) => {
     const headers = new Headers();
     Object.keys(headerObject).forEach(name => {
       headers.append(name, headerObject[name]);
