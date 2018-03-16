@@ -8,10 +8,13 @@ import {
 } from '@src/ducks/providerConfigs';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from 'remote-redux-devtools';
+
 import { providerBalancer as providerBalancerSaga } from '../saga';
+process.env.NODE_ENV === 'development';
 
 const sagaMiddleware = createSagaMiddleware();
+const composeEnhancers = composeWithDevTools({ realtime: true, port: 8000 });
 
 export interface RootState {
   providerBalancer: ProviderBalancerState;
@@ -25,7 +28,7 @@ export const rootReducer = combineReducers<RootState>({
 
 export const store = createStore<RootState>(
   rootReducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware)),
+  composeEnhancers(applyMiddleware(sagaMiddleware)),
 );
 
 export const INITIAL_ROOT_STATE = rootReducer(undefined as any, {} as any);

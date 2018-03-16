@@ -55,7 +55,7 @@ export const makeMockCall = (
   const defaultCall: IProviderCall = {
     callId: 0,
     minPriorityProviderList: [],
-    numOfTimeouts: 0,
+    numOfRetries: 0,
     providerId: 'mock1',
 
     rpcArgs: [],

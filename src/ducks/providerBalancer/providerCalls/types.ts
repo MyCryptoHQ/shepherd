@@ -16,7 +16,7 @@ export interface IProviderCall {
   callId: number;
   rpcMethod: keyof RpcProvider;
   rpcArgs: string[];
-  numOfTimeouts: number;
+  numOfRetries: number;
   minPriorityProviderList: string[];
   providerWhiteList?: string[];
   providerId?: string;

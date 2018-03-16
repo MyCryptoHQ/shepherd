@@ -36,6 +36,8 @@ const balancerConfig: Reducer<BalancerConfigState> = (
   action: BalancerAction,
 ): BalancerConfigState => {
   switch (action.type) {
+    case BALANCER.INIT:
+      return { ...state, ...action.payload };
     case BALANCER.AUTO:
       return handleBalancerAuto(state, action);
     case BALANCER.MANUAL:

@@ -31,7 +31,10 @@ import {
   handleAddingProviderHelper,
   handleAddingProvider,
 } from '@src/saga/addingProviders';
-import { watchOfflineProvider } from '@src/saga/providerHealth';
+import {
+  watchOfflineProvider,
+  setBalancerOnlineState,
+} from '@src/saga/providerHealth';
 import {
   handleProviderCallRequests,
   handleCallTimeouts,
@@ -100,8 +103,7 @@ function* networkSwitch({
   );
 
   yield put(balancerNetworkSwitchSucceeded(networkSwitchPayload));
-
-  yield put(setOnline());
+  yield call(setBalancerOnlineState);
 }
 
 function* init(): SagaIterator {
@@ -119,7 +121,6 @@ function* init(): SagaIterator {
     takeEvery(BALANCER.NETWORK_SWTICH_REQUESTED, networkSwitch),
     takeEvery(PROVIDER_STATS.OFFLINE, watchOfflineProvider),
     fork(handleProviderCallRequests),
-    takeEvery(PROVIDER_CALL.TIMEOUT, handleCallTimeouts),
     takeEvery(BALANCER.FLUSH, flushHandler),
     takeEvery(PROVIDER_CONFIG.ADD, handleAddingProvider),
   ]);

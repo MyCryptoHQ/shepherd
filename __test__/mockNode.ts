@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import { setTimeout } from 'timers';
 import { generateMockCalls } from './generateTestData';
-import { addProviderConfig, handler, store } from '../src';
+import { IProviderContructor } from '@src/types';
 
 interface State {
   ping: number;
@@ -20,24 +20,21 @@ interface IMockProxyHandlerArgs {
 
 const setTimeoutAsync = promisify(setTimeout);
 
-type IMockProxyHandler = IMockProxyHandlerArgs & ProxyHandler<MockProvider>;
-
-const createProxyHandler = (args: IMockProxyHandlerArgs): IMockProxyHandler => {
-  const retObj: IMockProxyHandler = {
-    ...args,
+export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
+  const retObj = {
     get(target, propKey) {
-      const targetProperty = Reflect.get(target, propKey).bind(target);
+      const { baseDelay, failureRate } = args;
 
-      if (!Object.getOwnPropertyNames(target).includes(propKey.toString())) {
+      const shouldFail = !!Math.floor(Math.random() + failureRate / 100);
+      const delayTime = baseDelay + Math.random() * 50;
+
+      const targetProperty = Reflect.get(target, propKey).bind(target);
+      if (!targetProperty) {
+        console.log('hi');
         return targetProperty;
       }
 
-      return (
-        { shouldFail, delayTime } = {
-          shouldFail: false,
-          delayTime: 0,
-        },
-      ) => {
+      return () => {
         const logPrefix = `MockProvider.${propKey.toString()}`;
         if (shouldFail) {
           console.log(`${logPrefix} Responding with failed call`);
@@ -54,7 +51,7 @@ const createProxyHandler = (args: IMockProxyHandlerArgs): IMockProxyHandler => {
   return retObj;
 };
 
-class MockProvider {
+export class MockProvider {
   public state: State = {
     ping: 0,
     getBalance: 0,
@@ -94,56 +91,3 @@ class MockProvider {
     return true;
   }
 }
-
-const createMockProvider = (args: IMockProxyHandlerArgs): MockProvider => {
-  const instance = new MockProvider();
-  return new Proxy(instance, createProxyHandler(args));
-};
-
-const provider = createMockProvider({
-  baseDelay: 500,
-  failureRate: 20,
-});
-
-const pProvider = new Proxy(provider, handler as any) as any;
-
-addProviderConfig({
-  id: 'hi',
-  config: {
-    isCustom: false,
-    pLib: provider as any,
-    lib: pProvider as any,
-    network: 'ETH' as any,
-    service: 'mock',
-  },
-});
-
-addProviderConfig({
-  id: 'hi1',
-  config: {
-    isCustom: false,
-    pLib: provider as any,
-    lib: pProvider as any,
-    network: 'ETH' as any,
-    service: 'mock',
-  },
-});
-
-const runTestData = async () => {
-  console.log(await provider.getCurrentBlock());
-
-  const mockCalls = generateMockCalls(0);
-  await setTimeoutAsync(2000);
-  mockCalls.forEach(async c => {
-    const res = await pProvider[c.rpcMethod](c).catch(e => {
-      const state = store.getState();
-      return e.message;
-    });
-    console.log(c.id, res);
-  });
-  await setTimeoutAsync(2000);
-  const s = store.getState();
-  return s;
-};
-
-runTestData();

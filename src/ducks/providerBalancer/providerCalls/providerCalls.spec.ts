@@ -14,7 +14,7 @@ const stateAssigner = (reducerResult: any) => {
 export const mockCall: IProviderCall = {
   callId: 0,
   minPriorityProviderList: [],
-  numOfTimeouts: 0,
+  numOfRetries: 0,
   providerId: 'mock1',
   providerWhiteList: [],
   rpcArgs: [],

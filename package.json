@@ -8,7 +8,9 @@
   "scripts": {
     "test": "jest",
     "tsc": "tsc --noEmit",
-    "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override"
+    "format":
+      "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
+    "remotedev": "remotedev --hostname=localhost --port=8000"
   },
   "repository": {
     "type": "git",
@@ -23,9 +25,12 @@
   "devDependencies": {
     "@types/jest": "^22.2.0",
     "@types/node": "^9.4.6",
+    "@types/remote-redux-devtools": "^0.5.2",
     "@types/url-search-params": "^0.10.1",
     "jest": "^22.4.2",
     "prettier": "^1.10.2",
+    "remote-redux-devtools": "^0.5.12",
+    "remotedev-server": "^0.2.4",
     "ts-jest": "^22.4.1",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.8.0",
@@ -43,13 +48,7 @@
     "url-search-params": "^0.10.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "ts",
-      "tsx"
-    ],
+    "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
     "transform": {
       "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },

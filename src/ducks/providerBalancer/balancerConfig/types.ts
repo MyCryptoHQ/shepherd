@@ -1,4 +1,5 @@
 import { ProviderBalancerState } from '@src/ducks/providerBalancer';
+import { Omit } from '@src/types';
 
 export enum BALANCER {
   NETWORK_SWTICH_REQUESTED = 'BALANCER_NETWORK_SWTICH_REQUESTED',
@@ -12,6 +13,10 @@ export enum BALANCER {
   ONLINE = 'BALANCER_ONLINE',
 }
 
+export type BalancerConfigInitConfig = Partial<
+  Omit<BalancerConfigState, 'offline'>
+>;
+
 export interface BalancerConfigState {
   network: string;
   manual: false | string;
@@ -21,6 +26,7 @@ export interface BalancerConfigState {
 
 export interface BalancerInitAction {
   type: BALANCER.INIT;
+  payload: BalancerConfigInitConfig;
 }
 
 export interface BalancerFlushAction {
@@ -66,6 +72,7 @@ export interface BalancerManualAction {
 }
 
 export type BalancerAction =
+  | BalancerInitAction
   | BalancerOfflineAction
   | BalancerOnlineAction
   | BalancerFlushAction

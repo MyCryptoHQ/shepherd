@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es6",
+    "target": "esnext",
     "sourceMap": true,
     "strictNullChecks": true,
     "module": "es2015",
-    "allowJs": true,
+    "allowJs": false,
     "baseUrl": "./",
     "lib": ["esnext", "dom"],
     "allowSyntheticDefaultImports": true,

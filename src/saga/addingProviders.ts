@@ -6,10 +6,12 @@ import {
   put,
   apply,
   race,
+  fork,
 } from 'redux-saga/effects';
 import {
   IProviderStats,
   providerAdded,
+  providerOffline,
 } from '@src/ducks/providerBalancer/providerStats';
 import {
   IProviderCall,
@@ -25,13 +27,22 @@ import {
   AddProviderConfigAction,
   IProviderConfig,
 } from '@src/ducks/providerConfigs';
-import { checkProviderConnectivity } from '@src/saga/providerHealth';
+import {
+  checkProviderConnectivity,
+  watchOfflineProvider,
+} from '@src/saga/providerHealth';
 import { IProvider } from '@src/types';
 import { providerStorage } from '@src/providers';
+import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 
 export function* handleAddingProvider({
   payload: { config, id },
 }: AddProviderConfigAction) {
+  const network: string = yield select(getNetwork);
+  if (network !== config.network) {
+    return;
+  }
+
   const res: {
     providerId: string;
     stats: IProviderStats;
@@ -71,6 +82,9 @@ export function* handleAddingProviderHelper(
     currWorkersById: [],
     requestFailures: 0,
   };
+  if (!providerIsOnline) {
+    yield spawn(watchOfflineProvider, providerOffline({ providerId }));
+  }
 
   const providerChannel: Channel<IProviderCall> = yield call(
     channel,

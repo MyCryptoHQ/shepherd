@@ -14,7 +14,7 @@ const providerCallDispatcher = (() => {
       // allow all providers for now
       const providerCall: IProviderCall = {
         callId: ++callId,
-        numOfTimeouts: 0,
+        numOfRetries: 0,
         rpcArgs,
         rpcMethod,
         minPriorityProviderList: [],

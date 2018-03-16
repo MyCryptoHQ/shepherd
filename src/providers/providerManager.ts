@@ -12,13 +12,14 @@ export function addProvider(
 
 export function useProvider(
   providerName: string,
+  instanceName: string,
   config: IProviderConfig,
   ...args: any[]
 ) {
   const Provider = providerStorage.getClass(providerName);
   const provider = new Provider(...args);
-  providerStorage.setInstance(providerName, provider);
-  const action = addProviderConfig({ config: config, id: providerName });
+  providerStorage.setInstance(instanceName, provider);
+  const action = addProviderConfig({ config: config, id: instanceName });
   store.dispatch(action);
   return config;
 }
