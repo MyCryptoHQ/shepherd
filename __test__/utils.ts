@@ -1,4 +1,4 @@
-import { DeepPartial, StrIdx } from '@src/types';
+import { DeepPartial } from '@src/types';
 import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
 import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { IProviderCall } from '@src/ducks/providerBalancer/providerCalls';
@@ -79,18 +79,4 @@ export const makeMockWorker = (options: Partial<IWorker> = {}): IWorker => {
     ...defaultWorker,
     ...options,
   };
-};
-
-export const makeMockWorkers = (
-  providerId: string,
-  concurrency: number,
-): StrIdx<IWorker> => {
-  const workers: StrIdx<IWorker> = {};
-  for (let i = 0; i < concurrency; i++) {
-    const workerId = `${providerId}_worker_${i}`;
-    workers[workerId] = makeMockWorker({
-      assignedProvider: providerId,
-    });
-  }
-  return workers;
 };
