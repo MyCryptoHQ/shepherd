@@ -1,7 +1,6 @@
 import { RootState } from '@src/ducks';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 import { ProviderStatsState } from '@src/ducks/providerBalancer/providerStats';
-import { Omit } from '@src/types';
 
 export const getProviderStats = (state: RootState) =>
   getProviderBalancer(state).providerStats;
@@ -10,10 +9,7 @@ export const getProviderStatsById = (state: RootState, id: string) =>
   getProviderStats(state)[id];
 
 export type OnlineProviders = {
-  [providerId in keyof ProviderStatsState]: Omit<
-    ProviderStatsState[providerId],
-    'isOffline'
-  > & {
+  [providerId in keyof ProviderStatsState]: ProviderStatsState[providerId] & {
     isOffline: false;
   }
 };
