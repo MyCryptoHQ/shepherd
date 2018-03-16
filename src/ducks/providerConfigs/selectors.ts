@@ -3,8 +3,8 @@ import RpcProvider from '@src/providers/rpc';
 
 export const getProviderConfigs = (state: RootState) => state.providerConfigs;
 
-export const getProviderConfigById = (state: RootState, id: string | null) =>
-  id ? getProviderConfigs(state)[id] : null;
+export const getProviderConfigById = (state: RootState, id: string) =>
+  getProviderConfigs(state)[id];
 
 export const providerSupportsMethod = (
   state: RootState,
