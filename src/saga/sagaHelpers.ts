@@ -51,10 +51,7 @@ function* handleCallTimeouts(action: ProviderCallTimeoutAction) {
   if (callFailed) {
     yield put(providerCallFailed({ error: error.message, providerCall }));
   } else {
-    const nextProviderCall: IProviderCall = createRetryCall(
-      providerCall,
-      providerId,
-    );
+    const nextProviderCall: IProviderCall = createRetryCall(providerCall);
     yield put(providerCallRequested(nextProviderCall));
   }
 }

@@ -1,4 +1,7 @@
-import { IProviderCall } from '@src/ducks/providerBalancer/providerCalls';
+import {
+  IProviderCall,
+  ProviderCallWithPid,
+} from '@src/ducks/providerBalancer/providerCalls';
 import {
   IProviderStats,
   ProcessedProvider,
@@ -8,16 +11,17 @@ import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { BalancerNetworkSwitchSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
 
 export const createRetryCall = (
-  currentCall: IProviderCall,
-  currentProvider: string,
+  currentCall: ProviderCallWithPid,
 ): IProviderCall => {
+  const { providerId } = currentCall;
+  const currMinList = currentCall.minPriorityProviderList;
+  const nextMinPriorityList = currMinList.includes(providerId)
+    ? currMinList
+    : [...currMinList, providerId];
+
   const nextCall = {
     ...currentCall,
-    // TODO: this can introduce duplicates
-    minPriorityProviderList: [
-      ...currentCall.minPriorityProviderList,
-      currentProvider,
-    ],
+    minPriorityProviderList: nextMinPriorityList,
     numOfRetries: ++currentCall.numOfRetries,
   };
 
@@ -27,7 +31,7 @@ export const createRetryCall = (
 export const addProviderIdToCall = (
   call: IProviderCall,
   providerId: string,
-) => ({
+): ProviderCallWithPid => ({
   ...call,
   providerId,
 });
