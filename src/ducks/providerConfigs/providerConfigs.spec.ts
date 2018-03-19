@@ -2,7 +2,7 @@ import { INITIAL_ROOT_STATE } from '@src/ducks';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { StrIdx } from '@src/types';
-import providerConfigReducer from './reducer';
+import { providerConfigs } from './reducer';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
 
 const states: StrIdx<any> = {};
@@ -49,18 +49,15 @@ describe('Provider config tests', () => {
         config: mockConfig,
       });
       const selector = selectors.getProviderConfigById;
-      states.providerConfigAdd = providerConfigReducer(
-        undefined as any,
-        action,
-      );
+      states.providerConfigAdd = providerConfigs(undefined as any, action);
       const state = stateAssigner(states.providerConfigAdd);
 
       expect(selector(state, 'mock1')).toEqual(mockConfig);
 
       //handle duplicates
-      expect(() =>
-        providerConfigReducer(states.providerConfigAdd, action),
-      ).toThrow('Provider config mock1 already exists');
+      expect(() => providerConfigs(states.providerConfigAdd, action)).toThrow(
+        'Provider config mock1 already exists',
+      );
     });
 
     it('should handle changing a provider config', () => {
@@ -70,7 +67,7 @@ describe('Provider config tests', () => {
       });
       const selector = selectors.getProviderConfigById;
 
-      states.providerConfigChange = providerConfigReducer(
+      states.providerConfigChange = providerConfigs(
         states.providerConfigAdd,
         action,
       );
@@ -82,7 +79,7 @@ describe('Provider config tests', () => {
       });
 
       //handle non existing config
-      expect(() => providerConfigReducer(undefined as any, action)).toThrow(
+      expect(() => providerConfigs(undefined as any, action)).toThrow(
         'Provider config mock1 does not exist',
       );
     });
@@ -94,7 +91,7 @@ describe('Provider config tests', () => {
       });
       const selector = selectors.getProviderConfigById;
 
-      states.providerConfigChange = providerConfigReducer(
+      states.providerConfigChange = providerConfigs(
         states.providerConfigAdd,
         action,
       );
@@ -112,7 +109,7 @@ describe('Provider config tests', () => {
     it('should handle removing a provider config', () => {
       const action = actions.removeProviderConfig({ id: 'mock1' });
       const selector = selectors.getProviderConfigById;
-      states.providerConfigRemove = providerConfigReducer(
+      states.providerConfigRemove = providerConfigs(
         states.providerConfigChange,
         action,
       );
@@ -122,7 +119,7 @@ describe('Provider config tests', () => {
 
       // handle non-existing config
 
-      expect(() => providerConfigReducer(undefined as any, action)).toThrow(
+      expect(() => providerConfigs(undefined as any, action)).toThrow(
         'Provider config mock1 does not exist',
       );
     });

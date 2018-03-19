@@ -20,6 +20,7 @@ const addAllProviderConfigs = (
 ) => {
   for (const [id, config] of Object.entries(configs)) {
     const action = providerConfigsActions.addProviderConfig({ id, config });
+
     _storage = rootReducer(_storage, action);
   }
   return _storage;
@@ -53,6 +54,7 @@ describe('Ducks tests', () => {
 
     it('should select providers that have the network of "ETH"', () => {
       storage = addAllProviderConfigs(storage, providers);
+      console.log(storage);
       expect(selector(storage)).toEqual({
         eth1: providers.eth1,
         eth2: providers.eth2,

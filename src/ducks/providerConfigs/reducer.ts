@@ -9,6 +9,7 @@ import {
 import { Reducer } from 'redux';
 
 export const INITIAL_STATE: ProviderConfigState = {};
+
 type PCReducer = Reducer<ProviderConfigState>;
 
 const handleProviderConfigAdd: PCReducer = (
@@ -56,10 +57,10 @@ const handleProviderConfigRemove: PCReducer = (
   return stateCopy;
 };
 
-const providerConfigs = (
+export const providerConfigs = (
   state: ProviderConfigState = INITIAL_STATE,
   action: ProviderConfigAction,
-) => {
+): ProviderConfigState => {
   switch (action.type) {
     case PROVIDER_CONFIG.ADD:
       return handleProviderConfigAdd(state, action);
@@ -72,5 +73,3 @@ const providerConfigs = (
       return state;
   }
 };
-
-export default providerConfigs;

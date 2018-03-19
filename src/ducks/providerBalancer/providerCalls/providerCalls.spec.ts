@@ -2,8 +2,8 @@ import { INITIAL_ROOT_STATE } from '@src/ducks';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { providerCallsReducer } from './reducer';
-import { IProviderCall } from './types';
 import { StrIdx } from '@src/types';
+import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
 
 const stateAssigner = (reducerResult: any) => {
   const stateCopy = JSON.parse(JSON.stringify(INITIAL_ROOT_STATE));
@@ -11,7 +11,7 @@ const stateAssigner = (reducerResult: any) => {
   return stateCopy;
 };
 
-export const mockCall: IProviderCall = {
+export const mockCall: ProviderCallWithPid = {
   callId: 0,
   minPriorityProviderList: [],
   numOfRetries: 0,

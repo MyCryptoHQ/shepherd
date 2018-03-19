@@ -199,7 +199,6 @@ describe('Worker tests', () => {
       const action = providerCallActions.providerCallTimeout({
         error: Error('nay'),
         providerCall: mockCall,
-        providerId: 'mock1',
       });
       const selector = selectors.getWorkerById;
       states.providerCallTimeout = workerReducer(

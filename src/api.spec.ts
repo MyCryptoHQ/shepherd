@@ -5,7 +5,7 @@ import { makeMockProviderConfig } from '@test/utils';
 import { createMockProxyHandler, MockProvider } from '@test/mockNode';
 jest.setTimeout(99999);
 describe('Api tests', () => {
-  it('should initialize', done => {
+  it.skip('should initialize', done => {
     const providerConfigs: StrIdx<IProviderConfig> = {
       eth1: makeMockProviderConfig({
         concurrency: 4,

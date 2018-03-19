@@ -5,6 +5,7 @@ import {
   makeWorkerId,
   makeWorker,
   makeRetVal,
+  makeProviderStats,
 } from './sagaUtils';
 import { promisify } from 'util';
 import { setTimeout } from 'timers';
@@ -12,8 +13,9 @@ import { makeMockCall } from '@test/utils';
 import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
 import { Task } from 'redux-saga';
 describe('Saga utils tests', () => {
+  const setTimeoutAsync = promisify(setTimeout);
+
   describe('trackTime tests', () => {
-    const setTimeoutAsync = promisify(setTimeout);
     it('should track one second', async () => {
       const timer = trackTime();
       await setTimeoutAsync(1000);
@@ -32,7 +34,7 @@ describe('Saga utils tests', () => {
       expectedCall.numOfRetries = 1;
       expect(createRetryCall(call)).toEqual(expectedCall);
     });
-    it('should not have duplcates in the minPriorityList', () => {
+    it('should not have duplicates in the minPriorityList', () => {
       const call: ProviderCallWithPid = makeMockCall({
         providerId: 'mock1',
         minPriorityProviderList: ['mock1'],
@@ -54,7 +56,18 @@ describe('Saga utils tests', () => {
     });
   });
 
-  describe('makeProviderStats', () => {});
+  describe('makeProviderStats', () => {
+    it('should create provider statistics based on average response time and online status', async () => {
+      const timer = trackTime();
+      await setTimeoutAsync(1000);
+      const offline = true;
+      const stats = makeProviderStats(timer, offline);
+      expect(stats.avgResponseTime).toBeGreaterThanOrEqual(1000);
+      expect(stats.isOffline).toEqual(true);
+      expect(stats.currWorkersById).toEqual([]);
+      expect(stats.requestFailures).toEqual(0);
+    });
+  });
 
   describe('makeWorkerId', () => {
     it('should make a workerId', () => {

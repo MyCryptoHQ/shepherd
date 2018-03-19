@@ -164,7 +164,6 @@ describe('Provider stats tests', () => {
     it('should handle a provider call timeout', () => {
       const action = providerCallActions.providerCallTimeout({
         error: Error('mock timeout'),
-        providerId: 'mock1',
         providerCall: mockCall,
       });
 
