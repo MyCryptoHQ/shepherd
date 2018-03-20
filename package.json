@@ -43,7 +43,6 @@
     "jsonschema": "^1.2.2",
     "randombytes": "^2.0.6",
     "redux": "^3.7.2",
-    "redux-devtools-extension": "2.13.2",
     "redux-saga": "^0.16.0",
     "url-search-params": "^0.10.0"
   },
