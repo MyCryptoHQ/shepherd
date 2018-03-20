@@ -1,5 +1,7 @@
 import { INITIAL_ROOT_STATE, rootReducer } from '@src/ducks';
 import * as actions from './actions';
+import * as providerCallActions from '../providerCalls/actions';
+import { mockCall } from '@src/ducks/providerBalancer/providerCalls/providerCalls.spec';
 import * as selectors from './selectors';
 
 describe('Balancer config tests', () => {
@@ -33,6 +35,16 @@ describe('Balancer config tests', () => {
   });
 
   describe('Action/Selector tests', () => {
+    it('should handle init', () => {
+      const action = actions.balancerInit({
+        network: 'ETC',
+        providerCallRetryThreshold: 5,
+      });
+      const state = rootReducer(undefined as any, action);
+      expect(selectors.getNetwork(state)).toEqual('ETC');
+      expect(selectors.getProviderCallRetryThreshold(state)).toEqual(5);
+    });
+
     it('should change the providerCallRetryThreshold to 4', () => {
       // TODO: check for negative thresholds
       const action = actions.balancerSetProviderCallRetryThreshold({
@@ -72,6 +84,21 @@ describe('Balancer config tests', () => {
       });
       const selector = selectors.getNetwork;
       expect(selector(rootReducer(undefined as any, action))).toEqual('ETC');
+    });
+
+    it('should handle callExceedsBalancerRetryThreshold selector', () => {
+      const selector = selectors.callMeetsBalancerRetryThreshold;
+      const call = { ...mockCall };
+      call.numOfRetries = 3;
+      const action = providerCallActions.providerCallTimeout({
+        error: Error('err'),
+        providerCall: call,
+      });
+
+      expect(selector(INITIAL_ROOT_STATE, action)).toEqual(true);
+
+      call.numOfRetries = 2;
+      expect(selector(INITIAL_ROOT_STATE, action)).toEqual(false);
     });
   });
 });

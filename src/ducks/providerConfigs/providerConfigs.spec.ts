@@ -4,6 +4,7 @@ import * as selectors from './selectors';
 import { StrIdx } from '@src/types';
 import { providerConfigs } from './reducer';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
+import { providerStorage } from '@src/providers';
 
 const states: StrIdx<any> = {};
 
@@ -121,6 +122,31 @@ describe('Provider config tests', () => {
 
       expect(() => providerConfigs(undefined as any, action)).toThrow(
         'Provider config mock1 does not exist',
+      );
+    });
+
+    it('should handle getting a provider timeout threshold', () => {
+      const state = stateAssigner(states.providerConfigAdd);
+      const selector = selectors.getProviderTimeoutThreshold;
+      expect(selector(state, 'mock1')).toEqual(1000);
+
+      // throw on undefined
+      expect(() => selector(state, 'mock12')).toThrow(
+        'Could not find config for provider mock12',
+      );
+    });
+
+    it('should get a provider instance and the timeout threshold', () => {
+      const state = stateAssigner(states.providerConfigAdd);
+      const selector = selectors.getProviderInstAndTimeoutThreshold;
+      providerStorage.setInstance('mock1', {} as any);
+      expect(selector(state, 'mock1')).toEqual({
+        provider: {},
+        timeoutThreshold: 1000,
+      });
+      // throw on undefined
+      expect(() => selector(state, 'mock12')).toThrow(
+        'mock12 instance does not exist in storage',
       );
     });
   });

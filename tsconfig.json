@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "esnext",
+    "target": "es2017",
     "sourceMap": true,
     "strictNullChecks": true,
     "module": "es2015",
     "allowJs": false,
     "baseUrl": "./",
-    "lib": ["esnext", "dom"],
+    "lib": ["es2017", "dom"],
     "allowSyntheticDefaultImports": true,
     "paths": {
       "@src*": ["src*"],

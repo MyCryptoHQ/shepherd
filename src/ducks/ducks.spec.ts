@@ -3,9 +3,9 @@ import * as providerConfigsActions from './providerConfigs/actions';
 import * as balancerConfigActions from './providerBalancer/balancerConfig/actions';
 import * as providerCallsActions from './providerBalancer/providerCalls/actions';
 import * as providerStatsActions from './providerBalancer/providerStats/actions';
+import * as workerActions from './providerBalancer/workers/actions';
 import { rootReducer } from '@src/ducks';
 import { StrIdx } from '@src/types';
-
 import {
   makeMockProviderConfig,
   makeMockStats,
@@ -446,6 +446,62 @@ describe('Ducks tests', () => {
         );
         expect(selector(storage, call)).toEqual('eth3');
       });
+    });
+  });
+
+  describe('providerExceedsRequestFailureThreshold', () => {
+    const selector = selectors.providerExceedsRequestFailureThreshold;
+
+    // setup a map of provider configs
+    const configs: StrIdx<IProviderConfig> = {
+      eth1: makeMockProviderConfig({
+        supportedMethods: { estimateGas: false },
+      }),
+      eth2: makeMockProviderConfig({ supportedMethods: { ping: false } }),
+      eth3: makeMockProviderConfig({
+        supportedMethods: { getTransactionCount: false },
+      }),
+      etc1: makeMockProviderConfig({ network: 'ETC' }),
+      exp1: makeMockProviderConfig({ network: 'EXP' }),
+    };
+
+    const call: any = makeMockCall({ providerId: 'eth2' });
+
+    const timeoutAction = providerCallsActions.providerCallTimeout({
+      error: Error(),
+      providerCall: call,
+    });
+
+    it('should return false', () => {
+      storage = undefined;
+      storage = addAllProviderConfigs(storage, configs);
+      //expect to throw
+      expect(() =>
+        selector(rootReducer(undefined as any, {} as any), timeoutAction),
+      ).toThrow('Could not find provider stats or config');
+
+      storage = addAllProviderStats(storage, Object.keys(configs));
+      const action1 = providerCallsActions.providerCallRequested(call);
+      storage = rootReducer(storage, action1);
+
+      storage = rootReducer(
+        storage,
+        workerActions.workerProcessing({
+          workerId: 'eth2_worker',
+          currentPayload: call,
+        }),
+      );
+
+      storage = rootReducer(storage, timeoutAction);
+      expect(selector(storage, timeoutAction)).toEqual(false);
+    });
+    it('should return true', () => {
+      const action = providerConfigsActions.changeProviderConfig({
+        id: 'eth2',
+        config: { requestFailureThreshold: 1 },
+      });
+      storage = rootReducer(storage, action);
+      expect(selector(storage, timeoutAction)).toEqual(true);
     });
   });
 });

@@ -4,12 +4,9 @@ import EtherscanProvider from '@src/providers/etherscan';
 import InfuraProvider from '@src/providers/infura';
 
 interface IProviderStorage {
-  setClass(
-    providerName: string,
-    Provider: IProviderContructor,
-  ): IProviderContructor;
+  setClass(providerName: string, Provider: IProviderContructor): void;
   getClass(providerName: string): IProviderContructor;
-  setInstance(providerName: string, provider: IProvider): IProvider;
+  setInstance(providerName: string, provider: IProvider): void;
   getInstance(providerName: string): IProvider;
 }
 
@@ -22,9 +19,13 @@ class ProviderStorage implements IProviderStorage {
   private instances: Partial<StrIdx<IProvider>>;
   private classes: Partial<StrIdx<IProviderContructor>>;
 
+  /**
+   * Sets the class
+   * @param providerName
+   * @param Provider
+   */
   public setClass(providerName: string, Provider: IProviderContructor) {
     this.classes[providerName] = Provider;
-    return Provider;
   }
 
   public getClass(providerName: string) {
@@ -37,7 +38,6 @@ class ProviderStorage implements IProviderStorage {
 
   public setInstance(providerName: string, provider: IProvider) {
     this.instances[providerName] = provider;
-    return provider;
   }
 
   public getInstance(providerName: string) {

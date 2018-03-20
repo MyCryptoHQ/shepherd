@@ -15,7 +15,24 @@ export const getPendingProviderCallsByProviderId = (
   const providerCallsArr = Object.values(providerCalls);
   const callsByProviderId = providerCallsArr.filter(
     providerCall =>
-      providerCall.providerId && providerCall.providerId === providerId,
+      providerCall.providerId &&
+      providerCall.providerId === providerId &&
+      providerCall.pending, // TODO: test this
+  );
+  return callsByProviderId.length;
+};
+
+export const getFinishedCallsByProviderId = (
+  state: RootState,
+  providerId: string,
+) => {
+  const providerCalls = getProviderCalls(state);
+  const providerCallsArr = Object.values(providerCalls);
+  const callsByProviderId = providerCallsArr.filter(
+    providerCall =>
+      providerCall.providerId &&
+      providerCall.providerId === providerId &&
+      !providerCall.pending, // TODO: test this
   );
   return callsByProviderId.length;
 };

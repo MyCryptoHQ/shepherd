@@ -18,6 +18,7 @@ import {
   getProviderStatsById,
 } from '@src/ducks/providerBalancer/providerStats';
 import { filterAgainstArr } from '@src/ducks/utils';
+import { allRPCMethods } from '@src/providers';
 
 export const providerExceedsRequestFailureThreshold = (
   state: RootState,
@@ -37,9 +38,12 @@ export const providerExceedsRequestFailureThreshold = (
   );
 };
 
-export const getAllProvidersOfCurrentNetwork = (state: RootState) => {
+export const getAllProvidersOfNetwork = (
+  state: RootState,
+  networkId: string,
+) => {
   const allProvidersOfNetworkId: StrIdx<IProviderConfig> = {};
-  const networkId = getNetwork(state);
+
   const providerConfigs = getProviderConfigs(state);
 
   return Object.entries(providerConfigs).reduce(
@@ -64,16 +68,6 @@ export const getOnlineProviderIdsOfCurrentNetwork = (state: RootState) => {
 };
 
 export const getAllMethodsAvailable = (state: RootState): boolean => {
-  const allMethods: (keyof RpcProvider)[] = [
-    'ping',
-    'sendCallRequest',
-    'getBalance',
-    'estimateGas',
-    'getTransactionCount',
-    'getCurrentBlock',
-    'sendRawTx',
-  ];
-
   const availableProviderIds = getOnlineProviderIdsOfCurrentNetwork(state);
 
   // goes through each available provider and reduces all of their
@@ -104,7 +98,7 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
   }
 
   // check that all methods are supported by the set of all available providers
-  return allMethods.reduce(
+  return allRPCMethods.reduce(
     (allAvailable, curMethod) => allAvailable && availableMethods[curMethod],
     true,
   );

@@ -26,7 +26,7 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
       const { baseDelay, failureRate } = args;
 
       const shouldFail = !!Math.floor(Math.random() + failureRate / 100);
-      const delayTime = baseDelay + Math.random() * 50;
+      const delayTime = baseDelay;
 
       const targetProperty = Reflect.get(target, propKey).bind(target);
       if (!targetProperty) {
@@ -35,13 +35,13 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
       }
 
       return () => {
-        const logPrefix = `MockProvider.${propKey.toString()}`;
+        // const logPrefix = `MockProvider.${propKey.toString()}`;
         if (shouldFail) {
-          console.log(`${logPrefix} Responding with failed call`);
+          //console.log(`${logPrefix} Responding with failed call`);
           return setTimeoutAsync(delayTime).then(() => false);
         }
 
-        console.log(`${logPrefix} Responding with delay time ${delayTime}`);
+        //console.log(`${logPrefix} Responding with delay time ${delayTime}`);
 
         return setTimeoutAsync(delayTime).then(targetProperty);
       };

@@ -21,3 +21,7 @@ Shepherd is built to have high configurability for users.
 * Set response time limit spent per call before declaring it as timed-out
 * Enable / disable available RPC-methods per provider to bias for or against certain provider infrastructures Ex. Disable estimate_gas for an Infura provider so that it'll never process them
 * Dynamically add or remove providers to the balancer configuration
+
+## On network switch
+
+On network switch, all pending calls and worker instances are cancelled

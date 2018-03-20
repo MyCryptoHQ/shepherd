@@ -1,15 +1,15 @@
 import { SagaIterator, buffers } from 'redux-saga';
-import { put, take, select, actionChannel } from 'redux-saga/effects';
+import { put, take, select, actionChannel, fork } from 'redux-saga/effects';
 import {
   ProviderCallRequestedAction,
   PROVIDER_CALL,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import { channels } from '@src/saga';
 import { getAvailableProviderId } from '@src/ducks/selectors';
+import { providerChannels } from '@src/saga/providerChannels';
 
-export function* handleProviderCallRequests(): SagaIterator {
+function* handleRequest(): SagaIterator {
   const requestChan = yield actionChannel(
     PROVIDER_CALL.REQUESTED,
     buffers.expanding(50),
@@ -27,7 +27,10 @@ export function* handleProviderCallRequests(): SagaIterator {
       payload,
     );
 
-    const providerChannel = channels[providerId];
+    const providerChannel = providerChannels.getChannel(providerId);
+    //console.log(`Putting request to provider ${providerId}`);
     yield put(providerChannel, payload);
   }
 }
+
+export const providerRequestWatcher = [fork(handleRequest)];

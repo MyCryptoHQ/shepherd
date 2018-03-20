@@ -70,11 +70,6 @@ describe('Provider stats tests', () => {
         ...mockProviderStats,
         isOffline: true,
       });
-
-      // check for non-existence
-      expect(() => providerStats(undefined as any, action)).toThrow(
-        'Provider mock1 does not exist',
-      );
     });
 
     it('should handle a provider going online', () => {

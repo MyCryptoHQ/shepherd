@@ -1,12 +1,17 @@
 import { RootState } from '@src/ducks';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
-import { ProviderStatsState } from '@src/ducks/providerBalancer/providerStats';
+import {
+  ProviderStatsState,
+  IProviderStats,
+} from '@src/ducks/providerBalancer/providerStats';
 
 export const getProviderStats = (state: RootState) =>
   getProviderBalancer(state).providerStats;
 
-export const getProviderStatsById = (state: RootState, id: string) =>
-  getProviderStats(state)[id];
+export const getProviderStatsById = (
+  state: RootState,
+  id: string,
+): Readonly<IProviderStats> | null => getProviderStats(state)[id];
 
 export type OnlineProviders = {
   [providerId in keyof ProviderStatsState]: ProviderStatsState[providerId] & {

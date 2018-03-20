@@ -10,22 +10,16 @@ import { store } from './ducks';
 // shepherd.switchNetworks(network)
 
 import { createProviderProxy, addProvider, useProvider } from './providers';
-import { IProvider, StrIdx, IProviderContructor } from '@src/types';
+import { StrIdx, IProviderContructor } from '@src/types';
 import {
   balancerInit,
   BalancerConfigInitConfig,
+  balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
 
 interface IInitConfig extends BalancerConfigInitConfig {
   customProviders?: StrIdx<IProviderContructor>;
-}
-
-export interface IExternalApi {
-  init: () => IProvider;
-  addProvider: typeof addProvider;
-  useProvider: typeof useProvider;
-  switchNetwork: (network: string) => void;
 }
 
 class Shepherd {
@@ -55,6 +49,11 @@ class Shepherd {
     ...args: any[]
   ) {
     useProvider(providerName, instanceName, config, ...args);
+  }
+
+  public switchNetworks(network: string) {
+    const action = balancerNetworkSwitchRequested({ network });
+    store.dispatch(action);
   }
 }
 

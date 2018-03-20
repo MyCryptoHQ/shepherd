@@ -20,7 +20,7 @@ describe('Saga utils tests', () => {
       const timer = trackTime();
       await setTimeoutAsync(1000);
       const time = timer.end();
-      expect(time).toBeGreaterThanOrEqual(1000);
+      expect(time).toBeGreaterThanOrEqual(900);
     });
   });
   describe('createRetryCall', () => {
@@ -62,7 +62,7 @@ describe('Saga utils tests', () => {
       await setTimeoutAsync(1000);
       const offline = true;
       const stats = makeProviderStats(timer, offline);
-      expect(stats.avgResponseTime).toBeGreaterThanOrEqual(1000);
+      expect(stats.avgResponseTime).toBeGreaterThanOrEqual(900);
       expect(stats.isOffline).toEqual(true);
       expect(stats.currWorkersById).toEqual([]);
       expect(stats.requestFailures).toEqual(0);

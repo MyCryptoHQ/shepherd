@@ -6,6 +6,12 @@ import {
   ProviderCallAction,
   PROVIDER_CALL,
 } from './types';
+import {
+  WORKER,
+  WorkerProcessingAction,
+  WorkerAction,
+} from '@src/ducks/providerBalancer/workers';
+import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
 
 const handleProviderCallSucceeded = (
   state: ProviderCallsState,
@@ -52,7 +58,12 @@ const handleProviderCallPending = (
   { payload }: ProviderCallRequestedAction,
 ): ProviderCallsState => {
   const call = state[payload.callId];
-  if (call) {
+
+  // a duplicate check that makes sure the incoming call is either new or a retry call
+  if (
+    (call && call.numOfRetries) ||
+    (call && call.numOfRetries === payload.numOfRetries)
+  ) {
     throw Error('Provider call already exists');
   }
   return {
@@ -61,15 +72,34 @@ const handleProviderCallPending = (
   };
 };
 
+const handleWorkerProcessing = (
+  state: ProviderCallsState,
+  { payload: { currentPayload } }: WorkerProcessingAction,
+) => {
+  const prevPayload = state[currentPayload.callId];
+  if (!prevPayload || !prevPayload.pending) {
+    throw Error('Pending provider call not found');
+  }
+
+  const nextPayload = { ...prevPayload, providerId: currentPayload.providerId };
+
+  return {
+    ...state,
+    [currentPayload.callId]: nextPayload,
+  };
+};
+
 const INITIAL_STATE: ProviderCallsState = {};
 
 export const providerCallsReducer = (
   state: ProviderCallsState = INITIAL_STATE,
-  action: ProviderCallAction,
+  action: ProviderCallAction | WorkerAction,
 ) => {
   switch (action.type) {
     case PROVIDER_CALL.REQUESTED:
       return handleProviderCallPending(state, action);
+    case WORKER.PROCESSING:
+      return handleWorkerProcessing(state, action);
     case PROVIDER_CALL.SUCCEEDED:
       return handleProviderCallSucceeded(state, action);
     case PROVIDER_CALL.FAILED:

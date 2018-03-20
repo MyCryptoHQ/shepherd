@@ -6,6 +6,7 @@ import {
   getProviderCallById,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { store } from '@src/ducks';
+import { allRPCMethods } from '@src/providers';
 
 const providerCallDispatcher = (() => {
   let callId = 0;
@@ -19,7 +20,6 @@ const providerCallDispatcher = (() => {
         rpcMethod,
         minPriorityProviderList: [],
       };
-
       // make the request to the load balancer
       const networkReq = providerCallRequested(providerCall);
       store.dispatch(networkReq);
@@ -42,7 +42,7 @@ const providerCallDispatcher = (() => {
 
 const handler: ProxyHandler<IProvider> = {
   get: (target, methodName: keyof RpcProvider) => {
-    if (!Object.getOwnPropertyNames(target).includes(methodName)) {
+    if (!allRPCMethods.includes(methodName)) {
       return target[methodName];
     }
     return providerCallDispatcher(methodName);

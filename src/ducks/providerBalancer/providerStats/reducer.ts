@@ -118,7 +118,8 @@ const handleProviderOffline: NReducer<ProviderStatsOfflineAction> = (
   // check for existence of provider
   const providerToChange = state[providerId];
   if (!providerToChange) {
-    throw Error(`Provider ${providerId} does not exist`);
+    // done for initialization phase
+    return state;
   }
 
   return {
