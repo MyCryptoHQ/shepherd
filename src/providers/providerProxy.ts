@@ -3,42 +3,100 @@ import RpcProvider from './rpc';
 import {
   IProviderCall,
   providerCallRequested,
-  getProviderCallById,
+  PROVIDER_CALL,
+  ProviderCallAction,
+  ProviderCallFailedAction,
+  ProviderCallSucceededAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { store } from '@src/ducks';
 import { allRPCMethods } from '@src/providers';
+import { subscribeToAction } from '@src/saga/watchers/watchActionSubscription';
+import { WorkerAction } from '@src/ducks/providerBalancer/workers';
+import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
+import { ProviderConfigAction } from '@src/ducks/providerConfigs';
+import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig';
 
-const providerCallDispatcher = (() => {
+const triggerOnMatchingCallId = (callId: number) => (
+  action:
+    | ProviderCallAction
+    | WorkerAction
+    | ProviderStatsAction
+    | ProviderConfigAction
+    | BalancerAction,
+) => {
+  // check if the action is a provider failed or succeeded call
+  if (
+    action.type === PROVIDER_CALL.FAILED ||
+    action.type === PROVIDER_CALL.SUCCEEDED
+  ) {
+    // make sure its the same call
+    return action.payload.providerCall.callId === callId;
+  }
+};
+
+type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
+type Reject = (reason?: any) => void;
+
+const respondToCallee = (resolve: Resolve, reject: Reject) => (
+  action: ProviderCallFailedAction | ProviderCallSucceededAction,
+) => {
+  if (action.type === PROVIDER_CALL.FAILED) {
+    console.error('Request failed');
+    console.error(action);
+
+    reject(action.payload.error);
+  } else {
+    resolve(action.payload.result);
+  }
+};
+
+const generateCallId = (() => {
   let callId = 0;
-  return (rpcMethod: keyof RpcProvider) => (...rpcArgs: string[]) =>
-    new Promise((resolve, reject) => {
-      // allow all providers for now
-      const providerCall: IProviderCall = {
-        callId: ++callId,
-        numOfRetries: 0,
-        rpcArgs,
-        rpcMethod,
-        minPriorityProviderList: [],
-      };
-      // make the request to the load balancer
-      const networkReq = providerCallRequested(providerCall);
-      store.dispatch(networkReq);
-
-      const unsubscribe = store.subscribe(() => {
-        const state = store.getState();
-        const providerCall = getProviderCallById(
-          state,
-          networkReq.payload.callId,
-        );
-        if (providerCall && !providerCall.pending) {
-          providerCall.result
-            ? resolve(providerCall.result)
-            : reject(providerCall.error);
-          return unsubscribe();
-        }
-      });
-    });
+  return () => {
+    const currValue = callId;
+    callId += 1;
+    return currValue;
+  };
 })();
+
+const makeProviderCall = (
+  rpcMethod: keyof RpcProvider,
+  rpcArgs: string[],
+): IProviderCall => {
+  // allow all providers for now
+  const providerCall: IProviderCall = {
+    callId: generateCallId(),
+    numOfRetries: 0,
+    rpcArgs,
+    rpcMethod,
+    minPriorityProviderList: [],
+  };
+
+  return providerCall;
+};
+
+const dispatchRequest = (providerCall: IProviderCall) => {
+  // make the request to the load balancer
+  const networkReq = providerCallRequested(providerCall);
+  store.dispatch(networkReq);
+  return networkReq.payload.callId;
+};
+
+const waitForResponse = (callId: number) =>
+  new Promise((resolve, reject) =>
+    subscribeToAction({
+      trigger: triggerOnMatchingCallId(callId),
+      callback: respondToCallee(resolve, reject),
+    }),
+  );
+
+const providerCallDispatcher = (rpcMethod: keyof RpcProvider) => (
+  ...rpcArgs: string[]
+) => {
+  const providerCall = makeProviderCall(rpcMethod, rpcArgs);
+  const callId = dispatchRequest(providerCall);
+  return waitForResponse(callId);
+};
 
 const handler: ProxyHandler<IProvider> = {
   get: (target, methodName: keyof RpcProvider) => {

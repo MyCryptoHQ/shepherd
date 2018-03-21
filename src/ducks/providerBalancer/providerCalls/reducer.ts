@@ -60,10 +60,8 @@ const handleProviderCallPending = (
   const call = state[payload.callId];
 
   // a duplicate check that makes sure the incoming call is either new or a retry call
-  if (
-    (call && call.numOfRetries) ||
-    (call && call.numOfRetries === payload.numOfRetries)
-  ) {
+  if (call && call.numOfRetries === payload.numOfRetries) {
+    console.error(call, payload);
     throw Error('Provider call already exists');
   }
   return {

@@ -10,31 +10,49 @@ import { store } from './ducks';
 // shepherd.switchNetworks(network)
 
 import { createProviderProxy, addProvider, useProvider } from './providers';
-import { StrIdx, IProviderContructor } from '@src/types';
+import { IProviderContructor } from '@src/types';
 import {
   balancerInit,
-  BalancerConfigInitConfig,
   balancerNetworkSwitchRequested,
+  BALANCER,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
+import { IInitConfig, IShepherd } from '@src/types/api';
+import { subscribeToAction } from '@src/saga/watchers/watchActionSubscription';
 
-interface IInitConfig extends BalancerConfigInitConfig {
-  customProviders?: StrIdx<IProviderContructor>;
+function waitForNetworkSwitch() {
+  return new Promise(res => {
+    subscribeToAction({
+      trigger: BALANCER.NETWORK_SWITCH_SUCCEEDED,
+      callback: res,
+    });
+  });
 }
 
-class Shepherd {
-  public init(config: IInitConfig = {}) {
-    if (config.customProviders) {
+class Shepherd implements IShepherd {
+  public async init({ customProviders, ...config }: IInitConfig = {}) {
+    if (customProviders) {
       for (const [customProviderName, Provider] of Object.entries(
-        config.customProviders,
+        customProviders,
       )) {
         addProvider(customProviderName, Provider);
       }
     }
 
+    if (!config.network) {
+      config.network = 'ETH';
+    }
+    if (!config.manual) {
+      config.manual = false;
+    }
+    if (!config.providerCallRetryThreshold) {
+      config.providerCallRetryThreshold = 3;
+    }
     const node = createProviderProxy();
+    const promise = waitForNetworkSwitch();
 
     store.dispatch(balancerInit(config));
+    await promise;
     return node;
   }
 
@@ -51,9 +69,11 @@ class Shepherd {
     useProvider(providerName, instanceName, config, ...args);
   }
 
-  public switchNetworks(network: string) {
+  public async switchNetworks(network: string) {
+    const promise = waitForNetworkSwitch();
     const action = balancerNetworkSwitchRequested({ network });
     store.dispatch(action);
+    await promise;
   }
 }
 

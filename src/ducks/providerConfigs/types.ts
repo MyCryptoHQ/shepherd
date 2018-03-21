@@ -1,6 +1,12 @@
 import RpcProvider from '@src/providers/rpc';
 import { DeepPartial } from '@src/types';
 
+export enum PROVIDER_CONFIG {
+  ADD = 'PROVIDER_CONFIG_ADD',
+  CHANGE = 'PROVIDER_CONFIG_CHANGE',
+  REMOVE = 'PROVIDER_CONFIG_REMOVE',
+}
+
 export interface IProviderConfig {
   concurrency: number;
   requestFailureThreshold: number;
@@ -10,12 +16,6 @@ export interface IProviderConfig {
 }
 
 export type ProviderConfigState = { [key: string]: IProviderConfig };
-
-export enum PROVIDER_CONFIG {
-  ADD = 'PROVIDER_CONFIG_ADD',
-  CHANGE = 'PROVIDER_CONFIG_CHANGE',
-  REMOVE = 'PROVIDER_CONFIG_REMOVE',
-}
 
 export interface AddProviderConfigAction {
   type: PROVIDER_CONFIG.ADD;

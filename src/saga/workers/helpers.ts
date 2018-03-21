@@ -11,7 +11,6 @@ import {
   IProviderCall,
   providerCallSucceeded,
   providerCallTimeout,
-  getPendingProviderCallsByProviderId,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { workerProcessing } from '@src/ducks/providerBalancer/workers';
 import {
@@ -21,7 +20,7 @@ import {
 } from '@src/saga/sagaUtils';
 import { providerChannels } from '@src/saga/providerChannels';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
-import { delay, Channel } from 'redux-saga';
+import { delay } from 'redux-saga';
 import { IProvider } from '@src/types';
 
 function* sendRequestToProvider(
@@ -53,11 +52,9 @@ function* sendRequestToProvider(
   }
 }
 
-function* processRequest(
-  providerId: string,
-  workerId: string,
-  chan: Channel<IProviderCall>,
-) {
+function* processRequest(providerId: string, workerId: string) {
+  const chan = providerChannels.getChannel(providerId);
+
   // take from the assigned action channel
   const payload: IProviderCall = yield take(chan);
   const { rpcArgs, rpcMethod } = payload;
@@ -65,10 +62,6 @@ function* processRequest(
 
   // after taking a request, declare processing state
   yield put(workerProcessing({ currentPayload: callWithPid, workerId }));
-
-  //console.log(
-  //  `${workerId} processing request -- pending calls:  ${pendingCalls}`,
-  //);
 
   const { result, error } = yield call(
     sendRequestToProvider,
@@ -78,15 +71,13 @@ function* processRequest(
   );
 
   if (result) {
-    //    console.log(`${workerId} finished request`);
-
     const action = providerCallSucceeded({
       result,
       providerCall: callWithPid,
     });
     return yield put(action);
   } else {
-    console.log(`${workerId} failed request`);
+    console.log(`${workerId} failed request ${payload.callId}`);
 
     const action = providerCallTimeout({
       providerCall: callWithPid,
@@ -96,21 +87,15 @@ function* processRequest(
   }
 }
 
-function* processIncomingRequests(
-  thisId: string,
-  providerId: string,
-  chan: Channel<IProviderCall>,
-) {
+function* processIncomingRequests(thisId: string, providerId: string) {
   while (true) {
-    yield call(processRequest, providerId, thisId, chan);
+    yield call(processRequest, providerId, thisId);
   }
 }
 
 export function* createWorker(thisId: string, providerId: string) {
   try {
-    const chan = providerChannels.getChannel(providerId);
-
-    yield call(processIncomingRequests, thisId, providerId, chan);
+    yield call(processIncomingRequests, thisId, providerId);
   } catch (e) {
     console.error(`${thisId} as errored with ${e.message}`);
   } finally {

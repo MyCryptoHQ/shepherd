@@ -65,15 +65,16 @@ describe('Provider calls tests ', () => {
     it('should handle a successful call request', () => {
       const action = actions.providerCallSucceeded({
         result: 'Success',
-        providerCall: mockCall,
+        providerCall: { ...mockCall, providerId: 'mock1' },
       });
       const selector1 = selectors.getPendingProviderCallsByProviderId;
       const selector2 = selectors.getProviderCallById;
+
       states.success = stateAssigner(
         providerCallsReducer(states.pendingCallRequest, action),
       );
 
-      expect(selector1(states.success, 'mock1')).toEqual(1);
+      expect(selector1(states.success, 'mock1')).toEqual(0);
       expect(selector2(states.success, 0)).toEqual({
         ...mockCall,
         error: null,
@@ -92,7 +93,7 @@ describe('Provider calls tests ', () => {
       const state = stateAssigner(
         providerCallsReducer(states.pendingCallRequest, action),
       );
-      expect(selector1(state, 'mock1')).toEqual(1);
+      expect(selector1(state, 'mock1')).toEqual(0);
       expect(selector2(state, 0)).toEqual({
         ...mockCall,
         error: 'failed',

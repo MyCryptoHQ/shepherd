@@ -36,9 +36,11 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
 
       return () => {
         // const logPrefix = `MockProvider.${propKey.toString()}`;
-        if (shouldFail) {
-          //console.log(`${logPrefix} Responding with failed call`);
-          return setTimeoutAsync(delayTime).then(() => false);
+        if (shouldFail && propKey.toString() !== 'getCurrentBlock') {
+          // console.log(`${logPrefix} Responding with failed call`);
+          return setTimeoutAsync(delayTime).then(() => {
+            throw Error('mock node error');
+          });
         }
 
         //console.log(`${logPrefix} Responding with delay time ${delayTime}`);

@@ -15,10 +15,12 @@ export function* checkProviderConnectivity(providerId: string) {
       to: call(delay, 5000),
     });
 
+    lb && console.log(`${providerId} online`);
+    !lb && console.log(`${providerId} offline`);
     return !!lb;
   } catch (error) {
     console.info(error);
   }
-
+  console.log(`${providerId} offline`);
   return false;
 }

@@ -1,13 +1,7 @@
 import { RootState } from '@src/ducks';
-import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
+import { getProviderCalls } from '@src/ducks/providerBalancer/providerCalls';
 
-export const getProviderCalls = (state: RootState) =>
-  getProviderBalancer(state).providerCalls;
-
-export const getProviderCallById = (state: RootState, id: number) =>
-  getProviderCalls(state)[id];
-
-export const getPendingProviderCallsByProviderId = (
+export const getFinishedCallsByProviderId = (
   state: RootState,
   providerId: string,
 ) => {
@@ -17,7 +11,7 @@ export const getPendingProviderCallsByProviderId = (
     providerCall =>
       providerCall.providerId &&
       providerCall.providerId === providerId &&
-      providerCall.pending, // TODO: test this
+      !providerCall.pending, // TODO: test this
   );
   return callsByProviderId.length;
 };

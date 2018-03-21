@@ -50,34 +50,20 @@ describe('Ducks tests', () => {
       etc1: makeMockProviderConfig({ network: 'ETC' }),
       exp1: makeMockProviderConfig({ network: 'EXP' }),
     };
-    const selector = selectors.getAllProvidersOfCurrentNetwork;
+    const selector = selectors.getAllProvidersOfNetwork;
 
     it('should select providers that have the network of "ETH"', () => {
       storage = addAllProviderConfigs(storage, providers);
-      console.log(storage);
-      expect(selector(storage)).toEqual({
+      expect(selector(storage, 'ETH')).toEqual({
         eth1: providers.eth1,
         eth2: providers.eth2,
       });
     });
     it('should select providers that have the network of "ETC"', () => {
-      const action = balancerConfigActions.balancerNetworkSwitchSucceeded({
-        providerStats: {},
-        workers: {},
-        network: 'ETC',
-      });
-
-      storage = rootReducer(storage, action);
-      expect(selector(storage)).toEqual({ etc1: providers.etc1 });
+      expect(selector(storage, 'ETC')).toEqual({ etc1: providers.etc1 });
     });
     it('should select no providers', () => {
-      const action = balancerConfigActions.balancerNetworkSwitchSucceeded({
-        network: 'BLA',
-        providerStats: {},
-        workers: {},
-      });
-      storage = rootReducer(storage, action);
-      expect(selector(storage)).toEqual({});
+      expect(selector(storage, 'BLA')).toEqual({});
     });
   });
 

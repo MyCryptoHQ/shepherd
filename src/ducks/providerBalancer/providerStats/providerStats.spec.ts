@@ -70,6 +70,14 @@ describe('Provider stats tests', () => {
         ...mockProviderStats,
         isOffline: true,
       });
+
+      // returns original state on no provider
+      expect(
+        providerStats(
+          states.providerAdded,
+          statsActions.providerOffline({ providerId: 'blabla' }),
+        ),
+      ).toEqual(states.providerAdded);
     });
 
     it('should handle a provider going online', () => {
