@@ -12,14 +12,14 @@ import { PROVIDER_STATS } from '@src/ducks/providerBalancer/providerStats';
 function* setBalancerOnlineState(): SagaIterator {
   // check if all methods are available after this provider is online
   const isAllMethodsAvailable: boolean = yield select(getAllMethodsAvailable);
+  const offline: boolean = yield select(isOffline);
 
   // if they are, put app in online state
-  if (isAllMethodsAvailable) {
+  if (isAllMethodsAvailable && offline) {
     return yield put(setOnline());
   }
 
-  const offline: boolean = yield select(isOffline);
-  if (!offline) {
+  if (!isAllMethodsAvailable && !offline) {
     return yield put(setOffline());
   }
 }
