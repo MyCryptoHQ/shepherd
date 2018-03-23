@@ -9,6 +9,11 @@ import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
 
 export function* pollProviderUntilConnected(providerId: string): SagaIterator {
   while (true) {
+    console.log(`Polling ${providerId} to see if its online...`);
+
+    console.log('waiting 5 seconds');
+    yield call(delay, 5000);
+
     const connected: boolean = yield call(
       checkProviderConnectivity,
       providerId,
@@ -16,7 +21,6 @@ export function* pollProviderUntilConnected(providerId: string): SagaIterator {
     if (connected) {
       return true;
     }
-    yield call(delay, 5000);
   }
 }
 
