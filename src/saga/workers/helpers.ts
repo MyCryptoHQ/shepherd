@@ -13,11 +13,7 @@ import {
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { workerProcessing } from '@src/ducks/providerBalancer/workers';
-import {
-  addProviderIdToCall,
-  createInternalError,
-  makeRetVal,
-} from '@src/saga/sagaUtils';
+import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
 import { providerChannels } from '@src/saga/providerChannels';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
 import { delay } from 'redux-saga';
@@ -41,13 +37,12 @@ function* sendRequestToProvider(
     });
 
     if (!result) {
-      const error = createInternalError(`Request timed out for ${providerId}`);
+      const error = Error(`Request timed out for ${providerId}`);
       return makeRetVal(error);
     }
 
     return makeRetVal(null, result);
   } catch (error) {
-    error.name += 'NetworkError_';
     return makeRetVal(error);
   }
 }

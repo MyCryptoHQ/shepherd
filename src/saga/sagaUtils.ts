@@ -66,16 +66,6 @@ export const makeWorker = (providerId: string, task: Task): IWorker => ({
   task,
 });
 
-/**
- * @description used to differentiate between errors from worker code vs a network call error
- * @param message
- */
-export const createInternalError = (message: string) => {
-  const e = Error(message);
-  e.name = 'InternalError';
-  return e;
-};
-
 type NetworkPayload = BalancerNetworkSwitchSucceededAction['payload'];
 
 export const reduceProcessedProviders = (
