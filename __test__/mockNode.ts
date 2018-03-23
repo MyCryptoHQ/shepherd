@@ -1,5 +1,5 @@
-import { promisify } from 'util';
 import { setTimeout } from 'timers';
+import { promisify } from 'util';
 
 interface IMockProxyHandlerArgs {
   failDelay?: number;
@@ -28,13 +28,10 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
 
       const targetProperty = Reflect.get(target, propKey).bind(target);
       if (!targetProperty) {
-        console.log('hi');
         return targetProperty;
       }
 
       return () => {
-        // const logPrefix = `MockProvider.${propKey.toString()}`;
-
         if (
           numberOfFailuresBeforeConnection &&
           numberOfFailuresBeforeConnection !== numFailed
@@ -44,7 +41,6 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
             throw Error('mock node error');
           });
         } else if (shouldFail && propKey.toString() !== 'getCurrentBlock') {
-          // console.log(`${logPrefix} Responding with failed call`);
           return setTimeoutAsync(failDelay || delayTime).then(() => {
             throw Error('mock node error');
           });
@@ -55,7 +51,6 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
             targetProperty,
           );
         }
-        //console.log(`${logPrefix} Responding with delay time ${delayTime}`);
 
         return setTimeoutAsync(delayTime).then(targetProperty);
       };

@@ -1,6 +1,6 @@
 import { RootState } from '@src/ducks';
-import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 import { PendingProviderCall } from '@src/ducks/providerBalancer/providerCalls';
+import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 
 export const getProviderCalls = (state: RootState) =>
   getProviderBalancer(state).providerCalls;

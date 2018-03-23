@@ -1,22 +1,22 @@
-import { IProvider } from '@src/types';
-import RpcProvider from './rpc';
+import { store } from '@src/ducks';
+import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig';
+import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   IProviderCall,
-  providerCallRequested,
   PROVIDER_CALL,
   ProviderCallAction,
   ProviderCallFailedAction,
-  ProviderCallSucceededAction,
   ProviderCallFlushedAction,
+  providerCallRequested,
+  ProviderCallSucceededAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { store } from '@src/ducks';
+import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
+import { WorkerAction } from '@src/ducks/providerBalancer/workers';
+import { ProviderConfigAction } from '@src/ducks/providerConfigs';
 import { allRPCMethods } from '@src/providers';
 import { subscribeToAction } from '@src/saga/watchers/watchActionSubscription';
-import { WorkerAction } from '@src/ducks/providerBalancer/workers';
-import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
-import { ProviderConfigAction } from '@src/ducks/providerConfigs';
-import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig';
-import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import { IProvider } from '@src/types';
+import RpcProvider from './rpc';
 
 const triggerOnMatchingCallId = (callId: number) => (
   action:
@@ -46,19 +46,10 @@ const respondToCallee = (resolve: Resolve, reject: Reject) => (
     | ProviderCallSucceededAction
     | ProviderCallFlushedAction,
 ) => {
-  if (action.type === PROVIDER_CALL.FLUSHED) {
-    console.error('Request flushed');
-    console.error(action);
-
-    reject(Error(action.payload.error));
-  } else if (action.type === PROVIDER_CALL.FAILED) {
-    console.error('Request failed');
-    console.error(action);
-
-    reject(Error(action.payload.error));
-  } else {
-    console.error('Request successful');
+  if (action.type === PROVIDER_CALL.SUCCEEDED) {
     resolve(action.payload.result);
+  } else {
+    reject(Error(action.payload.error));
   }
 };
 

@@ -1,10 +1,10 @@
 import {
-  ProviderCallRequestedAction,
   PROVIDER_CALL,
-  ProviderCallTimeoutAction,
   ProviderCallFailedAction,
-  ProviderCallSucceededAction,
   ProviderCallFlushedAction,
+  ProviderCallRequestedAction,
+  ProviderCallSucceededAction,
+  ProviderCallTimeoutAction,
 } from './types';
 
 export const providerCallRequested = (

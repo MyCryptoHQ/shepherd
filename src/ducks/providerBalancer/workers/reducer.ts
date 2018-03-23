@@ -1,28 +1,28 @@
 import {
-  ProviderCallSucceededAction,
-  ProviderCallTimeoutAction,
-  ProviderCallAction,
-  PROVIDER_CALL,
-} from '../providerCalls/types';
+  PROVIDER_STATS,
+  ProviderStatsAction,
+  ProviderStatsAddedAction,
+} from '@src/ducks/providerBalancer/providerStats';
 import { Reducer } from 'redux';
 import {
-  BalancerNetworkSwitchSucceededAction,
-  BalancerAction,
   BALANCER,
+  BalancerAction,
+  BalancerNetworkSwitchSucceededAction,
 } from '../balancerConfig/types';
 import {
+  PROVIDER_CALL,
+  ProviderCallAction,
+  ProviderCallSucceededAction,
+  ProviderCallTimeoutAction,
+} from '../providerCalls/types';
+import {
+  WORKER,
+  WorkerAction,
   WorkerKilledAction,
   WorkerProcessingAction,
-  WorkerAction,
-  WORKER,
   WorkerSpawnedAction,
 } from '../workers/types';
 import { WorkerState } from './types';
-import {
-  ProviderStatsAddedAction,
-  PROVIDER_STATS,
-  ProviderStatsAction,
-} from '@src/ducks/providerBalancer/providerStats';
 
 type WReducer = Reducer<WorkerState>;
 const INITIAL_STATE: WorkerState = {};

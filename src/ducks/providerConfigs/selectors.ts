@@ -1,6 +1,6 @@
 import { RootState } from '@src/ducks';
-import RpcProvider from '@src/providers/rpc';
 import { providerStorage } from '@src/providers';
+import RpcProvider from '@src/providers/rpc';
 
 export const getProviderConfigs = (state: RootState) => state.providerConfigs;
 

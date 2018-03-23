@@ -1,13 +1,13 @@
+import { IHexStrTransaction } from '@src/types';
 import RPCRequests from '../rpc/requests';
 import {
   CallRequest,
   EstimateGasRequest,
   GetBalanceRequest,
+  GetCurrentBlockRequest,
   GetTransactionCountRequest,
   SendRawTxRequest,
-  GetCurrentBlockRequest,
 } from './types';
-import { IHexStrTransaction } from '@src/types';
 
 export default class EtherscanRequests extends RPCRequests {
   public sendRawTx(signedTx: string): SendRawTxRequest {

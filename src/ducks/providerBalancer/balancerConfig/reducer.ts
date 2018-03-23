@@ -1,12 +1,12 @@
+import { BalancerManualAction } from '@src/ducks/providerBalancer/balancerConfig';
+import { DefaultNetworkIds } from '@src/types/networks';
 import { Reducer } from 'redux';
 import {
-  BalancerConfigState,
-  BalancerAutoAction,
-  BalancerAction,
   BALANCER,
+  BalancerAction,
+  BalancerAutoAction,
+  BalancerConfigState,
 } from './types';
-import { DefaultNetworkIds } from '@src/types/networks';
-import { BalancerManualAction } from '@src/ducks/providerBalancer/balancerConfig';
 
 const INITIAL_STATE: BalancerConfigState = {
   manual: false,

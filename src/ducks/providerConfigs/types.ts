@@ -15,7 +15,7 @@ export interface IProviderConfig {
   network: string;
 }
 
-export type ProviderConfigState = { [key: string]: IProviderConfig };
+export interface ProviderConfigState { [key: string]: IProviderConfig }
 
 export interface AddProviderConfigAction {
   type: PROVIDER_CONFIG.ADD;

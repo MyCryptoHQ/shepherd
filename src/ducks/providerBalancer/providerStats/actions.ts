@@ -1,8 +1,8 @@
 import {
   PROVIDER_STATS,
-  ProviderStatsOnlineAction,
-  ProviderStatsOfflineAction,
   ProviderStatsAddedAction,
+  ProviderStatsOfflineAction,
+  ProviderStatsOnlineAction,
   ProviderStatsRemovedAction,
 } from './types';
 

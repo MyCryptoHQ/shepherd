@@ -1,6 +1,6 @@
-import { apply, call } from 'redux-saga/effects';
 import { BaseChannel } from '@src/saga/channels/base';
 import { buffers, channel } from 'redux-saga';
+import { apply, call } from 'redux-saga/effects';
 
 class ProviderChannel extends BaseChannel {
   public *init() {

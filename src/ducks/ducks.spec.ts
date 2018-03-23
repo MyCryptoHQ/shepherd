@@ -1,18 +1,18 @@
-import * as selectors from './selectors';
-import * as providerConfigsActions from './providerConfigs/actions';
+import { rootReducer } from '@src/ducks';
+import { IProviderConfig } from '@src/ducks/providerConfigs';
+import { StrIdx } from '@src/types';
+import {
+  makeMockCall,
+  makeMockProviderConfig,
+  makeMockStats,
+  makeMockWorker,
+} from '@test/utils';
 import * as balancerConfigActions from './providerBalancer/balancerConfig/actions';
 import * as providerCallsActions from './providerBalancer/providerCalls/actions';
 import * as providerStatsActions from './providerBalancer/providerStats/actions';
 import * as workerActions from './providerBalancer/workers/actions';
-import { rootReducer } from '@src/ducks';
-import { StrIdx } from '@src/types';
-import {
-  makeMockProviderConfig,
-  makeMockStats,
-  makeMockWorker,
-  makeMockCall,
-} from '@test/utils';
-import { IProviderConfig } from '@src/ducks/providerConfigs';
+import * as providerConfigsActions from './providerConfigs/actions';
+import * as selectors from './selectors';
 
 const addAllProviderConfigs = (
   _storage: any,
@@ -41,7 +41,7 @@ const addAllProviderStats = (_storage: any, providerIds: string[]) => {
   return _storage;
 };
 
-let storage: any = undefined;
+let storage: any;
 describe('Ducks tests', () => {
   describe('getAllProvidersOfCurrentNetwork selector', () => {
     const providers: StrIdx<IProviderConfig> = {

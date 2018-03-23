@@ -1,9 +1,9 @@
 import {
+  DATA,
   JsonRpcResponse,
+  QUANTITY,
   RPCRequest,
   RPCRequestBase,
-  DATA,
-  QUANTITY,
 } from '../rpc/types';
 
 type MESSAGE_HEX = string;

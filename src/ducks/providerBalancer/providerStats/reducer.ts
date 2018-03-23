@@ -1,41 +1,38 @@
 import {
-  BalancerNetworkSwitchSucceededAction,
-  BalancerFlushAction,
   BALANCER,
   BalancerAction,
+  BalancerFlushAction,
+  BalancerNetworkSwitchSucceededAction,
 } from '../balancerConfig/types';
 import {
-  WorkerKilledAction,
-  WorkerSpawnedAction,
+  PROVIDER_CALL,
+  ProviderCallAction,
+  ProviderCallTimeoutAction,
+} from '../providerCalls/types';
+import {
   WORKER,
   WorkerAction,
+  WorkerKilledAction,
+  WorkerSpawnedAction,
 } from '../workers/types';
 import {
-  ProviderStatsOnlineAction,
-  ProviderStatsOfflineAction,
-  ProviderStatsAddedAction,
-  ProviderStatsRemovedAction,
   PROVIDER_STATS,
   ProviderStatsAction,
+  ProviderStatsAddedAction,
+  ProviderStatsOfflineAction,
+  ProviderStatsOnlineAction,
+  ProviderStatsRemovedAction,
+  ProviderStatsState,
 } from './types';
-import {
-  ProviderCallTimeoutAction,
-  ProviderCallAction,
-  PROVIDER_CALL,
-} from '../providerCalls/types';
-import { ProviderStatsState } from './types';
 
 type NReducer<T> = (state: ProviderStatsState, action: T) => ProviderStatsState;
 
-// hard code in the providers for now
 const INITIAL_STATE: ProviderStatsState = {};
 
 const handleNetworkSwitch: NReducer<BalancerNetworkSwitchSucceededAction> = (
   _,
   { payload: { providerStats } },
 ) => {
-  // validation
-
   for (const [providerId, provider] of Object.entries(providerStats)) {
     if (provider.avgResponseTime < 0) {
       throw Error(`Provider ${providerId} has a response time of below 0`);
@@ -176,14 +173,14 @@ const handleProviderCallTimeout: NReducer<ProviderCallTimeoutAction> = (
 
 const handleBalancerFlush: NReducer<BalancerFlushAction> = state =>
   Object.entries(state).reduce<ProviderStatsState>(
-    (obj, [providerId, providerStats]) => ({
+    (obj, [providerId, stats]) => ({
       ...obj,
-      [providerId]: { ...providerStats, requestFailures: 0 },
+      [providerId]: { ...stats, requestFailures: 0 },
     }),
     {},
   );
 
-export const providerStats: NReducer<
+export const providerStatsReducer: NReducer<
   ProviderStatsAction | WorkerAction | ProviderCallAction | BalancerAction
 > = (state = INITIAL_STATE, action): ProviderStatsState => {
   switch (action.type) {
@@ -210,4 +207,4 @@ export const providerStats: NReducer<
   }
 };
 
-export default providerStats;
+export default providerStatsReducer;

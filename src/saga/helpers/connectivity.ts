@@ -1,7 +1,7 @@
-import { call, apply, race, select } from 'redux-saga/effects';
-import { delay } from 'redux-saga';
-import { providerStorage } from '@src/providers';
 import { getProviderTimeoutThreshold } from '@src/ducks/providerConfigs';
+import { providerStorage } from '@src/providers';
+import { delay } from 'redux-saga';
+import { apply, call, race, select } from 'redux-saga/effects';
 
 /**
  * @description polls the offline state of a provider, then returns control to caller when it comes back online

@@ -1,10 +1,10 @@
+import { IHexStrWeb3Transaction } from '@src/types';
 import RPCRequests from '../rpc/requests';
 import {
+  GetAccountsRequest,
   SendTransactionRequest,
   SignMessageRequest,
-  GetAccountsRequest,
 } from './types';
-import { IHexStrWeb3Transaction } from '@src/types';
 
 export default class Web3Requests extends RPCRequests {
   public sendTransaction(

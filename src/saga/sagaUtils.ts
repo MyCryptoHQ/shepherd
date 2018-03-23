@@ -1,3 +1,4 @@
+import { BalancerNetworkSwitchSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
 import {
   IProviderCall,
   ProviderCallWithPid,
@@ -6,9 +7,8 @@ import {
   IProviderStats,
   ProcessedProvider,
 } from '@src/ducks/providerBalancer/providerStats';
-import { Task } from 'redux-saga';
 import { IWorker } from '@src/ducks/providerBalancer/workers';
-import { BalancerNetworkSwitchSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
+import { Task } from 'redux-saga';
 
 export const createRetryCall = (
   currentCall: ProviderCallWithPid,

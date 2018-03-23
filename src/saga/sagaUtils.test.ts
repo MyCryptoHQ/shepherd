@@ -1,17 +1,17 @@
-import {
-  trackTime,
-  createRetryCall,
-  addProviderIdToCall,
-  makeWorkerId,
-  makeWorker,
-  makeRetVal,
-  makeProviderStats,
-} from './sagaUtils';
-import { promisify } from 'util';
-import { setTimeout } from 'timers';
-import { makeMockCall } from '@test/utils';
 import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
+import { makeMockCall } from '@test/utils';
 import { Task } from 'redux-saga';
+import { setTimeout } from 'timers';
+import { promisify } from 'util';
+import {
+  addProviderIdToCall,
+  createRetryCall,
+  makeProviderStats,
+  makeRetVal,
+  makeWorker,
+  makeWorkerId,
+  trackTime,
+} from './sagaUtils';
 describe('Saga utils tests', () => {
   const setTimeoutAsync = promisify(setTimeout);
 

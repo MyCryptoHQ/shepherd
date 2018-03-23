@@ -1,17 +1,17 @@
-import {
-  ProviderCallsState,
-  ProviderCallRequestedAction,
-  ProviderCallSucceededAction,
-  ProviderCallFailedAction,
-  ProviderCallAction,
-  PROVIDER_CALL,
-} from './types';
+import { ProviderCallFlushedAction } from '@src/ducks/providerBalancer/providerCalls';
 import {
   WORKER,
-  WorkerProcessingAction,
   WorkerAction,
+  WorkerProcessingAction,
 } from '@src/ducks/providerBalancer/workers';
-import { ProviderCallFlushedAction } from '@src/ducks/providerBalancer/providerCalls';
+import {
+  PROVIDER_CALL,
+  ProviderCallAction,
+  ProviderCallFailedAction,
+  ProviderCallRequestedAction,
+  ProviderCallsState,
+  ProviderCallSucceededAction,
+} from './types';
 
 const handleProviderCallSucceeded = (
   state: ProviderCallsState,
@@ -82,7 +82,6 @@ const handleProviderCallPending = (
 
   // a duplicate check that makes sure the incoming call is either new or a retry call
   if (call && call.numOfRetries === payload.numOfRetries) {
-    console.error(call, payload);
     throw Error('Provider call already exists');
   }
   return {
@@ -97,7 +96,6 @@ const handleWorkerProcessing = (
 ) => {
   const prevPayload = state[currentPayload.callId];
   if (!prevPayload || !prevPayload.pending) {
-    console.error(currentPayload);
     throw Error('Pending provider call not found');
   }
 

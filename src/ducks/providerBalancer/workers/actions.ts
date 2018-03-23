@@ -1,8 +1,8 @@
 import {
   WORKER,
-  WorkerSpawnedAction,
-  WorkerProcessingAction,
   WorkerKilledAction,
+  WorkerProcessingAction,
+  WorkerSpawnedAction,
 } from './types';
 
 export const workerSpawned = (

@@ -1,6 +1,6 @@
-import { providerStorage } from './providerStorage';
-import { MockProvider } from '@test/mockNode';
 import { IProvider } from '@src/types';
+import { MockProvider } from '@test/mockNode';
+import { providerStorage } from './providerStorage';
 
 describe('providerStorage tests', () => {
   const instance: IProvider = new MockProvider() as any;

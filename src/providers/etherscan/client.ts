@@ -1,7 +1,7 @@
+import URLSearchParams from 'url-search-params';
 import RPCClient from '../rpc/client';
 import { JsonRpcResponse } from '../rpc/types';
 import { EtherscanRequest } from './types';
-import URLSearchParams from 'url-search-params';
 
 export default class EtherscanClient extends RPCClient {
   public encodeRequest(request: EtherscanRequest): string {

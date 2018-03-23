@@ -1,32 +1,18 @@
-import { SagaIterator } from 'redux-saga';
 import {
   IProviderCall,
   ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { call, apply, put } from 'redux-saga/effects';
-import { StrIdx } from '@src/types';
 import { BaseChannel } from '@src/saga/channels/base';
 import { providerChannelFactory } from '@src/saga/channels/providerChannel';
+import { StrIdx } from '@src/types';
+import { SagaIterator } from 'redux-saga';
+import { apply, call, put } from 'redux-saga/effects';
 
 export class ProviderChannels {
   private providerChannels: StrIdx<BaseChannel>;
 
   constructor() {
     this.providerChannels = {};
-  }
-
-  private deleteChannel(providerId: string) {
-    //check for existence
-    this.getChannel(providerId);
-    Reflect.deleteProperty(this.providerChannels, providerId);
-  }
-
-  private getChannel(providerId: string) {
-    const channel = this.providerChannels[providerId];
-    if (!channel) {
-      throw Error(`${providerId} does not have an existing channel`);
-    }
-    return channel;
   }
 
   public *put(
@@ -68,5 +54,19 @@ export class ProviderChannels {
     for (const providerId of Object.keys(this.providerChannels)) {
       this.deleteChannel(providerId);
     }
+  }
+
+  private deleteChannel(providerId: string) {
+    //check for existence
+    this.getChannel(providerId);
+    Reflect.deleteProperty(this.providerChannels, providerId);
+  }
+
+  private getChannel(providerId: string) {
+    const channel = this.providerChannels[providerId];
+    if (!channel) {
+      throw Error(`${providerId} does not have an existing channel`);
+    }
+    return channel;
   }
 }

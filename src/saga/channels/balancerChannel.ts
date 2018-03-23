@@ -1,7 +1,7 @@
-import { buffers, SagaIterator } from 'redux-saga';
 import { PROVIDER_CALL } from '@src/ducks/providerBalancer/providerCalls';
-import { actionChannel } from 'redux-saga/effects';
 import { BaseChannel } from '@src/saga/channels/base';
+import { buffers, SagaIterator } from 'redux-saga';
+import { actionChannel } from 'redux-saga/effects';
 
 export class BalancerChannel extends BaseChannel {
   public *init(): SagaIterator {

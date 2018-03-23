@@ -1,24 +1,24 @@
 import { RootState } from '@src/ducks';
-import {
-  getProviderConfigs,
-  IProviderConfig,
-  getProviderConfigById,
-  providerSupportsMethod,
-} from '@src/ducks/providerConfigs';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getPendingProviderCallsByProviderId,
   IProviderCall,
   ProviderCallTimeoutAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { StrIdx } from '@src/types';
-import RpcProvider from '@src/providers/rpc';
 import {
   getOnlineProviders,
   getProviderStatsById,
 } from '@src/ducks/providerBalancer/providerStats';
+import {
+  getProviderConfigById,
+  getProviderConfigs,
+  IProviderConfig,
+  providerSupportsMethod,
+} from '@src/ducks/providerConfigs';
 import { filterAgainstArr } from '@src/ducks/utils';
 import { allRPCMethods } from '@src/providers';
+import RpcProvider from '@src/providers/rpc';
+import { StrIdx } from '@src/types';
 
 export const providerExceedsRequestFailureThreshold = (
   state: RootState,

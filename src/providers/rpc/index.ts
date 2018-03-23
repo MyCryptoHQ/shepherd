@@ -1,15 +1,15 @@
+import { IHexStrTransaction, IProvider, TxObj } from '@src/types';
+import { makeBN, Wei } from '@src/utils';
+import {
+  isValidCallRequest,
+  isValidCurrentBlock,
+  isValidEstimateGas,
+  isValidGetBalance,
+  isValidRawTxApi,
+  isValidTransactionCount,
+} from '@src/validators';
 import RPCClient from './client';
 import RPCRequests from './requests';
-import {
-  isValidGetBalance,
-  isValidEstimateGas,
-  isValidCallRequest,
-  isValidTransactionCount,
-  isValidCurrentBlock,
-  isValidRawTxApi,
-} from '@src/validators';
-import { IHexStrTransaction, IProvider, TxObj } from '@src/types';
-import { Wei, makeBN } from '@src/utils';
 
 export default class RpcProvider implements IProvider {
   protected client: RPCClient;

@@ -1,6 +1,6 @@
-import { IProviderCall } from '../providerCalls/types';
-import { Task } from 'redux-saga';
 import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
+import { Task } from 'redux-saga';
+import { IProviderCall } from '../providerCalls/types';
 
 export interface IWorker {
   task: Task;

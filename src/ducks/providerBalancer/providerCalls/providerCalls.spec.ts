@@ -1,9 +1,9 @@
 import { INITIAL_ROOT_STATE } from '@src/ducks';
-import * as actions from './actions';
-import * as selectors from './selectors';
-import { providerCallsReducer } from './reducer';
-import { StrIdx } from '@src/types';
 import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
+import { StrIdx } from '@src/types';
+import * as actions from './actions';
+import { providerCallsReducer } from './reducer';
+import * as selectors from './selectors';
 
 const stateAssigner = (reducerResult: any) => {
   const stateCopy = JSON.parse(JSON.stringify(INITIAL_ROOT_STATE));

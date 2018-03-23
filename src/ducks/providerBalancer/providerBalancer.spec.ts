@@ -1,5 +1,5 @@
-import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 import { INITIAL_ROOT_STATE } from '@src/ducks';
+import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 
 describe('Provider balancer tests', () => {
   it('should return the provider balancer', () => {

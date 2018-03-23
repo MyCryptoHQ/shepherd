@@ -1,9 +1,9 @@
+import { ChangeProviderConfigAction } from '@src/ducks/providerConfigs';
 import {
   AddProviderConfigAction,
   PROVIDER_CONFIG,
   RemoveProviderConfigAction,
 } from './types';
-import { ChangeProviderConfigAction } from '@src/ducks/providerConfigs';
 
 export const addProviderConfig = (
   payload: AddProviderConfigAction['payload'],

@@ -1,12 +1,12 @@
+import { Reducer } from 'redux';
 import {
-  ProviderConfigState,
-  PROVIDER_CONFIG,
-  ProviderConfigAction,
   AddProviderConfigAction,
   ChangeProviderConfigAction,
+  PROVIDER_CONFIG,
+  ProviderConfigAction,
+  ProviderConfigState,
   RemoveProviderConfigAction,
 } from './types';
-import { Reducer } from 'redux';
 
 export const INITIAL_STATE: ProviderConfigState = {};
 

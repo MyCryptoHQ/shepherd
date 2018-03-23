@@ -1,13 +1,13 @@
+import { IHexStrTransaction, TxObj } from '@src/types';
+import { stripHexPrefix } from '@src/utils';
 import {
   CallRequest,
   EstimateGasRequest,
   GetBalanceRequest,
+  GetCurrentBlockRequest,
   GetTransactionCountRequest,
   SendRawTxRequest,
-  GetCurrentBlockRequest,
 } from './types';
-import { TxObj, IHexStrTransaction } from '@src/types';
-import { stripHexPrefix } from '@src/utils';
 
 export default class RPCRequests {
   public getNetVersion() {

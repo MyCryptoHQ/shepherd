@@ -1,14 +1,14 @@
 import { INITIAL_ROOT_STATE } from '@src/ducks';
-import * as statsActions from './actions';
-import * as workerActions from '../workers/actions';
+import { mockCall } from '@src/ducks/providerBalancer/providerCalls/providerCalls.spec';
+import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
+import { StrIdx } from '@src/types';
+import { Task } from 'redux-saga';
 import * as balancerActions from '../balancerConfig/actions';
 import * as providerCallActions from '../providerCalls/actions';
+import * as workerActions from '../workers/actions';
+import * as statsActions from './actions';
+import { providerStatsReducer } from './reducer';
 import * as selectors from './selectors';
-import { providerStats } from './reducer';
-import { StrIdx } from '@src/types';
-import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
-import { Task } from 'redux-saga';
-import { mockCall } from '@src/ducks/providerBalancer/providerCalls/providerCalls.spec';
 
 const stateAssigner = (reducerResult: any) => {
   const stateCopy = JSON.parse(JSON.stringify(INITIAL_ROOT_STATE));
@@ -51,12 +51,12 @@ describe('Provider stats tests', () => {
       });
       const selector = selectors.getProviderStatsById;
 
-      states.providerAdded = providerStats(undefined as any, action);
+      states.providerAdded = providerStatsReducer(undefined as any, action);
       const state = stateAssigner(states.providerAdded);
       expect(selector(state, 'mock1')).toEqual(mockProviderStats);
 
       // test case for duplicate addition
-      expect(() => providerStats(states.providerAdded, action)).toThrow(
+      expect(() => providerStatsReducer(states.providerAdded, action)).toThrow(
         'Provider mock1 already exists',
       );
     });
@@ -64,7 +64,10 @@ describe('Provider stats tests', () => {
     it('should handle a provider going offline', () => {
       const action = statsActions.providerOffline({ providerId: 'mock1' });
       const selector = selectors.getProviderStatsById;
-      states.providerOffline = providerStats(states.providerAdded, action);
+      states.providerOffline = providerStatsReducer(
+        states.providerAdded,
+        action,
+      );
       const state = stateAssigner(states.providerOffline);
       expect(selector(state, 'mock1')).toEqual({
         ...mockProviderStats,
@@ -73,7 +76,7 @@ describe('Provider stats tests', () => {
 
       // returns original state on no provider
       expect(
-        providerStats(
+        providerStatsReducer(
           states.providerAdded,
           statsActions.providerOffline({ providerId: 'blabla' }),
         ),
@@ -83,7 +86,10 @@ describe('Provider stats tests', () => {
     it('should handle a provider going online', () => {
       const action = statsActions.providerOnline({ providerId: 'mock1' });
       const selector = selectors.getProviderStatsById;
-      states.providerOnline = providerStats(states.providerOffline, action);
+      states.providerOnline = providerStatsReducer(
+        states.providerOffline,
+        action,
+      );
       const state = stateAssigner(states.providerOnline);
       expect(selector(state, 'mock1')).toEqual({
         ...mockProviderStats,
@@ -91,7 +97,7 @@ describe('Provider stats tests', () => {
       });
 
       // check for non-existence
-      expect(() => providerStats(undefined as any, action)).toThrow(
+      expect(() => providerStatsReducer(undefined as any, action)).toThrow(
         'Provider mock1 does not exist',
       );
     });
@@ -99,14 +105,17 @@ describe('Provider stats tests', () => {
     it('should handle a provider being removed', () => {
       const action = statsActions.providerRemoved({ providerId: 'mock1' });
       const selector = selectors.getProviderStatsById;
-      states.providerRemoved = providerStats(states.providerAdded, action);
+      states.providerRemoved = providerStatsReducer(
+        states.providerAdded,
+        action,
+      );
       const state = stateAssigner(states.providerRemoved);
       expect(selector(state, 'mock1')).toEqual(undefined);
 
       // check for non-existence
-      expect(() => providerStats(states.providerRemoved, action)).toThrow(
-        'Provider mock1 does not exist',
-      );
+      expect(() =>
+        providerStatsReducer(states.providerRemoved, action),
+      ).toThrow('Provider mock1 does not exist');
     });
 
     it('should handle a worker being spawned', () => {
@@ -116,7 +125,7 @@ describe('Provider stats tests', () => {
         task: {} as Task,
       });
       const selector = selectors.getProviderStatsById;
-      states.workerSpawned = providerStats(states.providerAdded, action);
+      states.workerSpawned = providerStatsReducer(states.providerAdded, action);
       const state = stateAssigner(states.workerSpawned);
       expect(selector(state, 'mock1')).toEqual({
         ...mockProviderStats,
@@ -124,9 +133,9 @@ describe('Provider stats tests', () => {
       });
 
       // check for non-existence of provider
-      expect(() => providerStats(states.providerRemoved, action)).toThrow(
-        'Provider mock1 does not exist',
-      );
+      expect(() =>
+        providerStatsReducer(states.providerRemoved, action),
+      ).toThrow('Provider mock1 does not exist');
 
       // check for duplicate workers
       const failAction = workerActions.workerSpawned({
@@ -134,9 +143,9 @@ describe('Provider stats tests', () => {
         workerId: 'worker2',
         task: {} as Task,
       });
-      expect(() => providerStats(states.providerAdded, failAction)).toThrow(
-        'Worker worker2 already exists',
-      );
+      expect(() =>
+        providerStatsReducer(states.providerAdded, failAction),
+      ).toThrow('Worker worker2 already exists');
     });
 
     it('should handle a worker being killed', () => {
@@ -146,7 +155,7 @@ describe('Provider stats tests', () => {
         workerId: 'worker1',
       });
       const selector = selectors.getProviderStatsById;
-      states.workerKilled = providerStats(states.providerAdded, action);
+      states.workerKilled = providerStatsReducer(states.providerAdded, action);
       const state = stateAssigner(states.workerKilled);
       expect(selector(state, 'mock1')).toEqual({
         ...mockProviderStats,
@@ -154,12 +163,12 @@ describe('Provider stats tests', () => {
       });
 
       // check for non-existence of provider
-      expect(() => providerStats(states.providerRemoved, action)).toThrow(
-        'Provider mock1 does not exist',
-      );
+      expect(() =>
+        providerStatsReducer(states.providerRemoved, action),
+      ).toThrow('Provider mock1 does not exist');
 
       // check for non-existence of worker
-      expect(() => providerStats(states.workerKilled, action)).toThrow(
+      expect(() => providerStatsReducer(states.workerKilled, action)).toThrow(
         'Worker worker1 does not exist',
       );
     });
@@ -171,7 +180,10 @@ describe('Provider stats tests', () => {
       });
 
       const selector = selectors.getProviderStatsById;
-      states.providerCallTimeout = providerStats(states.providerAdded, action);
+      states.providerCallTimeout = providerStatsReducer(
+        states.providerAdded,
+        action,
+      );
       const state = stateAssigner(states.providerCallTimeout);
 
       expect(selector(state, 'mock1')).toEqual({
@@ -180,15 +192,18 @@ describe('Provider stats tests', () => {
       });
 
       // check for non-existence of provider
-      expect(() => providerStats(states.providerRemoved, action)).toThrow(
-        'Provider mock1 does not exist',
-      );
+      expect(() =>
+        providerStatsReducer(states.providerRemoved, action),
+      ).toThrow('Provider mock1 does not exist');
     });
 
     it('should handle a balancer flush', () => {
       const action = balancerActions.balancerFlush();
       const selector = selectors.getProviderStatsById;
-      states.balancerFlush = providerStats(states.providerCallTimeout, action);
+      states.balancerFlush = providerStatsReducer(
+        states.providerCallTimeout,
+        action,
+      );
       const state = stateAssigner(states.balancerFlush);
 
       expect(selector(state, 'mock1')).toEqual({
@@ -207,7 +222,7 @@ describe('Provider stats tests', () => {
         providerStats: mockProviderStatsState,
         workers: {},
       });
-      states.networkSwitchSucceeded = providerStats(
+      states.networkSwitchSucceeded = providerStatsReducer(
         states.providerAdded,
         action,
       );
@@ -230,7 +245,7 @@ describe('Provider stats tests', () => {
         },
       );
       expect(() =>
-        providerStats(undefined as any, belowZeroResponseTimeAction),
+        providerStatsReducer(undefined as any, belowZeroResponseTimeAction),
       ).toThrow('Provider mock1 has a response time of below 0');
 
       // handle non zero request failures
@@ -247,7 +262,7 @@ describe('Provider stats tests', () => {
         },
       );
       expect(() =>
-        providerStats(undefined as any, nonZeroResponseTimeAction),
+        providerStatsReducer(undefined as any, nonZeroResponseTimeAction),
       ).toThrow('Provider mock1 has non-zero request failures');
     });
   });

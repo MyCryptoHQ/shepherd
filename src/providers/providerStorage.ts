@@ -1,7 +1,7 @@
-import { StrIdx, IProviderContructor, IProvider } from '@src/types';
-import RPCProvider from '@src/providers/rpc';
 import EtherscanProvider from '@src/providers/etherscan';
 import InfuraProvider from '@src/providers/infura';
+import RPCProvider from '@src/providers/rpc';
+import { IProvider, IProviderContructor, StrIdx } from '@src/types';
 
 interface IProviderStorage {
   setClass(providerName: string, Provider: IProviderContructor): void;
@@ -11,13 +11,13 @@ interface IProviderStorage {
 }
 
 class ProviderStorage implements IProviderStorage {
+  private instances: Partial<StrIdx<IProvider>>;
+  private classes: Partial<StrIdx<IProviderContructor>>;
+
   constructor(providers: StrIdx<IProviderContructor> = {}) {
     this.classes = providers;
     this.instances = {};
   }
-
-  private instances: Partial<StrIdx<IProvider>>;
-  private classes: Partial<StrIdx<IProviderContructor>>;
 
   /**
    * Sets the class

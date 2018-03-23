@@ -1,12 +1,12 @@
+import {
+  ProcessedProvider,
+  providerOffline,
+} from '@src/ducks/providerBalancer/providerStats';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { trackTime, makeProviderStats } from '@src/saga/sagaUtils';
+import { makeProviderStats, trackTime } from '@src/saga/sagaUtils';
+import { spawnWorkers } from '@src/saga/workers';
 import { call, put } from 'redux-saga/effects';
 import { checkProviderConnectivity } from './connectivity';
-import {
-  providerOffline,
-  ProcessedProvider,
-} from '@src/ducks/providerBalancer/providerStats';
-import { spawnWorkers } from '@src/saga/workers';
 
 /**
  *

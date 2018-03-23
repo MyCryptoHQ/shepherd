@@ -1,7 +1,7 @@
+import { StrIdx } from '@src/types';
+import btoa from 'btoa';
 import RPCProvider from '../rpc';
 import RPCClient from '../rpc/client';
-import btoa from 'btoa';
-import { StrIdx } from '@src/types';
 
 interface IMyCryptoCustomProviderConfig {
   url: string;

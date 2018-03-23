@@ -1,25 +1,13 @@
-import { Channel, SagaIterator } from 'redux-saga';
 import {
   providerCallFlushed,
   ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { flush, take, apply, put } from 'redux-saga/effects';
+import { Channel, SagaIterator } from 'redux-saga';
+import { apply, flush, put, take } from 'redux-saga/effects';
 
 export abstract class BaseChannel {
   protected chan: Channel<ProviderCallRequestedAction>;
   private currentAction: ProviderCallRequestedAction | null;
-
-  private *flushChannel(): SagaIterator {
-    const messages = yield flush(this.chan);
-    return messages;
-  }
-
-  private *getPendingCalls(): SagaIterator {
-    const queuedCalls = yield apply(this, this.flushChannel);
-    return this.currentAction
-      ? [...queuedCalls, this.currentAction]
-      : queuedCalls;
-  }
 
   public get() {
     return this.chan;
@@ -47,5 +35,17 @@ export abstract class BaseChannel {
         providerCallFlushed({ error: 'Call Flushed', providerCall: payload }),
       );
     }
+  }
+
+  private *flushChannel(): SagaIterator {
+    const messages = yield flush(this.chan);
+    return messages;
+  }
+
+  private *getPendingCalls(): SagaIterator {
+    const queuedCalls = yield apply(this, this.flushChannel);
+    return this.currentAction
+      ? [...queuedCalls, this.currentAction]
+      : queuedCalls;
   }
 }

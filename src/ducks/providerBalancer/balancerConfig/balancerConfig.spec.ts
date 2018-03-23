@@ -1,7 +1,7 @@
 import { INITIAL_ROOT_STATE, rootReducer } from '@src/ducks';
-import * as actions from './actions';
-import * as providerCallActions from '../providerCalls/actions';
 import { mockCall } from '@src/ducks/providerBalancer/providerCalls/providerCalls.spec';
+import * as providerCallActions from '../providerCalls/actions';
+import * as actions from './actions';
 import * as selectors from './selectors';
 
 describe('Balancer config tests', () => {
@@ -66,7 +66,7 @@ describe('Balancer config tests', () => {
     });
 
     it('should set the balancer to manual and then back to auto', () => {
-      let state: any = undefined;
+      let state: any;
       const selector = selectors.getManualMode;
       state = rootReducer(state, actions.setManual({ providerId: 'metamask' }));
 
