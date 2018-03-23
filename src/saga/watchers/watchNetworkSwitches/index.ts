@@ -1,5 +1,5 @@
 import { SagaIterator } from 'redux-saga';
-import { call, put, takeEvery, take, fork } from 'redux-saga/effects';
+import { call, put, take, fork } from 'redux-saga/effects';
 import {
   balancerFlush,
   balancerNetworkSwitchSucceeded,
