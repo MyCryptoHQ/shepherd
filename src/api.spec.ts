@@ -80,10 +80,10 @@ describe('Api tests', () => {
       done();
     });
     it.skip('should handle manual mode', async () => {
-      const { shepherd } = getAPI();
-      const node = await shepherd.init({
-        customProviders: { MockProvider: MockProviderImplem },
-      });
+      //const { shepherd } = getAPI();
+      //const node = await shepherd.init({
+      //  customProviders: { MockProvider: MockProviderImplem },
+      //});
     });
   });
 
