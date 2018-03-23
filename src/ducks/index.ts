@@ -6,7 +6,7 @@ import {
   providerConfigs,
   ProviderConfigState,
 } from '@src/ducks/providerConfigs';
-import { combineReducers, createStore, applyMiddleware } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'remote-redux-devtools';
 

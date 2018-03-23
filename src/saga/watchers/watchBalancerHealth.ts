@@ -1,18 +1,18 @@
-import { SagaIterator } from 'redux-saga';
-import { getAllMethodsAvailable } from '@src/ducks/selectors';
-import { select, put, takeEvery, call } from 'redux-saga/effects';
 import {
-  setOnline,
-  setOffline,
   BALANCER,
   BalancerNetworkSwitchRequestedAction,
   BalancerNetworkSwitchSucceededAction,
+  setOffline,
+  setOnline,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   PROVIDER_STATS,
   ProviderStatsAction,
 } from '@src/ducks/providerBalancer/providerStats';
+import { getAllMethodsAvailable } from '@src/ducks/selectors';
+import { SagaIterator } from 'redux-saga';
+import { call, put, select, takeEvery } from 'redux-saga/effects';
 
 type WatchedActions =
   | ProviderStatsAction

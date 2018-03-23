@@ -1,10 +1,10 @@
-import { call, select, all } from 'redux-saga/effects';
 import { ProcessedProvider } from '@src/ducks/providerBalancer/providerStats';
-import { getAllProvidersOfNetwork } from '@src/ducks/selectors';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { StrIdx } from '@src/types';
-import { reduceProcessedProviders } from '@src/saga/sagaUtils';
+import { getAllProvidersOfNetwork } from '@src/ducks/selectors';
 import { processProvider } from '@src/saga/helpers/processing';
+import { reduceProcessedProviders } from '@src/saga/sagaUtils';
+import { StrIdx } from '@src/types';
+import { all, call, select } from 'redux-saga/effects';
 
 /**
  * @description Gets all of the providers of the requested next network,

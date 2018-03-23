@@ -1,15 +1,15 @@
-import { providerOffline } from '@src/ducks/providerBalancer/providerStats';
-import { put, select, takeEvery } from 'redux-saga/effects';
+import { callMeetsBalancerRetryThreshold } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   IProviderCall,
-  ProviderCallTimeoutAction,
+  PROVIDER_CALL,
   providerCallFailed,
   providerCallRequested,
-  PROVIDER_CALL,
+  ProviderCallTimeoutAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { createRetryCall } from '@src/saga/sagaUtils';
+import { providerOffline } from '@src/ducks/providerBalancer/providerStats';
 import { providerExceedsRequestFailureThreshold } from '@src/ducks/selectors';
-import { callMeetsBalancerRetryThreshold } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import { createRetryCall } from '@src/saga/sagaUtils';
+import { put, select, takeEvery } from 'redux-saga/effects';
 
 function* handleCallTimeouts(action: ProviderCallTimeoutAction) {
   const { payload: { error, providerCall } } = action;

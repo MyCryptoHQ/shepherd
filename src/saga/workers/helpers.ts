@@ -1,17 +1,17 @@
-import { call, put, cancelled, select, race, apply } from 'redux-saga/effects';
 import {
+  getProviderCallById,
+  ProviderCallRequestedAction,
+  ProviderCallState,
   providerCallSucceeded,
   providerCallTimeout,
-  getProviderCallById,
-  ProviderCallState,
-  ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { workerProcessing } from '@src/ducks/providerBalancer/workers';
-import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
-import { delay } from 'redux-saga';
-import { IProvider } from '@src/types';
 import { providerChannels } from '@src/saga/channels';
+import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
+import { IProvider } from '@src/types';
+import { delay } from 'redux-saga';
+import { apply, call, cancelled, put, race, select } from 'redux-saga/effects';
 
 function* sendRequestToProvider(
   providerId: string,
@@ -26,7 +26,7 @@ function* sendRequestToProvider(
 
     // make the call in the allotted timeout time
     const { result } = yield race({
-      result: apply(provider, provider[rpcMethod] as any, rpcArgs),
+      result: apply(provider, provider[rpcMethod], rpcArgs),
       timeout: call(delay, timeoutThreshold),
     });
 

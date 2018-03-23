@@ -1,14 +1,14 @@
+import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
 import {
+  PROVIDER_STATS,
   providerOnline,
   ProviderStatsOfflineAction,
-  PROVIDER_STATS,
 } from '@src/ducks/providerBalancer/providerStats';
-import { call, put, takeEvery, race, take } from 'redux-saga/effects';
+import { call, put, race, take, takeEvery } from 'redux-saga/effects';
 import {
   pollProviderUntilConnected,
   waitForProviderStatsToExist,
 } from './helpers';
-import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
 
 function* watchOfflineProvider({
   payload: { providerId },

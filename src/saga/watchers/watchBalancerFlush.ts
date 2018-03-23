@@ -1,20 +1,20 @@
-import { SagaIterator } from 'redux-saga';
-import {
-  call,
-  select,
-  cancel,
-  apply,
-  takeEvery,
-  put,
-} from 'redux-saga/effects';
-import { getWorkers, WorkerState } from '@src/ducks/providerBalancer/workers';
-import { providerChannels, balancerChannel } from '@src/saga/channels';
 import {
   BALANCER,
   balancerFlush,
-  BalancerQueueTimeoutAction,
   BalancerNetworkSwitchRequestedAction,
+  BalancerQueueTimeoutAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
+import { getWorkers, WorkerState } from '@src/ducks/providerBalancer/workers';
+import { balancerChannel, providerChannels } from '@src/saga/channels';
+import { SagaIterator } from 'redux-saga';
+import {
+  apply,
+  call,
+  cancel,
+  put,
+  select,
+  takeEvery,
+} from 'redux-saga/effects';
 
 function* clearWorkers(): SagaIterator {
   const workers: WorkerState = yield select(getWorkers);

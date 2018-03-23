@@ -9,16 +9,16 @@ import { store } from './ducks';
 // shepherd.delegate([{provider}], [methods] )
 // shepherd.switchNetworks(network)
 
-import { createProviderProxy, addProvider, useProvider } from './providers';
-import { IProviderContructor } from '@src/types';
 import {
+  BALANCER,
   balancerInit,
   balancerNetworkSwitchRequested,
-  BALANCER,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { IInitConfig, IShepherd } from '@src/types/api';
 import { subscribeToAction } from '@src/saga/watchers/watchActionSubscription';
+import { IProviderContructor } from '@src/types';
+import { IInitConfig, IShepherd } from '@src/types/api';
+import { addProvider, createProviderProxy, useProvider } from './providers';
 
 function waitForNetworkSwitch() {
   return new Promise(res => {

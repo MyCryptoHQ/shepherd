@@ -1,16 +1,16 @@
-import { SagaIterator, delay } from 'redux-saga';
-import { put, take, select, fork, call, race, apply } from 'redux-saga/effects';
-import {
-  ProviderCallRequestedAction,
-  providerCallFailed,
-} from '@src/ducks/providerBalancer/providerCalls';
 import {
   BALANCER,
   balancerQueueTimeout,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import {
+  providerCallFailed,
+  ProviderCallRequestedAction,
+} from '@src/ducks/providerBalancer/providerCalls';
 import { getAvailableProviderId } from '@src/ducks/selectors';
-import { providerChannels, balancerChannel } from '@src/saga/channels';
+import { balancerChannel, providerChannels } from '@src/saga/channels';
+import { delay, SagaIterator } from 'redux-saga';
+import { apply, call, fork, put, race, select, take } from 'redux-saga/effects';
 
 function* getOptimalProviderId(
   payload: ProviderCallRequestedAction['payload'],

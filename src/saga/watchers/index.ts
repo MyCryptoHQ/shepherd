@@ -1,11 +1,11 @@
+import { subscriptionWatcher } from './watchActionSubscription';
 import { addProviderConfigWatcher } from './watchAddingProviders';
 import { balancerFlushWatcher } from './watchBalancerFlush';
+import { balancerHealthWatcher } from './watchBalancerHealth';
 import { callTimeoutWatcher } from './watchCallTimeouts';
+import { watchNetworkSwitches } from './watchNetworkSwitches';
 import { providerRequestWatcher } from './watchProviderCalls';
 import { providerHealthWatcher } from './watchProviderHealth';
-import { balancerHealthWatcher } from './watchBalancerHealth';
-import { watchNetworkSwitches } from './watchNetworkSwitches';
-import { subscriptionWatcher } from './watchActionSubscription';
 export const watchers = [
   ...subscriptionWatcher,
   ...addProviderConfigWatcher,

@@ -1,11 +1,11 @@
-import {
-  PROVIDER_STATS,
-  getProviderStatsById,
-} from '@src/ducks/providerBalancer/providerStats';
-import { call, select, take } from 'redux-saga/effects';
-import { delay, SagaIterator } from 'redux-saga';
 import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
+import {
+  getProviderStatsById,
+  PROVIDER_STATS,
+} from '@src/ducks/providerBalancer/providerStats';
 import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
+import { delay, SagaIterator } from 'redux-saga';
+import { call, select, take } from 'redux-saga/effects';
 
 export function* pollProviderUntilConnected(providerId: string): SagaIterator {
   while (true) {

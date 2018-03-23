@@ -1,15 +1,15 @@
-import { call, select, put, takeEvery, race, take } from 'redux-saga/effects';
+import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import { processProvider } from '@src/saga/helpers/processing';
 import {
-  providerAdded,
   ProcessedProvider,
+  providerAdded,
 } from '@src/ducks/providerBalancer/providerStats';
 import {
   AddProviderConfigAction,
   PROVIDER_CONFIG,
 } from '@src/ducks/providerConfigs';
-import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
+import { processProvider } from '@src/saga/helpers/processing';
+import { call, put, race, select, take, takeEvery } from 'redux-saga/effects';
 
 function* handleAddingProviderConfig({
   payload: { config, id },

@@ -1,11 +1,11 @@
-import { SagaIterator } from 'redux-saga';
-import { call, put, take, fork } from 'redux-saga/effects';
 import {
-  balancerNetworkSwitchSucceeded,
   BALANCER,
-  BalancerNetworkSwitchRequestedAction,
   BalancerInitAction,
+  BalancerNetworkSwitchRequestedAction,
+  balancerNetworkSwitchSucceeded,
 } from '@src/ducks/providerBalancer/balancerConfig';
+import { SagaIterator } from 'redux-saga';
+import { call, fork, put, take } from 'redux-saga/effects';
 import { initializeNewNetworkProviders } from './helpers';
 
 function* handleNetworkSwitch(): SagaIterator {

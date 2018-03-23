@@ -1,6 +1,6 @@
+import { store } from '@src/ducks';
 import { SagaIterator } from 'redux-saga';
 import { take, takeEvery } from 'redux-saga/effects';
-import { store } from '@src/ducks';
 
 export enum SUBSCRIBE {
   ACTION = 'SUBSCRIBE_TO_ACTION',
@@ -10,7 +10,7 @@ export interface SubscribeAction {
   type: SUBSCRIBE.ACTION;
   payload: {
     trigger: any;
-    callback: (resultingAction: any) => void;
+    callback(resultingAction: any): void;
   };
 }
 

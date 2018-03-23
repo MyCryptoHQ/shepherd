@@ -1,6 +1,6 @@
 require('isomorphic-fetch');
-import { store, rootReducer, providerBalancerSaga } from './ducks';
 import { IShepherd } from '@src/types/api';
+import { providerBalancerSaga, rootReducer, store } from './ducks';
 
 // shepherd.config({callTimeout })
 // const myNode = shepherd.init({providers })

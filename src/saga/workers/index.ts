@@ -1,9 +1,9 @@
 import { providerChannels } from '@src/saga/channels';
+import { makeWorker, makeWorkerId } from '@src/saga/sagaUtils';
 import { Workers } from '@src/saga/types';
-import { makeWorkerId, makeWorker } from '@src/saga/sagaUtils';
-import { Task } from 'redux-saga';
-import { spawn, apply } from 'redux-saga/effects';
 import { createWorker } from '@src/saga/workers/helpers';
+import { Task } from 'redux-saga';
+import { apply, spawn } from 'redux-saga/effects';
 
 export function* spawnWorkers(
   providerId: string,

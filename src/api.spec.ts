@@ -1,14 +1,14 @@
-import { StrIdx, IProviderContructor } from '@src/types';
-import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { makeMockProviderConfig } from '@test/utils';
-import { createMockProxyHandler, MockProvider } from '@test/mockNode';
-import { promisify } from 'util';
-import { setTimeout } from 'timers';
-import { getFinishedCallsByProviderId } from '@test/selectors';
-import { IIndex } from './index';
-import { trackTime } from '@src/saga/sagaUtils';
 import { getProviderCallById } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderStatsById } from '@src/ducks/providerBalancer/providerStats';
+import { IProviderConfig } from '@src/ducks/providerConfigs';
+import { trackTime } from '@src/saga/sagaUtils';
+import { IProviderContructor, StrIdx } from '@src/types';
+import { createMockProxyHandler, MockProvider } from '@test/mockNode';
+import { getFinishedCallsByProviderId } from '@test/selectors';
+import { makeMockProviderConfig } from '@test/utils';
+import { setTimeout } from 'timers';
+import { promisify } from 'util';
+import { IIndex } from './index';
 
 const getAPI = () => {
   jest.resetModules();
