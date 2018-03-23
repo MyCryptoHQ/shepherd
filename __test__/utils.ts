@@ -21,7 +21,7 @@ export const makeMockProviderConfig = (
       getCurrentBlock: true,
       sendRawTx: true,
     },
-    timeoutThresholdMs: 1000,
+    timeoutThresholdMs: 5000,
   };
 
   return {

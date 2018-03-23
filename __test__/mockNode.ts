@@ -1,29 +1,27 @@
 import { promisify } from 'util';
 import { setTimeout } from 'timers';
-import { generateMockCalls } from './generateTestData';
-import { IProviderContructor } from '@src/types';
 
-interface State {
-  ping: number;
-  getBalance: number;
-  estimateGas: number;
-  getTransactionCount: number;
-  sendRawTx: number;
-  getCurrentBlock: number;
-  sendCallRequest: number;
-  totalCalls: number;
-}
 interface IMockProxyHandlerArgs {
+  failDelay?: number;
+  getCurrentBlockDelay?: number;
   baseDelay: number; // ms
   failureRate: number; // %
+  numberOfFailuresBeforeConnection?: number;
 }
 
 const setTimeoutAsync = promisify(setTimeout);
 
 export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
+  let numFailed = 0;
   const retObj = {
     get(target, propKey) {
-      const { baseDelay, failureRate } = args;
+      const {
+        baseDelay,
+        failureRate,
+        numberOfFailuresBeforeConnection,
+        failDelay,
+        getCurrentBlockDelay,
+      } = args;
 
       const shouldFail = !!Math.floor(Math.random() + failureRate / 100);
       const delayTime = baseDelay;
@@ -36,13 +34,27 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
 
       return () => {
         // const logPrefix = `MockProvider.${propKey.toString()}`;
-        if (shouldFail && propKey.toString() !== 'getCurrentBlock') {
+
+        if (
+          numberOfFailuresBeforeConnection &&
+          numberOfFailuresBeforeConnection !== numFailed
+        ) {
+          numFailed++;
+          return setTimeoutAsync(failDelay || delayTime).then(() => {
+            throw Error('mock node error');
+          });
+        } else if (shouldFail && propKey.toString() !== 'getCurrentBlock') {
           // console.log(`${logPrefix} Responding with failed call`);
-          return setTimeoutAsync(delayTime).then(() => {
+          return setTimeoutAsync(failDelay || delayTime).then(() => {
             throw Error('mock node error');
           });
         }
 
+        if (propKey.toString() === 'getCurrentBlock') {
+          return setTimeoutAsync(getCurrentBlockDelay || delayTime).then(
+            targetProperty,
+          );
+        }
         //console.log(`${logPrefix} Responding with delay time ${delayTime}`);
 
         return setTimeoutAsync(delayTime).then(targetProperty);
@@ -54,42 +66,25 @@ export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
 };
 
 export class MockProvider {
-  public state: State = {
-    ping: 0,
-    getBalance: 0,
-    estimateGas: 0,
-    getTransactionCount: 0,
-    sendCallRequest: 0,
-    sendRawTx: 0,
-    getCurrentBlock: 0,
-    totalCalls: 0,
-  };
   public ping() {
-    this.state.ping++;
     return true;
   }
   public getBalance() {
-    this.state.getBalance++;
     return true;
   }
   public estimateGas() {
-    this.state.estimateGas++;
     return true;
   }
   public getTransactionCount() {
-    this.state.getTransactionCount++;
     return true;
   }
   public sendRawTx() {
-    this.state.sendRawTx++;
     return true;
   }
   public sendCallRequest() {
-    this.state.sendCallRequest++;
     return true;
   }
   public getCurrentBlock() {
-    this.state.getCurrentBlock++;
     return true;
   }
 }
