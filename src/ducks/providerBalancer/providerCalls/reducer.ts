@@ -11,7 +11,7 @@ import {
   WorkerProcessingAction,
   WorkerAction,
 } from '@src/ducks/providerBalancer/workers';
-import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
+import { ProviderCallFlushedAction } from '@src/ducks/providerBalancer/providerCalls';
 
 const handleProviderCallSucceeded = (
   state: ProviderCallsState,
@@ -42,6 +42,25 @@ const handleProviderCallFailed = (
     throw Error('Pending provider call not found');
   }
 
+  return {
+    ...state,
+    [payload.providerCall.callId]: {
+      error: payload.error,
+      ...payload.providerCall,
+      result: null,
+      pending: false,
+    },
+  };
+};
+
+const handleProviderCallFlushed = (
+  state: ProviderCallsState,
+  { payload }: ProviderCallFlushedAction,
+): ProviderCallsState => {
+  const call = state[payload.providerCall.callId];
+  if (!call || !call.pending) {
+    throw Error('Pending provider call not found');
+  }
   return {
     ...state,
     [payload.providerCall.callId]: {
@@ -102,6 +121,8 @@ export const providerCallsReducer = (
       return handleProviderCallSucceeded(state, action);
     case PROVIDER_CALL.FAILED:
       return handleProviderCallFailed(state, action);
+    case PROVIDER_CALL.FLUSHED:
+      return handleProviderCallFlushed(state, action);
     default:
       return state;
   }

@@ -10,6 +10,7 @@ export enum PROVIDER_CALL {
   TIMEOUT = 'PROVIDER_CALL_TIMEOUT',
   SUCCEEDED = 'PROVIDER_CALL_SUCCEEDED',
   FAILED = 'PROVIDER_CALL_FAILED',
+  FLUSHED = 'PROVIDER_CALL_FLUSHED',
 }
 
 export interface IProviderCall {
@@ -36,6 +37,12 @@ export interface FailedProviderCall extends ProviderCallWithPid {
   pending: false;
 }
 
+export interface FlushedProviderCall extends IProviderCall {
+  result: null;
+  error: string;
+  pending: false;
+}
+
 export interface PendingProviderCall extends IProviderCall {
   result: null;
   error: null;
@@ -57,6 +64,11 @@ export interface ProviderCallFailedAction {
   payload: { error: string; providerCall: ProviderCallWithPid };
 }
 
+export interface ProviderCallFlushedAction {
+  type: PROVIDER_CALL.FLUSHED;
+  payload: { error: string; providerCall: IProviderCall };
+}
+
 export interface ProviderCallSucceededAction {
   type: PROVIDER_CALL.SUCCEEDED;
   payload: { result: string; providerCall: ProviderCallWithPid };
@@ -66,4 +78,5 @@ export type ProviderCallAction =
   | ProviderCallRequestedAction
   | ProviderCallTimeoutAction
   | ProviderCallFailedAction
-  | ProviderCallSucceededAction;
+  | ProviderCallSucceededAction
+  | ProviderCallFlushedAction;

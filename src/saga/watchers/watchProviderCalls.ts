@@ -1,4 +1,4 @@
-import { SagaIterator, buffers } from 'redux-saga';
+import { SagaIterator, buffers, delay } from 'redux-saga';
 import {
   put,
   take,
@@ -13,7 +13,10 @@ import {
   ProviderCallRequestedAction,
   PROVIDER_CALL,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
+import {
+  BALANCER,
+  balancerFlush,
+} from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { getAvailableProviderId } from '@src/ducks/selectors';
 import { providerChannels } from '@src/saga/providerChannels';
@@ -26,7 +29,6 @@ function* handleRequest(): SagaIterator {
   while (true) {
     function* process() {
       const { payload }: ProviderCallRequestedAction = yield take(requestChan);
-
       // check if the app is offline
       if (yield select(isOffline)) {
         console.log('waiting for online');
@@ -45,16 +47,19 @@ function* handleRequest(): SagaIterator {
       yield put(providerChannel, payload);
     }
 
-    const { networkSwitched } = yield race({
+    const { networkSwitched, queueTimeout } = yield race({
       processed: call(process),
       networkSwitched: take(BALANCER.FLUSH),
+      queueTimeout: call(delay, 5000),
     });
 
-    if (networkSwitched) {
+    if (networkSwitched || queueTimeout) {
       console.log('flushed');
+      if (queueTimeout) {
+        yield put(balancerFlush());
+      }
       yield flush(requestChan);
     }
-    console.log('looping around');
   }
 }
 

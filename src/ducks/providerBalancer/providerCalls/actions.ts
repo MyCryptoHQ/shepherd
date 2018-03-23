@@ -4,6 +4,7 @@ import {
   ProviderCallTimeoutAction,
   ProviderCallFailedAction,
   ProviderCallSucceededAction,
+  ProviderCallFlushedAction,
 } from './types';
 
 export const providerCallRequested = (
@@ -26,6 +27,10 @@ export const providerCallFailed = (
   type: PROVIDER_CALL.FAILED,
   payload,
 });
+
+export const providerCallFlushed = (
+  payload: ProviderCallFlushedAction['payload'],
+): ProviderCallFlushedAction => ({ type: PROVIDER_CALL.FLUSHED, payload });
 
 export const providerCallSucceeded = (
   payload: ProviderCallSucceededAction['payload'],

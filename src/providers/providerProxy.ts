@@ -7,6 +7,7 @@ import {
   ProviderCallAction,
   ProviderCallFailedAction,
   ProviderCallSucceededAction,
+  ProviderCallFlushedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { store } from '@src/ducks';
 import { allRPCMethods } from '@src/providers';
@@ -27,7 +28,8 @@ const triggerOnMatchingCallId = (callId: number) => (
   // check if the action is a provider failed or succeeded call
   if (
     action.type === PROVIDER_CALL.FAILED ||
-    action.type === PROVIDER_CALL.SUCCEEDED
+    action.type === PROVIDER_CALL.SUCCEEDED ||
+    action.type === PROVIDER_CALL.FLUSHED
   ) {
     // make sure its the same call
     return action.payload.providerCall.callId === callId;
@@ -38,13 +40,21 @@ type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
 type Reject = (reason?: any) => void;
 
 const respondToCallee = (resolve: Resolve, reject: Reject) => (
-  action: ProviderCallFailedAction | ProviderCallSucceededAction,
+  action:
+    | ProviderCallFailedAction
+    | ProviderCallSucceededAction
+    | ProviderCallFlushedAction,
 ) => {
-  if (action.type === PROVIDER_CALL.FAILED) {
+  if (action.type === PROVIDER_CALL.FLUSHED) {
+    console.error('Request flushed');
+    console.error(action);
+
+    reject(Error(action.payload.error));
+  } else if (action.type === PROVIDER_CALL.FAILED) {
     console.error('Request failed');
     console.error(action);
 
-    reject(action.payload.error);
+    reject(Error(action.payload.error));
   } else {
     resolve(action.payload.result);
   }
