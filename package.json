@@ -55,6 +55,14 @@
       "@src/(.*)": "<rootDir>/src/$1",
       "@test/(.*)": "<rootDir>/__test__/$1"
     },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$"
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "src/providers/etherscan",
+      "src/providers/infura",
+      "src/providers/rpc",
+      "src/validators",
+      "mockNode.ts"
+    ]
   }
 }
