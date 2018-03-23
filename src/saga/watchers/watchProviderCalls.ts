@@ -1,4 +1,4 @@
-import { SagaIterator, buffers, delay } from 'redux-saga';
+import { SagaIterator, buffers, delay, Channel } from 'redux-saga';
 import {
   put,
   take,
@@ -12,6 +12,8 @@ import {
 import {
   ProviderCallRequestedAction,
   PROVIDER_CALL,
+  providerCallFailed,
+  IProviderCall,
 } from '@src/ducks/providerBalancer/providerCalls';
 import {
   BALANCER,
@@ -21,6 +23,39 @@ import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors'
 import { getAvailableProviderId } from '@src/ducks/selectors';
 import { providerChannels } from '@src/saga/providerChannels';
 
+function* getOptimalProviderChannel(
+  payload: ProviderCallRequestedAction['payload'],
+): SagaIterator {
+  // check if the app is offline
+  if (yield select(isOffline)) {
+    console.log('waiting for online');
+    yield take(BALANCER.ONLINE); // wait until its back online
+    console.log('online');
+  }
+
+  // get an available providerId to put the action to the channel
+  const providerId: string | null = yield select(
+    getAvailableProviderId,
+    payload,
+  );
+
+  if (!providerId) {
+    // TODO: seperate this into a different action
+    yield put(
+      providerCallFailed({
+        providerCall: { ...payload, providerId: 'SHEPHERD' },
+        error: 'No available provider found',
+      }),
+    );
+    return undefined;
+  }
+
+  const providerChannel = providerChannels.getChannel(providerId);
+  console.log(`Putting request to provider ${providerId}`);
+
+  return providerChannel;
+}
+
 function* handleRequest(): SagaIterator {
   const requestChan = yield actionChannel(
     PROVIDER_CALL.REQUESTED,
@@ -29,21 +64,14 @@ function* handleRequest(): SagaIterator {
   while (true) {
     function* process() {
       const { payload }: ProviderCallRequestedAction = yield take(requestChan);
-      // check if the app is offline
-      if (yield select(isOffline)) {
-        console.log('waiting for online');
-        yield take(BALANCER.ONLINE); // wait until its back online
-        console.log('online');
-      }
-
-      // get an available providerId to put the action to the channel
-      const providerId: string | null = yield select(
-        getAvailableProviderId,
+      const providerChannel: Channel<IProviderCall> | undefined = yield call(
+        getOptimalProviderChannel,
         payload,
       );
 
-      const providerChannel = providerChannels.getChannel(providerId);
-      console.log(`Putting request to provider ${providerId}`);
+      if (!providerChannel) {
+        return;
+      }
       yield put(providerChannel, payload);
     }
 
