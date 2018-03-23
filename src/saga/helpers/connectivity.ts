@@ -1,6 +1,7 @@
-import { call, apply, race } from 'redux-saga/effects';
+import { call, apply, race, select } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import { providerStorage } from '@src/providers';
+import { getProviderTimeoutThreshold } from '@src/ducks/providerConfigs';
 
 /**
  * @description polls the offline state of a provider, then returns control to caller when it comes back online
@@ -8,19 +9,18 @@ import { providerStorage } from '@src/providers';
  */
 export function* checkProviderConnectivity(providerId: string) {
   const provider = providerStorage.getInstance(providerId);
+  const timeoutThreshold = yield select(
+    getProviderTimeoutThreshold,
+    providerId,
+  );
   try {
-    console.log(`Polling ${providerId} to see if its online...`);
     const { lb } = yield race({
       lb: apply(provider, provider.getCurrentBlock),
-      to: call(delay, 5000),
+      to: call(delay, timeoutThreshold),
     });
-
-    lb && console.log(`${providerId} online`);
-    !lb && console.log(`${providerId} offline`);
     return !!lb;
   } catch (error) {
     console.info(error);
   }
-  console.log(`${providerId} offline`);
   return false;
 }
