@@ -8,21 +8,15 @@ import {
   put,
 } from 'redux-saga/effects';
 import { getWorkers, WorkerState } from '@src/ducks/providerBalancer/workers';
-import { providerChannels } from '@src/saga/providerChannels';
-import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
+import { providerChannels, balancerChannel } from '@src/saga/channels';
 import {
-  providerCallFlushed,
-  getAllPendingCalls,
-  PendingProviderCall,
-} from '@src/ducks/providerBalancer/providerCalls';
-
-function* clearChannels(): SagaIterator {
-  yield apply(providerChannels, providerChannels.flushChannels);
-  yield apply(providerChannels, providerChannels.deleteAllChannels);
-}
+  BALANCER,
+  balancerFlush,
+  BalancerQueueTimeoutAction,
+  BalancerNetworkSwitchRequestedAction,
+} from '@src/ducks/providerBalancer/balancerConfig';
 
 function* clearWorkers(): SagaIterator {
-  // cancel all existing workers
   const workers: WorkerState = yield select(getWorkers);
   for (const worker of Object.values(workers)) {
     yield cancel(worker.task);
@@ -30,20 +24,32 @@ function* clearWorkers(): SagaIterator {
 }
 
 function* clearAllPendingCalls(): SagaIterator {
-  const pendingCalls: PendingProviderCall[] = yield select(getAllPendingCalls);
-  for (const call of pendingCalls) {
-    const { pending, error, result, ...rest } = call;
+  yield apply(providerChannels, providerChannels.cancelPendingCalls);
+  yield apply(balancerChannel, balancerChannel.cancelPendingCalls);
+}
 
-    yield put(
-      providerCallFlushed({ error: 'Call Flushed', providerCall: rest }),
-    );
+function* deleteProviderChannels() {
+  yield apply(providerChannels, providerChannels.deleteAllChannels);
+}
+
+type FlushingActions =
+  | BalancerQueueTimeoutAction
+  | BalancerNetworkSwitchRequestedAction;
+
+function* clearState({ type }: FlushingActions): SagaIterator {
+  const isNetworkSwitch = type === BALANCER.NETWORK_SWTICH_REQUESTED;
+  yield call(clearAllPendingCalls);
+
+  if (isNetworkSwitch) {
+    yield put(balancerFlush());
+    yield call(clearWorkers);
+    yield call(deleteProviderChannels);
   }
 }
 
-function* clearState(): SagaIterator {
-  yield call(clearChannels);
-  yield call(clearWorkers);
-  yield call(clearAllPendingCalls);
-}
-
-export const balancerFlushWatcher = [takeEvery(BALANCER.FLUSH, clearState)];
+export const balancerFlushWatcher = [
+  takeEvery(
+    [BALANCER.NETWORK_SWTICH_REQUESTED, BALANCER.QUEUE_TIMEOUT],
+    clearState,
+  ),
+];

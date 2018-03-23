@@ -1,9 +1,12 @@
 import RpcProvider from '@src/providers/rpc';
 import { StrIdx } from '@src/types';
 
-export type ProviderCallsState = StrIdx<
-  SuccessfulProviderCall | PendingProviderCall | FailedProviderCall
->;
+export type ProviderCallState =
+  | SuccessfulProviderCall
+  | PendingProviderCall
+  | FailedProviderCall;
+
+export type ProviderCallsState = StrIdx<ProviderCallState>;
 
 export enum PROVIDER_CALL {
   REQUESTED = 'PROVIDER_CALL_REQUESTED',

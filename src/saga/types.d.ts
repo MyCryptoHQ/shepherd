@@ -5,10 +5,3 @@ import { IProviderCall } from '@src/ducks/providerBalancer/providerCalls';
 interface Workers {
   [workerId: string]: IWorker;
 }
-
-/**
- * Each channel id is a 1-1 mapping of a providerId
- */
-interface IChannels {
-  [key: string]: Channel<IProviderCall>;
-}

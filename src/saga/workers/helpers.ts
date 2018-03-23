@@ -1,23 +1,17 @@
+import { call, put, cancelled, select, race, apply } from 'redux-saga/effects';
 import {
-  call,
-  take,
-  put,
-  cancelled,
-  select,
-  race,
-  apply,
-} from 'redux-saga/effects';
-import {
-  IProviderCall,
   providerCallSucceeded,
   providerCallTimeout,
+  getProviderCallById,
+  ProviderCallState,
+  ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { workerProcessing } from '@src/ducks/providerBalancer/workers';
 import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
-import { providerChannels } from '@src/saga/providerChannels';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
 import { delay } from 'redux-saga';
 import { IProvider } from '@src/types';
+import { providerChannels } from '@src/saga/channels';
 
 function* sendRequestToProvider(
   providerId: string,
@@ -47,13 +41,31 @@ function* sendRequestToProvider(
   }
 }
 
-function* processRequest(providerId: string, workerId: string) {
-  const chan = providerChannels.getChannel(providerId);
+function* callIsStale(callId: number) {
+  const callState: ProviderCallState = yield select(
+    getProviderCallById,
+    callId,
+  );
 
+  if (!callState.pending) {
+    console.log(`Call ${callId} has turned stale, rejecting`);
+    return true;
+  }
+}
+
+function* processRequest(providerId: string, workerId: string) {
   // take from the assigned action channel
-  const payload: IProviderCall = yield take(chan);
+  const { payload }: ProviderCallRequestedAction = yield apply(
+    providerChannels,
+    providerChannels.take,
+    [providerId],
+  );
   const { rpcArgs, rpcMethod } = payload;
   const callWithPid = addProviderIdToCall(payload, providerId);
+
+  if (yield call(callIsStale, payload.callId)) {
+    return providerChannels.done(providerId);
+  }
 
   // after taking a request, declare processing state
   yield put(workerProcessing({ currentPayload: callWithPid, workerId }));
@@ -64,6 +76,12 @@ function* processRequest(providerId: string, workerId: string) {
     rpcMethod,
     rpcArgs,
   );
+
+  providerChannels.done(providerId);
+
+  if (yield call(callIsStale, payload.callId)) {
+    return;
+  }
 
   if (result) {
     const action = providerCallSucceeded({

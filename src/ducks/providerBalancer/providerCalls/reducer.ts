@@ -58,9 +58,11 @@ const handleProviderCallFlushed = (
   { payload }: ProviderCallFlushedAction,
 ): ProviderCallsState => {
   const call = state[payload.providerCall.callId];
+
   if (!call || !call.pending) {
     throw Error('Pending provider call not found');
   }
+
   return {
     ...state,
     [payload.providerCall.callId]: {
@@ -95,6 +97,7 @@ const handleWorkerProcessing = (
 ) => {
   const prevPayload = state[currentPayload.callId];
   if (!prevPayload || !prevPayload.pending) {
+    console.error(currentPayload);
     throw Error('Pending provider call not found');
   }
 

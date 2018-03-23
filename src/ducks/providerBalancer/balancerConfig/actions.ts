@@ -6,12 +6,11 @@ import {
   BalancerOnlineAction,
   BalancerSetProviderCallRetryThresholdAction,
   BalancerManualAction,
-} from './types';
-import {
+  BalancerQueueTimeoutAction,
   BalancerOfflineAction,
   BalancerInitAction,
   BalancerAutoAction,
-} from '@src/ducks/providerBalancer/balancerConfig';
+} from './types';
 
 export const balancerFlush = (): BalancerFlushAction => ({
   type: BALANCER.FLUSH,
@@ -55,3 +54,7 @@ export const setAuto = (): BalancerAutoAction => ({ type: BALANCER.AUTO });
 export const setManual = (
   payload: BalancerManualAction['payload'],
 ): BalancerManualAction => ({ type: BALANCER.MANUAL, payload });
+
+export const balancerQueueTimeout = (): BalancerQueueTimeoutAction => ({
+  type: BALANCER.QUEUE_TIMEOUT,
+});

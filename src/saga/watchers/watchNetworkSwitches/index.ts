@@ -1,10 +1,8 @@
 import { SagaIterator } from 'redux-saga';
 import { call, put, take, fork } from 'redux-saga/effects';
 import {
-  balancerFlush,
   balancerNetworkSwitchSucceeded,
   BALANCER,
-  setOffline,
   BalancerNetworkSwitchRequestedAction,
   BalancerInitAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
@@ -18,8 +16,6 @@ function* handleNetworkSwitch(): SagaIterator {
       BALANCER.NETWORK_SWTICH_REQUESTED,
       BALANCER.INIT,
     ]);
-    yield put(setOffline());
-    yield put(balancerFlush());
 
     const networkSwitchPayload = yield call(
       initializeNewNetworkProviders,

@@ -1,29 +1,18 @@
-import { SagaIterator, buffers, delay, Channel } from 'redux-saga';
-import {
-  put,
-  take,
-  select,
-  actionChannel,
-  fork,
-  call,
-  race,
-  flush,
-} from 'redux-saga/effects';
+import { SagaIterator, delay } from 'redux-saga';
+import { put, take, select, fork, call, race, apply } from 'redux-saga/effects';
 import {
   ProviderCallRequestedAction,
-  PROVIDER_CALL,
   providerCallFailed,
-  IProviderCall,
 } from '@src/ducks/providerBalancer/providerCalls';
 import {
   BALANCER,
-  balancerFlush,
+  balancerQueueTimeout,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { getAvailableProviderId } from '@src/ducks/selectors';
-import { providerChannels } from '@src/saga/providerChannels';
+import { providerChannels, balancerChannel } from '@src/saga/channels';
 
-function* getOptimalProviderChannel(
+function* getOptimalProviderId(
   payload: ProviderCallRequestedAction['payload'],
 ): SagaIterator {
   // check if the app is offline
@@ -41,52 +30,53 @@ function* getOptimalProviderChannel(
 
   if (!providerId) {
     // TODO: seperate this into a different action
-    yield put(
-      providerCallFailed({
-        providerCall: { ...payload, providerId: 'SHEPHERD' },
-        error: 'No available provider found',
-      }),
-    );
+    console.error(`no provider id found for ${payload.callId}`);
+
+    const action = providerCallFailed({
+      providerCall: { ...payload, providerId: 'SHEPHERD' },
+      error: 'No available provider found',
+    });
+    yield put(action);
     return undefined;
   }
 
-  const providerChannel = providerChannels.getChannel(providerId);
-  console.log(`Putting request to provider ${providerId}`);
-
-  return providerChannel;
+  return providerId;
 }
 
 function* handleRequest(): SagaIterator {
-  const requestChan = yield actionChannel(
-    PROVIDER_CALL.REQUESTED,
-    buffers.expanding(50),
-  );
+  yield apply(balancerChannel, balancerChannel.init);
+
   while (true) {
+    // test if this starts queue timeout
+    const action: ProviderCallRequestedAction = yield apply(
+      balancerChannel,
+      balancerChannel.take,
+    );
+
     function* process() {
-      const { payload }: ProviderCallRequestedAction = yield take(requestChan);
-      const providerChannel: Channel<IProviderCall> | undefined = yield call(
-        getOptimalProviderChannel,
+      const { payload } = action;
+      const providerId: string | undefined = yield call(
+        getOptimalProviderId,
         payload,
       );
 
-      if (!providerChannel) {
-        return;
+      if (providerId) {
+        yield apply(providerChannels, providerChannels.put, [
+          providerId,
+          action,
+        ]);
       }
-      yield put(providerChannel, payload);
+
+      balancerChannel.done();
     }
 
-    const { networkSwitched, queueTimeout } = yield race({
+    const { queueTimeout } = yield race({
       processed: call(process),
-      networkSwitched: take(BALANCER.FLUSH),
       queueTimeout: call(delay, 5000),
     });
 
-    if (networkSwitched || queueTimeout) {
-      console.log('flushed');
-      if (queueTimeout) {
-        yield put(balancerFlush());
-      }
-      yield flush(requestChan);
+    if (queueTimeout) {
+      yield put(balancerQueueTimeout());
     }
   }
 }

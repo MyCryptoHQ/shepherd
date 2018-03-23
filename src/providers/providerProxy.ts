@@ -16,6 +16,7 @@ import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs';
 import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig';
+import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 
 const triggerOnMatchingCallId = (callId: number) => (
   action:
@@ -56,6 +57,7 @@ const respondToCallee = (resolve: Resolve, reject: Reject) => (
 
     reject(Error(action.payload.error));
   } else {
+    console.error('Request successful');
     resolve(action.payload.result);
   }
 };
@@ -73,13 +75,15 @@ const makeProviderCall = (
   rpcMethod: keyof RpcProvider,
   rpcArgs: string[],
 ): IProviderCall => {
-  // allow all providers for now
+  const isManual = getManualMode(store.getState());
+
   const providerCall: IProviderCall = {
     callId: generateCallId(),
     numOfRetries: 0,
     rpcArgs,
     rpcMethod,
     minPriorityProviderList: [],
+    ...(isManual ? { providerWhiteList: [isManual] } : {}),
   };
 
   return providerCall;

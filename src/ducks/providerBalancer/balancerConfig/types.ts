@@ -11,6 +11,7 @@ export enum BALANCER {
   MANUAL = 'BALANCER_MANUAL',
   OFFLINE = 'BALANCER_OFFLINE',
   ONLINE = 'BALANCER_ONLINE',
+  QUEUE_TIMEOUT = 'QUEUE_TIMEOUT',
 }
 
 export type BalancerConfigInitConfig = Partial<
@@ -31,6 +32,10 @@ export interface BalancerInitAction {
 
 export interface BalancerFlushAction {
   type: BALANCER.FLUSH;
+}
+
+export interface BalancerQueueTimeoutAction {
+  type: BALANCER.QUEUE_TIMEOUT;
 }
 
 export interface BalancerNetworkSwitchRequestedAction {

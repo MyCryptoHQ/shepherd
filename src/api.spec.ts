@@ -309,7 +309,7 @@ describe('Api tests', () => {
       );
 
       node.getBalance('0x').catch(e => {
-        console.error(e);
+        expect(e.message).toEqual('mock node error');
         expect(
           getProviderCallById(redux.store.getState(), 0).numOfRetries,
         ).toEqual(2);
@@ -392,7 +392,7 @@ describe('Api tests', () => {
       expect(getProviderCallById(state, 0).providerId).toEqual(undefined);
       expect(getProviderCallById(state, 1).providerId).toEqual(undefined);
       expect(getProviderCallById(state, 2).providerId).toEqual('etc1');
-      expect(getProviderCallById(state, 3).providerId).toEqual('etc1');
+      expect(getProviderCallById(state, 3).providerId).toEqual(undefined);
       expect(getProviderCallById(state, 4).providerId).toEqual('eth1');
 
       // check that they all got properly flushed / cancelled
@@ -407,7 +407,7 @@ describe('Api tests', () => {
 
     it(
       'should handle a failed call via balancer level timeout',
-      async done => {
+      async () => {
         const { shepherd, redux } = getAPI();
         const failingProvider = makeMockProviderConfig({
           concurrency: 2,
@@ -441,10 +441,26 @@ describe('Api tests', () => {
             getProviderStatsById(state, 'failingProvider')!.requestFailures,
           ).toEqual(0); // TODO: write another version of this test that checks for 1, will need to have the polling-rate adjustable so it's
           expect(e.message).toEqual('Call Flushed');
-          done();
         }
+
+        const workingProvider = makeMockProviderConfig({
+          concurrency: 2,
+          network: 'ETH',
+          requestFailureThreshold: 3,
+          timeoutThresholdMs: 3000,
+        });
+
+        shepherd.useProvider(
+          'MockProvider',
+          'workingProvider',
+          workingProvider,
+          new MockProvider(),
+          createMockProxyHandler({ baseDelay: 0, failureRate: 0 }),
+        );
+
+        await node.getBalance('0x');
       },
-      6000,
+      8000,
     );
 
     it(
@@ -604,7 +620,7 @@ describe('Api tests', () => {
       10000,
     );
 
-    it('should handle timeouts', async () => {
+    it('should handle timeouts on a single provider', async () => {
       const { shepherd, redux: { store } } = getAPI();
       const eth1 = makeMockProviderConfig({
         concurrency: 2,

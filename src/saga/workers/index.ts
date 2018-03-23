@@ -1,4 +1,4 @@
-import { providerChannels } from '@src/saga/providerChannels';
+import { providerChannels } from '@src/saga/channels';
 import { Workers } from '@src/saga/types';
 import { makeWorkerId, makeWorker } from '@src/saga/sagaUtils';
 import { Task } from 'redux-saga';
