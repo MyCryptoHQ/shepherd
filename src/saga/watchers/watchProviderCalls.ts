@@ -17,9 +17,7 @@ function* getOptimalProviderId(
 ): SagaIterator {
   // check if the app is offline
   if (yield select(isOffline)) {
-    console.log('waiting for online');
     yield take(BALANCER.ONLINE); // wait until its back online
-    console.log('online');
   }
 
   // get an available providerId to put the action to the channel
@@ -30,8 +28,6 @@ function* getOptimalProviderId(
 
   if (!providerId) {
     // TODO: seperate this into a different action
-    console.error(`no provider id found for ${payload.callId}`);
-
     const action = providerCallFailed({
       providerCall: { ...payload, providerId: 'SHEPHERD' },
       error: 'No available provider found',

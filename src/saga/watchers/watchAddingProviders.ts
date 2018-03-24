@@ -27,7 +27,6 @@ function* handleAddingProviderConfig({
   });
 
   if (!processedProvider) {
-    console.log(`Provider ${id} cancelled due to network switch`);
     return;
   }
 

@@ -1,14 +1,4 @@
 import { store } from './ducks';
-
-// shepherd.config({callTimeout })
-// const myNode = shepherd.init({providers })
-// shepherd.add({provider})
-// shepherd.remove({provider})
-// shepherd.modify({provider: { supportedMethods, maxWorkers } })
-// shepherd.only({provider})
-// shepherd.delegate([{provider}], [methods] )
-// shepherd.switchNetworks(network)
-
 import {
   BALANCER,
   balancerInit,

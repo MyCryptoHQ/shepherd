@@ -48,7 +48,6 @@ function* callIsStale(callId: number) {
   );
 
   if (!callState.pending) {
-    console.log(`Call ${callId} has turned stale, rejecting`);
     return true;
   }
 }
@@ -90,8 +89,6 @@ function* processRequest(providerId: string, workerId: string) {
     });
     return yield put(action);
   } else {
-    console.log(`${workerId} failed request ${payload.callId}`);
-
     const action = providerCallTimeout({
       providerCall: callWithPid,
       error,
@@ -113,8 +110,6 @@ export function* createWorker(thisId: string, providerId: string) {
     console.error(`${thisId} as errored with ${e.message}`);
   } finally {
     if (yield cancelled()) {
-      // shared cancellation logic
-      console.error(`${thisId} has been cancelled`);
     }
   }
 }

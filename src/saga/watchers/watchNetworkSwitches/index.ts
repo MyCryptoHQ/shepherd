@@ -21,7 +21,6 @@ function* handleNetworkSwitch(): SagaIterator {
       initializeNewNetworkProviders,
       payload.network,
     );
-    console.log('network switch succeeded');
     yield put(balancerNetworkSwitchSucceeded(networkSwitchPayload));
   }
 }
