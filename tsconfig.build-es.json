@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./dist/lib",
     "target": "es6",
     "sourceMap": false,
     "strictNullChecks": true,
-    "module": "es2015",
+    "module": "es6",
     "allowJs": false,
     "baseUrl": "./",
     "lib": ["es2017", "dom"],
