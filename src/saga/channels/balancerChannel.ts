@@ -4,7 +4,7 @@ import { buffers, SagaIterator } from 'redux-saga';
 import { actionChannel } from 'redux-saga/effects';
 
 export class BalancerChannel extends BaseChannel {
-  name = 'Balancer Channel';
+  public name = 'Balancer Channel';
 
   public *init(): SagaIterator {
     this.chan = yield actionChannel(

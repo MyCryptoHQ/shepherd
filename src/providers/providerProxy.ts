@@ -13,10 +13,10 @@ import {
 import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs';
+import { subscribeToAction } from '@src/ducks/subscribe';
 import { allRPCMethods } from '@src/providers';
 import { IProvider } from '@src/types';
 import RpcProvider from './rpc';
-import { subscribeToAction } from '@src/ducks/subscribe';
 
 export const triggerOnMatchingCallId = (
   callId: number,

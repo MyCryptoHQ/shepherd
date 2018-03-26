@@ -4,11 +4,11 @@ import {
   balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { store } from './ducks';
+import { subscribeToAction } from '@src/ducks/subscribe';
 import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
+import { store } from './ducks';
 import { addProvider, createProviderProxy, useProvider } from './providers';
-import { subscribeToAction } from '@src/ducks/subscribe';
 
 function waitForNetworkSwitch() {
   return new Promise(res =>

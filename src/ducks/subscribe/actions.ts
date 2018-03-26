@@ -1,4 +1,4 @@
-import { SubscribeAction, SUBSCRIBE } from './types';
+import { SUBSCRIBE, SubscribeAction } from './types';
 
 export function subscribeToAction(
   payload: SubscribeAction['payload'],

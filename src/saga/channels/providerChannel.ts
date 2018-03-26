@@ -3,7 +3,7 @@ import { buffers, channel } from 'redux-saga';
 import { apply, call } from 'redux-saga/effects';
 
 class ProviderChannel extends BaseChannel {
-  name = 'Provider Channel';
+  public name = 'Provider Channel';
   public *init() {
     this.chan = yield call(channel, buffers.expanding(10));
   }

@@ -2,10 +2,10 @@ import {
   providerCallFlushed,
   ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
+import { subscribeToAction } from '@src/ducks/subscribe';
+import { triggerOnMatchingCallId } from '@src/providers';
 import { Channel, SagaIterator } from 'redux-saga';
 import { apply, flush, put, take } from 'redux-saga/effects';
-import { triggerOnMatchingCallId } from '@src/providers';
-import { subscribeToAction } from '@src/ducks/subscribe';
 
 export abstract class BaseChannel {
   protected chan: Channel<ProviderCallRequestedAction>;

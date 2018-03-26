@@ -1,6 +1,6 @@
+import { SUBSCRIBE, SubscribeAction } from '@src/ducks/subscribe';
 import { SagaIterator } from 'redux-saga';
 import { take, takeEvery } from 'redux-saga/effects';
-import { SubscribeAction, SUBSCRIBE } from '@src/ducks/subscribe';
 
 function* handleSubscribeToAction({ payload }: SubscribeAction): SagaIterator {
   const { trigger, callback } = payload;
