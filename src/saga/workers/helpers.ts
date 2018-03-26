@@ -1,7 +1,5 @@
 import {
-  getProviderCallById,
   ProviderCallRequestedAction,
-  ProviderCallState,
   providerCallSucceeded,
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
@@ -41,17 +39,6 @@ function* sendRequestToProvider(
   }
 }
 
-function* callIsStale(callId: number) {
-  const callState: ProviderCallState = yield select(
-    getProviderCallById,
-    callId,
-  );
-
-  if (!callState.pending) {
-    return true;
-  }
-}
-
 function* processRequest(providerId: string, workerId: string) {
   // take from the assigned action channel
   const { payload }: ProviderCallRequestedAction = yield apply(
@@ -62,10 +49,6 @@ function* processRequest(providerId: string, workerId: string) {
   const { rpcArgs, rpcMethod } = payload;
   const callWithPid = addProviderIdToCall(payload, providerId);
 
-  if (yield call(callIsStale, payload.callId)) {
-    return providerChannels.done(providerId);
-  }
-
   // after taking a request, declare processing state
   yield put(workerProcessing({ currentPayload: callWithPid, workerId }));
 
@@ -75,12 +58,6 @@ function* processRequest(providerId: string, workerId: string) {
     rpcMethod,
     rpcArgs,
   );
-
-  providerChannels.done(providerId);
-
-  if (yield call(callIsStale, payload.callId)) {
-    return;
-  }
 
   if (result) {
     const action = providerCallSucceeded({

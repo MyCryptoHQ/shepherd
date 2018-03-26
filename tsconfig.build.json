@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "outDir": "../dist",
+    "outDir": "./dist",
     "target": "es6",
     "sourceMap": false,
     "strictNullChecks": true,
     "module": "es2015",
     "allowJs": false,
-    "baseUrl": "../",
+    "baseUrl": "./",
     "lib": ["es2017", "dom"],
     "allowSyntheticDefaultImports": true,
     "paths": {
@@ -18,11 +18,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["../src/"],
+  "include": ["./src/"],
   "exclude": [
-    "../node_modules",
+    "node_modules",
     "dist",
-    "../src/**/*.test.ts",
-    "../src/**/*.spec.ts"
+    "./src/**/*.test.ts",
+    "./src/**/*.spec.ts"
   ]
 }

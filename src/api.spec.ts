@@ -13,6 +13,7 @@ import { IIndex } from './index';
 const getAPI = () => {
   jest.resetModules();
   const API: IIndex = require('./index');
+
   return API;
 };
 
@@ -437,6 +438,7 @@ describe('Api tests', () => {
           expect(getProviderCallById(state, 0).numOfRetries).toEqual(3);
           // check that the provider failed 3 times, goes offline, then goes back online
           // then is set to 0, then call times out on balancer side before it can try again and put a failed call
+
           expect(
             getProviderStatsById(state, 'failingProvider')!.requestFailures,
           ).toEqual(0); // TODO: write another version of this test that checks for 1, will need to have the polling-rate adjustable so it's

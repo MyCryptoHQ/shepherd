@@ -14,11 +14,14 @@ import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs';
 import { allRPCMethods } from '@src/providers';
-import { subscribeToAction } from '@src/saga/watchers/watchActionSubscription';
 import { IProvider } from '@src/types';
 import RpcProvider from './rpc';
+import { subscribeToAction } from '@src/ducks/subscribe';
 
-const triggerOnMatchingCallId = (callId: number) => (
+export const triggerOnMatchingCallId = (
+  callId: number,
+  includeTimeouts: boolean,
+) => (
   action:
     | ProviderCallAction
     | WorkerAction
@@ -30,7 +33,8 @@ const triggerOnMatchingCallId = (callId: number) => (
   if (
     action.type === PROVIDER_CALL.FAILED ||
     action.type === PROVIDER_CALL.SUCCEEDED ||
-    action.type === PROVIDER_CALL.FLUSHED
+    action.type === PROVIDER_CALL.FLUSHED ||
+    (includeTimeouts && action.type === PROVIDER_CALL.TIMEOUT)
   ) {
     // make sure its the same call
     return action.payload.providerCall.callId === callId;
@@ -89,10 +93,12 @@ const dispatchRequest = (providerCall: IProviderCall) => {
 
 const waitForResponse = (callId: number) =>
   new Promise((resolve, reject) =>
-    subscribeToAction({
-      trigger: triggerOnMatchingCallId(callId),
-      callback: respondToCallee(resolve, reject),
-    }),
+    store.dispatch(
+      subscribeToAction({
+        trigger: triggerOnMatchingCallId(callId, false),
+        callback: respondToCallee(resolve, reject),
+      }),
+    ),
   );
 
 const providerCallDispatcher = (rpcMethod: keyof RpcProvider) => (

@@ -62,16 +62,19 @@ function* handleRequest(): SagaIterator {
           action,
         ]);
       }
-
-      balancerChannel.done();
     }
 
     const { queueTimeout } = yield race({
       processed: call(process),
+      // we cancel in case of a balancer flush
+      // so we dont put an action that's about to be flushed
+      // to a worker
+      networkSwitch: take(BALANCER.FLUSH),
       queueTimeout: call(delay, 5000),
     });
 
     if (queueTimeout) {
+      console.error('Queue timeout');
       yield put(balancerQueueTimeout());
     }
   }

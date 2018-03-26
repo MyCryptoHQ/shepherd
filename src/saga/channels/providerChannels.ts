@@ -20,12 +20,7 @@ export class ProviderChannels {
     action: ProviderCallRequestedAction,
   ): SagaIterator {
     const chan = this.getChannel(providerId).get();
-
     yield put(chan, action);
-  }
-
-  public done(providerId: string) {
-    this.getChannel(providerId).done();
   }
 
   public *createChannel(providerId: string): SagaIterator {

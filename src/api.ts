@@ -1,22 +1,24 @@
-import { store } from './ducks';
 import {
   BALANCER,
   balancerInit,
   balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { subscribeToAction } from '@src/saga/watchers/watchActionSubscription';
+import { store } from './ducks';
 import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
 import { addProvider, createProviderProxy, useProvider } from './providers';
+import { subscribeToAction } from '@src/ducks/subscribe';
 
 function waitForNetworkSwitch() {
-  return new Promise(res => {
-    subscribeToAction({
-      trigger: BALANCER.NETWORK_SWITCH_SUCCEEDED,
-      callback: res,
-    });
-  });
+  return new Promise(res =>
+    store.dispatch(
+      subscribeToAction({
+        trigger: BALANCER.NETWORK_SWITCH_SUCCEEDED,
+        callback: res,
+      }),
+    ),
+  );
 }
 
 class Shepherd implements IShepherd {
