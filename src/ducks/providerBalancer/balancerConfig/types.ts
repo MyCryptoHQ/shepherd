@@ -1,4 +1,4 @@
-import { ProviderBalancerState } from '@src/ducks/providerBalancer/types';
+import { ProviderBalancerState } from '@src/ducks/providerBalancer';
 import { Omit } from '@src/types';
 
 export enum BALANCER {

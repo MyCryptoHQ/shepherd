@@ -19,6 +19,8 @@
     "noUnusedParameters": true
   },
   "include": ["./src/"],
+  "inlineSources": true,
+  "inlineSourceMap": true,
   "exclude": [
     "node_modules",
     "dist",

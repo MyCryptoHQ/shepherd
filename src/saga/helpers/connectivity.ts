@@ -1,5 +1,5 @@
 import { getProviderTimeoutThreshold } from '@src/ducks/providerConfigs';
-import { providerStorage } from '@src/providers';
+import { providerStorage } from '@src/providers/providerStorage';
 import { delay } from 'redux-saga';
 import { apply, call, race, select } from 'redux-saga/effects';
 

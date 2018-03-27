@@ -5,6 +5,7 @@ import { providerStatsReducer } from './providerStats';
 import { workerReducer } from './workers';
 import { ProviderBalancerState } from './types';
 
+export * from './types';
 export const providerBalancer = combineReducers<ProviderBalancerState>({
   providerStats: providerStatsReducer,
   workers: workerReducer,

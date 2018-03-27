@@ -1,45 +1,19 @@
 import { store } from '@src/ducks';
-import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig';
 import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   IProviderCall,
   PROVIDER_CALL,
-  ProviderCallAction,
   ProviderCallFailedAction,
   ProviderCallFlushedAction,
   providerCallRequested,
   ProviderCallSucceededAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
-import { WorkerAction } from '@src/ducks/providerBalancer/workers';
-import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
+
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { allRPCMethods } from './constants';
 import { IProvider } from '@src/types';
 import RpcProvider from './rpc';
-
-export const triggerOnMatchingCallId = (
-  callId: number,
-  includeTimeouts: boolean,
-) => (
-  action:
-    | ProviderCallAction
-    | WorkerAction
-    | ProviderStatsAction
-    | ProviderConfigAction
-    | BalancerAction,
-) => {
-  // check if the action is a provider failed or succeeded call
-  if (
-    action.type === PROVIDER_CALL.FAILED ||
-    action.type === PROVIDER_CALL.SUCCEEDED ||
-    action.type === PROVIDER_CALL.FLUSHED ||
-    (includeTimeouts && action.type === PROVIDER_CALL.TIMEOUT)
-  ) {
-    // make sure its the same call
-    return action.payload.providerCall.callId === callId;
-  }
-};
+import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
 
 type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
 type Reject = (reason?: any) => void;

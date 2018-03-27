@@ -1,6 +1,6 @@
 import * as BN from 'bn.js';
 import { Wei } from '@src/utils';
-import { ProviderBalancerState } from '@src/ducks/providerBalancer/types';
+import { ProviderBalancerState } from '@src/ducks/providerBalancer';
 import { ProviderConfigState } from '@src/ducks/providerConfigs';
 
 type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
