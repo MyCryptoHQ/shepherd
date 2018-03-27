@@ -10,14 +10,20 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
-    "tsc": "tsc --noEmit",
+    "tsc": "tsc --noEmit -p ./tsconfig.json",
     "format":
       "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
     "remotedev": "remotedev --hostname=localhost --port=8000",
-    "lint": "tslint --project . --fix",
+    "lint": "tslint --project .",
+    "lint:fix": "tslint --project . --fix",
     "prebuild": "rimraf dist",
     "build":
-      "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts"
+      "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts",
+    "precommit": "lint-staged",
+    "prepush": "npm run lint && npm run tsc"
+  },
+  "lint-staged": {
+    "{src,__test__}/**/*.ts": ["npm run format", "npm run lint", "git add"]
   },
   "repository": {
     "type": "git",
@@ -42,7 +48,9 @@
     "@types/node": "^9.4.6",
     "@types/remote-redux-devtools": "^0.5.2",
     "@types/url-search-params": "^0.10.1",
+    "husky": "^0.14.3",
     "jest": "^22.4.2",
+    "lint-staged": "^7.0.0",
     "prettier": "^1.10.2",
     "remotedev-server": "^0.2.4",
     "rollup": "^0.57.1",

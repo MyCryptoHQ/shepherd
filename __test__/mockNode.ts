@@ -14,7 +14,7 @@ const setTimeoutAsync = promisify(setTimeout);
 export const createMockProxyHandler = (args: IMockProxyHandlerArgs) => {
   let numFailed = 0;
   const retObj = {
-    get(target, propKey) {
+    get(target: any, propKey: any) {
       const {
         baseDelay,
         failureRate,
