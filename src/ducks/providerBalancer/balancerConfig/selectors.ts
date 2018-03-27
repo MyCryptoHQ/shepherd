@@ -1,6 +1,6 @@
-import { RootState } from '@src/types';
 import { ProviderCallTimeoutAction } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
+import { RootState } from '@src/types';
 
 export const getBalancerConfig = (state: RootState) =>
   getProviderBalancer(state).balancerConfig;

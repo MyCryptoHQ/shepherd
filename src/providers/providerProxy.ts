@@ -10,10 +10,10 @@ import {
 } from '@src/ducks/providerBalancer/providerCalls';
 
 import { subscribeToAction } from '@src/ducks/subscribe';
-import { allRPCMethods } from './constants';
-import { IProvider } from '@src/types';
-import RpcProvider from './rpc';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
+import { IProvider } from '@src/types';
+import { allRPCMethods } from './constants';
+import RpcProvider from './rpc';
 
 type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
 type Reject = (reason?: any) => void;

@@ -1,6 +1,6 @@
-import { RootState } from '@src/types';
 import { providerStorage } from '@src/providers/providerStorage';
 import RpcProvider from '@src/providers/rpc';
+import { RootState } from '@src/types';
 
 export const getProviderConfigs = (state: RootState) => state.providerConfigs;
 

@@ -1,7 +1,9 @@
 import { BALANCER } from '@src/ducks/providerBalancer/balancerConfig';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import { ProcessedProvider } from '@src/ducks/providerBalancer/providerStats';
-import { providerAdded } from '@src/ducks/providerBalancer/providerStats';
+import {
+  ProcessedProvider,
+  providerAdded,
+} from '@src/ducks/providerBalancer/providerStats';
 import {
   AddProviderConfigAction,
   PROVIDER_CONFIG,

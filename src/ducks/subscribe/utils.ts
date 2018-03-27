@@ -1,11 +1,11 @@
+import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig/types';
+import {
+  PROVIDER_CALL,
+  ProviderCallAction,
+} from '@src/ducks/providerBalancer/providerCalls';
 import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
-import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig/types';
-import {
-  ProviderCallAction,
-  PROVIDER_CALL,
-} from '@src/ducks/providerBalancer/providerCalls';
 
 export const triggerOnMatchingCallId = (
   callId: number,

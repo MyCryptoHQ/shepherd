@@ -1,9 +1,9 @@
-import { RootState } from '@src/types';
 import {
   IProviderStats,
   ProviderStatsState,
 } from '@src/ducks/providerBalancer/providerStats';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
+import { RootState } from '@src/types';
 
 export const getProviderStats = (state: RootState) =>
   getProviderBalancer(state).providerStats;

@@ -1,5 +1,5 @@
-import { RootState } from '@src/types';
 import { getProviderCalls } from '@src/ducks/providerBalancer/providerCalls';
+import { RootState } from '@src/types';
 
 export const getFinishedCallsByProviderId = (
   state: RootState,
