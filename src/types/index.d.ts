@@ -1,5 +1,7 @@
 import * as BN from 'bn.js';
 import { Wei } from '@src/utils';
+import { ProviderBalancerState } from '@src/ducks/providerBalancer/types';
+import { ProviderConfigState } from '@src/ducks/providerConfigs';
 
 type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
 
@@ -49,4 +51,9 @@ export interface IHexStrWeb3Transaction {
   gasPrice: string;
   nonce: string;
   chainId: number;
+}
+
+export interface RootState {
+  providerBalancer: ProviderBalancerState;
+  providerConfigs: ProviderConfigState;
 }

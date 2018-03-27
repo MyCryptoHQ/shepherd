@@ -1,18 +1,9 @@
 import { combineReducers } from 'redux';
-import { balancerConfigReducer, BalancerConfigState } from './balancerConfig';
-import { providerCallsReducer, ProviderCallsState } from './providerCalls';
-import {
-  providerStatsReducer,
-  ProviderStatsState as ProviderState,
-} from './providerStats';
-import { workerReducer, WorkerState } from './workers';
-
-export interface ProviderBalancerState {
-  providerStats: ProviderState;
-  workers: WorkerState;
-  balancerConfig: BalancerConfigState;
-  providerCalls: ProviderCallsState;
-}
+import { balancerConfigReducer } from './balancerConfig';
+import { providerCallsReducer } from './providerCalls';
+import { providerStatsReducer } from './providerStats';
+import { workerReducer } from './workers';
+import { ProviderBalancerState } from './types';
 
 export const providerBalancer = combineReducers<ProviderBalancerState>({
   providerStats: providerStatsReducer,

@@ -12,9 +12,9 @@ import {
 } from '@src/ducks/providerBalancer/providerCalls';
 import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { WorkerAction } from '@src/ducks/providerBalancer/workers';
-import { ProviderConfigAction } from '@src/ducks/providerConfigs';
+import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
 import { subscribeToAction } from '@src/ducks/subscribe';
-import { allRPCMethods } from '@src/providers';
+import { allRPCMethods } from './constants';
 import { IProvider } from '@src/types';
 import RpcProvider from './rpc';
 

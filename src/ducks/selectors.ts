@@ -1,4 +1,4 @@
-import { RootState } from '@src/ducks';
+import { RootState } from '@src/types';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getPendingProviderCallsByProviderId,
@@ -16,7 +16,7 @@ import {
   providerSupportsMethod,
 } from '@src/ducks/providerConfigs';
 import { filterAgainstArr } from '@src/ducks/utils';
-import { allRPCMethods } from '@src/providers';
+import { allRPCMethods } from '@src/providers/constants';
 import RpcProvider from '@src/providers/rpc';
 import { StrIdx } from '@src/types';
 

@@ -1,4 +1,4 @@
-import { RootState } from '@src/ducks';
+import { RootState } from '@src/types';
 import { ProviderCallTimeoutAction } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 

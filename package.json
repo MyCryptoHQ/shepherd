@@ -1,7 +1,8 @@
 {
   "name": "myc-shepherd",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.3",
+  "description":
+    "Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!",
   "main": "dist/shepherd.umd.js",
   "module": "dist/shepherd.es5.js",
   "typings": "src/index",
@@ -16,7 +17,7 @@
     "lint": "tslint --project . --fix",
     "prebuild": "rimraf dist",
     "build":
-      "tsc -p ./tsconfig.build-es.json --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src"
+      "tsc -p ./tsconfig.build-es.json --module commonjs && rollup -c rollup.config.ts"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/MyCryptoHQ/shepherd/issues"
   },
-  "files": ["dist"],
+  "files": ["dist", "src"],
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
     "@types/jest": "^22.2.0",
@@ -36,12 +37,9 @@
     "@types/url-search-params": "^0.10.1",
     "jest": "^22.4.2",
     "prettier": "^1.10.2",
-    "remote-redux-devtools": "^0.5.12",
     "remotedev-server": "^0.2.4",
     "rollup": "^0.57.1",
-    "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-json": "^2.3.0",
-    "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.12.0",
     "ts-jest": "^22.4.1",
@@ -57,7 +55,8 @@
     "randombytes": "^2.0.6",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.0",
-    "url-search-params": "^0.10.0"
+    "url-search-params": "^0.10.0",
+    "remote-redux-devtools": "^0.5.12"
   },
   "jest": {
     "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],

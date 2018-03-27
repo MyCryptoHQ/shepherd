@@ -1,5 +1,5 @@
-import { RootState } from '@src/ducks';
-import { providerStorage } from '@src/providers';
+import { RootState } from '@src/types';
+import { providerStorage } from '@src/providers/providerStorage';
 import RpcProvider from '@src/providers/rpc';
 
 export const getProviderConfigs = (state: RootState) => state.providerConfigs;

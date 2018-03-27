@@ -1,4 +1,4 @@
-import { RootState } from '@src/ducks';
+import { RootState } from '@src/types';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 
 export const getWorkers = (state: RootState) =>

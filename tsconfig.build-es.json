@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist/lib",
     "target": "es6",
-    "sourceMap": false,
+    "sourceMap": true,
     "strictNullChecks": true,
     "module": "es6",
     "allowJs": false,

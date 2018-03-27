@@ -1,4 +1,4 @@
-import { RootState } from '@src/ducks';
+import { RootState } from '@src/types';
 import {
   IProviderStats,
   ProviderStatsState,

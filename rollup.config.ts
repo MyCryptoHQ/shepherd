@@ -1,5 +1,3 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
@@ -8,6 +6,13 @@ const pkg = require('./package.json');
 
 const libraryName = 'shepherd';
 
+const external = [
+  'remote-redux-devtools',
+  'crypto',
+  'redux-saga/effects',
+  ...Object.keys(pkg.dependencies || {}),
+];
+
 export default {
   input: `src/index.ts`,
   output: [
@@ -15,8 +20,10 @@ export default {
     { file: pkg.module, format: 'es' },
   ],
   sourcemap: true,
-  // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: [],
+
+  // exclude all node modules
+  external,
+
   watch: {
     include: 'src/**',
   },
@@ -24,13 +31,10 @@ export default {
     // Allow json resolution
     json(),
     // Compile TypeScript files
-    typescript({ useTsconfigDeclarationDir: true }),
-    // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-    commonjs(),
-    // Allow node_modules resolution, so you can use 'external' to control
-    // which external modules to include in the bundle
-    // https://github.com/rollup/rollup-plugin-node-resolve#usage
-    resolve(),
+    typescript({
+      useTsconfigDeclarationDir: true,
+      tsconfig: './tsconfig.build-es.json',
+    }),
 
     // Resolve source maps to the original source
     sourceMaps(),
