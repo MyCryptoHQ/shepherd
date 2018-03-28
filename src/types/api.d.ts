@@ -20,4 +20,5 @@ interface IShepherd {
     ...args: any[]
   ): void;
   switchNetworks(network: string): Promise<void>;
+  enableLogging(): void;
 }

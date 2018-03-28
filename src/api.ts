@@ -9,6 +9,7 @@ import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
 import { store } from './ducks';
 import { addProvider, createProviderProxy, useProvider } from './providers';
+import { logger } from '@src/utils/logging';
 
 function waitForNetworkSwitch() {
   return new Promise(res =>
@@ -66,6 +67,10 @@ class Shepherd implements IShepherd {
     const action = balancerNetworkSwitchRequested({ network });
     store.dispatch(action);
     await promise;
+  }
+
+  public enableLogging() {
+    logger.enableLogging();
   }
 }
 
