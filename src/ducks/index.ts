@@ -7,7 +7,12 @@ import { composeWithDevTools } from 'remote-redux-devtools';
 import { providerBalancer as providerBalancerSaga } from '../saga';
 
 const sagaMiddleware = createSagaMiddleware();
-const composeEnhancers = composeWithDevTools({ realtime: true, port: 8000 });
+const composeEnhancers = composeWithDevTools({
+  realtime: true,
+  port: 8000,
+  maxAge: 300,
+  actionsBlacklist: ['SUBSCRIBE_TO_ACTION'],
+});
 
 export const rootReducer = combineReducers<RootState>({
   providerBalancer,
