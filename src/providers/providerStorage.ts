@@ -2,6 +2,8 @@ import EtherscanProvider from '@src/providers/etherscan';
 import InfuraProvider from '@src/providers/infura';
 import RPCProvider from '@src/providers/rpc';
 import { IProvider, IProviderContructor, StrIdx } from '@src/types';
+import Web3Provider from '@src/providers/web3';
+import MyCryptoCustomProvider from '@src/providers/custom';
 
 interface IProviderStorage {
   setClass(providerName: string, Provider: IProviderContructor): void;
@@ -50,14 +52,9 @@ class ProviderStorage implements IProviderStorage {
 }
 
 export const providerStorage = new ProviderStorage({
-  eth_mycrypto: RPCProvider,
-  eth_ethscan: EtherscanProvider,
-  eth_infura: InfuraProvider,
-  rop_infura: InfuraProvider,
-  kov_ethscan: EtherscanProvider,
-  rin_ethscan: EtherscanProvider,
-  rin_infura: InfuraProvider,
-  etc_epool: RPCProvider,
-  ubq: RPCProvider,
-  exp_tech: RPCProvider,
+  rpc: RPCProvider,
+  etherscan: EtherscanProvider,
+  infura: InfuraProvider,
+  web3: Web3Provider,
+  myccustom: MyCryptoCustomProvider,
 });
