@@ -8,19 +8,23 @@ import { Channel, SagaIterator } from 'redux-saga';
 import { apply, flush, put, take } from 'redux-saga/effects';
 
 export abstract class BaseChannel {
-  protected chan: Channel<ProviderCallRequestedAction>;
-  protected name: string;
-  private currentAction: ProviderCallRequestedAction | null;
+  protected chan: Channel<ProviderCallRequestedAction> | undefined;
+  protected name: string | undefined;
+  private currentAction: ProviderCallRequestedAction | null | undefined;
   private shouldLog = false;
 
   public get() {
+    if (!this.chan) {
+      throw Error(`Channel not assigned yet`);
+    }
+
     return this.chan;
   }
 
   public abstract init(): void;
 
   public *take(): SagaIterator {
-    const action: ProviderCallRequestedAction = yield take(this.chan);
+    const action: ProviderCallRequestedAction = yield take(this.get());
     // set the current action, so when we flush all of the actions we dont miss the currently processing one
     this.currentAction = action;
     this.log(`took call`, action.payload.callId);
@@ -58,7 +62,7 @@ export abstract class BaseChannel {
   }
 
   private *flushChannel(): SagaIterator {
-    const messages = yield flush(this.chan);
+    const messages = yield flush(this.get());
     this.log(`flushing`);
     this.log(messages);
     return messages;
