@@ -21,6 +21,7 @@ const globals = {
   'redux-saga': 'redux-saga',
   'redux-saga/effects': 'redux-saga/effects',
   'remote-redux-devtools': 'remote-redux-devtools',
+  btoa: 'btoa',
 };
 
 export default {

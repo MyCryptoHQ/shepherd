@@ -1,26 +1,20 @@
 import {
-  BALANCER,
   balancerInit,
   balancerNetworkSwitchRequested,
+  setAuto,
+  setManualRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
+import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { subscribeToAction } from '@src/ducks/subscribe';
+import {
+  waitForManualMode,
+  waitForNetworkSwitch,
+} from '@src/ducks/subscribe/utils';
 import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
 import { logger } from '@src/utils/logging';
 import { store } from './ducks';
 import { addProvider, createProviderProxy, useProvider } from './providers';
-
-function waitForNetworkSwitch() {
-  return new Promise(res =>
-    store.dispatch(
-      subscribeToAction({
-        trigger: BALANCER.NETWORK_SWITCH_SUCCEEDED,
-        callback: res,
-      }),
-    ),
-  );
-}
 
 class Shepherd implements IShepherd {
   public async init({ customProviders, ...config }: IInitConfig = {}) {
@@ -35,14 +29,12 @@ class Shepherd implements IShepherd {
     if (!config.network) {
       config.network = 'ETH';
     }
-    if (!config.manual) {
-      config.manual = false;
-    }
+
     if (!config.providerCallRetryThreshold) {
       config.providerCallRetryThreshold = 3;
     }
     const node = createProviderProxy();
-    const promise = waitForNetworkSwitch();
+    const promise = waitForNetworkSwitch(store.dispatch);
 
     store.dispatch(balancerInit(config));
     await promise;
@@ -51,6 +43,15 @@ class Shepherd implements IShepherd {
 
   public addProvider(providerName: string, Provider: IProviderContructor) {
     addProvider(providerName, Provider);
+  }
+
+  public auto() {
+    store.dispatch(setAuto());
+  }
+  public async manual(providerId: string, skipOfflineCheck: boolean) {
+    const promise = waitForManualMode(store.dispatch);
+    store.dispatch(setManualRequested({ providerId, skipOfflineCheck }));
+    return await promise;
   }
 
   public useProvider(
@@ -63,7 +64,10 @@ class Shepherd implements IShepherd {
   }
 
   public async switchNetworks(network: string) {
-    const promise = waitForNetworkSwitch();
+    if (getManualMode(store.getState())) {
+      throw Error(`Can't switch networks when in manual mode!`);
+    }
+    const promise = waitForNetworkSwitch(store.dispatch);
     const action = balancerNetworkSwitchRequested({ network });
     store.dispatch(action);
     await promise;

@@ -1,5 +1,6 @@
 import { getProviderTimeoutThreshold } from '@src/ducks/providerConfigs';
 import { providerStorage } from '@src/providers/providerStorage';
+import { logger } from '@src/utils/logging';
 import { delay } from 'redux-saga';
 import { apply, call, race, select } from 'redux-saga/effects';
 
@@ -20,7 +21,7 @@ export function* checkProviderConnectivity(providerId: string) {
     });
     return !!lb;
   } catch (error) {
-    console.info(error);
+    logger.log(error);
   }
   return false;
 }

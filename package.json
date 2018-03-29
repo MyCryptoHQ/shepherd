@@ -87,6 +87,9 @@
       "src/providers/etherscan",
       "src/providers/infura",
       "src/providers/rpc",
+      "src/providers/custom",
+      "src/providers/web3",
+
       "src/validators",
       "mockNode.ts"
     ]

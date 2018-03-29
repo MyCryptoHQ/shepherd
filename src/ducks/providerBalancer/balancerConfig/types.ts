@@ -8,14 +8,17 @@ export enum BALANCER {
   INIT = 'BALANCER_INIT',
   FLUSH = 'BALANCER_FLUSH',
   AUTO = 'BALANCER_AUTO',
-  MANUAL = 'BALANCER_MANUAL',
+  MANUAL_REQUESTED = 'BALANCER_MANUAL_REQUESTED',
+  MANUAL_SUCCEEDED = 'BALANCER_MANUAL_SUCCEEDED',
+  MANUAL_FAILED = 'BALANCER_MANUAL_FAILED',
+
   OFFLINE = 'BALANCER_OFFLINE',
   ONLINE = 'BALANCER_ONLINE',
   QUEUE_TIMEOUT = 'QUEUE_TIMEOUT',
 }
 
 export type BalancerConfigInitConfig = Partial<
-  Omit<BalancerConfigState, 'offline'>
+  Omit<BalancerConfigState, 'offline' | 'manual'>
 >;
 
 export interface BalancerConfigState {
@@ -71,9 +74,19 @@ export interface BalancerAutoAction {
   type: BALANCER.AUTO;
 }
 
-export interface BalancerManualAction {
-  type: BALANCER.MANUAL;
+export interface BalancerManualRequestedAction {
+  type: BALANCER.MANUAL_REQUESTED;
+  payload: { providerId: string; skipOfflineCheck: boolean };
+}
+
+export interface BalancerManualSucceededAction {
+  type: BALANCER.MANUAL_SUCCEEDED;
   payload: { providerId: string };
+}
+
+export interface BalancerManualFailedAction {
+  type: BALANCER.MANUAL_FAILED;
+  payload: { error: string };
 }
 
 export type BalancerAction =
@@ -83,6 +96,8 @@ export type BalancerAction =
   | BalancerFlushAction
   | BalancerSetProviderCallRetryThresholdAction
   | BalancerAutoAction
-  | BalancerManualAction
+  | BalancerManualRequestedAction
+  | BalancerManualSucceededAction
+  | BalancerManualFailedAction
   | BalancerNetworkSwitchRequestedAction
   | BalancerNetworkSwitchSucceededAction;

@@ -15,6 +15,9 @@ export interface IProviderContructor<T = any> {
   new (args?: T): IProvider;
 }
 
+export type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
+export type Reject = (reason?: any) => void;
+
 export interface IProvider {
   ping(): Promise<boolean>;
   getBalance(address: string): Promise<Wei>;

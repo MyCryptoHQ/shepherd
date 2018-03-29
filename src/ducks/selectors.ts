@@ -1,4 +1,7 @@
-import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import {
+  getManualMode,
+  getNetwork,
+} from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getPendingProviderCallsByProviderId,
   IProviderCall,
@@ -68,6 +71,7 @@ export const getOnlineProviderIdsOfCurrentNetwork = (state: RootState) => {
 
 export const getAllMethodsAvailable = (state: RootState): boolean => {
   const availableProviderIds = getOnlineProviderIdsOfCurrentNetwork(state);
+  const manualProvider = getManualMode(state);
 
   // goes through each available provider and reduces all of their
   // available methods into a mapping that contains all supported methods
@@ -84,6 +88,10 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
   for (const providerId of availableProviderIds) {
     const providerConfig = getProviderConfigById(state, providerId);
     if (!providerConfig) {
+      continue;
+    }
+
+    if (manualProvider && providerId !== manualProvider) {
       continue;
     }
 
