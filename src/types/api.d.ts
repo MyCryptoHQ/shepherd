@@ -20,10 +20,7 @@ interface IShepherd {
     ...args: any[]
   ): void;
   switchNetworks(network: string): Promise<void>;
-  manual(
-    providerId: string,
-    skipOfflineCheck: boolean,
-  ): Promise<Error | string>;
+  manual(providerId: string, skipOfflineCheck: boolean): Promise<string>;
   auto(): void;
   enableLogging(): void;
 }

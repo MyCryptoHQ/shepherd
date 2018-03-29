@@ -13,15 +13,7 @@ import {
 import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
 import { logger } from '@src/utils/logging';
 import { SagaIterator } from 'redux-saga';
-import {
-  call,
-  cancelled,
-  put,
-  race,
-  select,
-  take,
-  takeEvery,
-} from 'redux-saga/effects';
+import { call, put, select, take, takeEvery } from 'redux-saga/effects';
 
 function* attemptManualMode(
   providerId: string,

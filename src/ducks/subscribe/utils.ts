@@ -50,7 +50,9 @@ export function waitForNetworkSwitch(dispatch: Dispatch<RootState>) {
   );
 }
 
-export function waitForManualMode(dispatch: Dispatch<RootState>) {
+export function waitForManualMode(
+  dispatch: Dispatch<RootState>,
+): Promise<string> {
   function triggerOnSuccessOrFail(action: AllActions) {
     return (
       action.type === BALANCER.MANUAL_SUCCEEDED ||
