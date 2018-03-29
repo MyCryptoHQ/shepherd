@@ -38,7 +38,7 @@ export const balancerSetProviderCallRetryThreshold = (
 });
 
 export const balancerInit = (
-  payload: BalancerInitAction['payload'] = {},
+  payload: BalancerInitAction['payload'],
 ): BalancerInitAction => ({ type: BALANCER.INIT, payload });
 
 export const setOffline = (): BalancerOfflineAction => ({
