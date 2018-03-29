@@ -8,7 +8,6 @@ import {
   providerCallRequested,
   ProviderCallSucceededAction,
 } from '@src/ducks/providerBalancer/providerCalls';
-
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
 import { IProvider, Reject, Resolve } from '@src/types';
