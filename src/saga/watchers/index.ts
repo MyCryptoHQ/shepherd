@@ -6,6 +6,8 @@ import { callTimeoutWatcher } from './watchCallTimeouts';
 import { watchNetworkSwitches } from './watchNetworkSwitches';
 import { providerRequestWatcher } from './watchProviderCalls';
 import { providerHealthWatcher } from './watchProviderHealth';
+import { manualModeWatcher } from './watchManualMode';
+
 export const watchers = [
   ...subscriptionWatcher,
   ...addProviderConfigWatcher,
@@ -15,4 +17,5 @@ export const watchers = [
   ...providerHealthWatcher,
   ...balancerHealthWatcher,
   ...watchNetworkSwitches,
+  ...manualModeWatcher,
 ];

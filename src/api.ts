@@ -2,6 +2,7 @@ import {
   BALANCER,
   balancerInit,
   balancerNetworkSwitchRequested,
+  setManualRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
 import { subscribeToAction } from '@src/ducks/subscribe';
@@ -51,6 +52,10 @@ class Shepherd implements IShepherd {
 
   public addProvider(providerName: string, Provider: IProviderContructor) {
     addProvider(providerName, Provider);
+  }
+
+  public manual(providerId: string) {
+    store.dispatch(setManualRequested({ providerId }));
   }
 
   public useProvider(

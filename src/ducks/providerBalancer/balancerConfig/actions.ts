@@ -3,13 +3,15 @@ import {
   BalancerAutoAction,
   BalancerFlushAction,
   BalancerInitAction,
-  BalancerManualAction,
   BalancerNetworkSwitchRequestedAction,
   BalancerNetworkSwitchSucceededAction,
   BalancerOfflineAction,
   BalancerOnlineAction,
   BalancerQueueTimeoutAction,
   BalancerSetProviderCallRetryThresholdAction,
+  BalancerManualRequestedAction,
+  BalancerManualFailedAction,
+  BalancerManualSucceededAction,
 } from './types';
 
 export const balancerFlush = (): BalancerFlushAction => ({
@@ -51,10 +53,23 @@ export const setOnline = (): BalancerOnlineAction => ({
 
 export const setAuto = (): BalancerAutoAction => ({ type: BALANCER.AUTO });
 
-export const setManual = (
-  payload: BalancerManualAction['payload'],
-): BalancerManualAction => ({ type: BALANCER.MANUAL, payload });
+export const setManualRequested = (
+  payload: BalancerManualRequestedAction['payload'],
+): BalancerManualRequestedAction => ({
+  type: BALANCER.MANUAL_REQUESTED,
+  payload,
+});
 
+export const setManualSucceeded = (
+  payload: BalancerManualSucceededAction['payload'],
+): BalancerManualSucceededAction => ({
+  type: BALANCER.MANUAL_SUCCEEDED,
+  payload,
+});
+
+export const setManualFailed = (): BalancerManualFailedAction => ({
+  type: BALANCER.MANUAL_FAILED,
+});
 export const balancerQueueTimeout = (): BalancerQueueTimeoutAction => ({
   type: BALANCER.QUEUE_TIMEOUT,
 });
