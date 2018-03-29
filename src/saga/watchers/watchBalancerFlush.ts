@@ -1,9 +1,9 @@
 import {
   BALANCER,
   balancerFlush,
+  BalancerManualSucceededAction,
   BalancerNetworkSwitchRequestedAction,
   BalancerQueueTimeoutAction,
-  BalancerManualSucceededAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { getWorkers, WorkerState } from '@src/ducks/providerBalancer/workers';
 import { balancerChannel, providerChannels } from '@src/saga/channels';

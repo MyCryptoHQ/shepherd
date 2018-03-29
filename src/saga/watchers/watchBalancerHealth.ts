@@ -1,11 +1,11 @@
 import {
   BALANCER,
+  BalancerAutoAction,
+  BalancerManualSucceededAction,
   BalancerNetworkSwitchRequestedAction,
   BalancerNetworkSwitchSucceededAction,
   setOffline,
   setOnline,
-  BalancerAutoAction,
-  BalancerManualSucceededAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {

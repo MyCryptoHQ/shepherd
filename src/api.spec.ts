@@ -1,3 +1,4 @@
+import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { getProviderCallById } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderStatsById } from '@src/ducks/providerBalancer/providerStats';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
@@ -9,7 +10,6 @@ import { makeMockProviderConfig } from '@test/utils';
 import { setTimeout } from 'timers';
 import { promisify } from 'util';
 import { IIndex } from './index';
-import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 
 const getAPI = () => {
   jest.resetModules();
@@ -1042,14 +1042,14 @@ describe('Api tests', () => {
 
       await shepherd.manual('etc', false);
 
-      await node.getBalance('0x').catch(() => {});
+      await node.getBalance('0x');
       state = store.getState();
       expect(getNetwork(state)).toEqual('ETC');
       expect(getProviderCallById(state, 1).providerId).toEqual('etc');
 
       await shepherd.manual('eth', false);
 
-      await node.getBalance('0x').catch(() => {});
+      await node.getBalance('0x');
       state = store.getState();
       expect(getNetwork(state)).toEqual('ETH');
       expect(getProviderCallById(state, 2).providerId).toEqual('eth');

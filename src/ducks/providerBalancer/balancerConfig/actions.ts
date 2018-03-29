@@ -3,15 +3,15 @@ import {
   BalancerAutoAction,
   BalancerFlushAction,
   BalancerInitAction,
+  BalancerManualFailedAction,
+  BalancerManualRequestedAction,
+  BalancerManualSucceededAction,
   BalancerNetworkSwitchRequestedAction,
   BalancerNetworkSwitchSucceededAction,
   BalancerOfflineAction,
   BalancerOnlineAction,
   BalancerQueueTimeoutAction,
   BalancerSetProviderCallRetryThresholdAction,
-  BalancerManualRequestedAction,
-  BalancerManualFailedAction,
-  BalancerManualSucceededAction,
 } from './types';
 
 export const balancerFlush = (): BalancerFlushAction => ({

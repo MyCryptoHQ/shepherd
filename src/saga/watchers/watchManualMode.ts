@@ -1,27 +1,27 @@
-import { SagaIterator } from 'redux-saga';
+import {
+  BALANCER,
+  BalancerManualRequestedAction,
+  balancerNetworkSwitchRequested,
+  setManualFailed,
+  setManualSucceeded,
+} from '@src/ducks/providerBalancer/balancerConfig';
+import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getProviderConfigById,
   IProviderConfig,
 } from '@src/ducks/providerConfigs';
-import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import {
-  takeEvery,
-  select,
-  put,
-  call,
-  cancelled,
-  race,
-  take,
-} from 'redux-saga/effects';
-import {
-  BALANCER,
-  BalancerManualRequestedAction,
-  setManualFailed,
-  setManualSucceeded,
-  balancerNetworkSwitchRequested,
-} from '@src/ducks/providerBalancer/balancerConfig';
 import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
 import { logger } from '@src/utils/logging';
+import { SagaIterator } from 'redux-saga';
+import {
+  call,
+  cancelled,
+  put,
+  race,
+  select,
+  take,
+  takeEvery,
+} from 'redux-saga/effects';
 
 function* attemptManualMode(
   providerId: string,

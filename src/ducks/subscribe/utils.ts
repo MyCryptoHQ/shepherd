@@ -1,3 +1,8 @@
+import {
+  BALANCER,
+  BalancerManualFailedAction,
+  BalancerManualSucceededAction,
+} from '@src/ducks/providerBalancer/balancerConfig';
 import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig/types';
 import {
   PROVIDER_CALL,
@@ -6,14 +11,9 @@ import {
 import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
+import { SubscribeAction, subscribeToAction } from '@src/ducks/subscribe';
+import { Reject, Resolve, RootState } from '@src/types';
 import { Dispatch } from 'redux';
-import { RootState, Resolve, Reject } from '@src/types';
-import { subscribeToAction, SubscribeAction } from '@src/ducks/subscribe';
-import {
-  BALANCER,
-  BalancerManualFailedAction,
-  BalancerManualSucceededAction,
-} from '@src/ducks/providerBalancer/balancerConfig';
 
 type AllActions =
   | ProviderCallAction

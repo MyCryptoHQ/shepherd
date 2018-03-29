@@ -1,20 +1,20 @@
 import {
   balancerInit,
   balancerNetworkSwitchRequested,
-  setManualRequested,
   setAuto,
+  setManualRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
+import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
+import {
+  waitForManualMode,
+  waitForNetworkSwitch,
+} from '@src/ducks/subscribe/utils';
 import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
+import { logger } from '@src/utils/logging';
 import { store } from './ducks';
 import { addProvider, createProviderProxy, useProvider } from './providers';
-import { logger } from '@src/utils/logging';
-import {
-  waitForNetworkSwitch,
-  waitForManualMode,
-} from '@src/ducks/subscribe/utils';
-import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 
 class Shepherd implements IShepherd {
   public async init({ customProviders, ...config }: IInitConfig = {}) {

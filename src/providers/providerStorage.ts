@@ -1,9 +1,9 @@
+import MyCryptoCustomProvider from '@src/providers/custom';
 import EtherscanProvider from '@src/providers/etherscan';
 import InfuraProvider from '@src/providers/infura';
 import RPCProvider from '@src/providers/rpc';
-import { IProvider, IProviderContructor, StrIdx } from '@src/types';
 import Web3Provider from '@src/providers/web3';
-import MyCryptoCustomProvider from '@src/providers/custom';
+import { IProvider, IProviderContructor, StrIdx } from '@src/types';
 
 interface IProviderStorage {
   setClass(providerName: string, Provider: IProviderContructor): void;

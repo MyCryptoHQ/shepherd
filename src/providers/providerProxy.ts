@@ -11,10 +11,10 @@ import {
 
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
-import { IProvider, Resolve, Reject } from '@src/types';
+import { IProvider, Reject, Resolve } from '@src/types';
+import { logger } from '@src/utils/logging';
 import { allRPCMethods } from './constants';
 import RpcProvider from './rpc';
-import { logger } from '@src/utils/logging';
 
 const respondToCallee = (resolve: Resolve, reject: Reject) => (
   action:
