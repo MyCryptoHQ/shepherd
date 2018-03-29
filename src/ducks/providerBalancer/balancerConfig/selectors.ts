@@ -25,3 +25,6 @@ export const callMeetsBalancerRetryThreshold = (
   // checks the current call to see if it has failed more than the configured number
   return providerCall.numOfRetries >= providerCallRetryThreshold;
 };
+
+export const getAmbientProvider = (state: RootState) =>
+  getBalancerConfig(state).ambientProviderSet;

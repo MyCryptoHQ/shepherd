@@ -3,6 +3,8 @@ import {
   balancerFlush,
   BalancerNetworkSwitchRequestedAction,
   BalancerQueueTimeoutAction,
+  BalancerUnsetAmbientAction,
+  BalancerSetAmbientSucceededAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { getWorkers, WorkerState } from '@src/ducks/providerBalancer/workers';
 import { balancerChannel, providerChannels } from '@src/saga/channels';
@@ -34,7 +36,9 @@ function* deleteProviderChannels() {
 
 type FlushingActions =
   | BalancerQueueTimeoutAction
-  | BalancerNetworkSwitchRequestedAction;
+  | BalancerNetworkSwitchRequestedAction
+  | BalancerSetAmbientSucceededAction
+  | BalancerUnsetAmbientAction;
 
 function* clearState({ type }: FlushingActions): SagaIterator {
   const isNetworkSwitch = type === BALANCER.NETWORK_SWTICH_REQUESTED;
@@ -49,7 +53,12 @@ function* clearState({ type }: FlushingActions): SagaIterator {
 
 export const balancerFlushWatcher = [
   takeEvery(
-    [BALANCER.NETWORK_SWTICH_REQUESTED, BALANCER.QUEUE_TIMEOUT],
+    [
+      BALANCER.NETWORK_SWTICH_REQUESTED,
+      BALANCER.QUEUE_TIMEOUT,
+      BALANCER.SET_AMBIENT_SUCCEEDED, // ideally this should only clear provider channels that have raw_tx in them
+      BALANCER.UNSET_AMBIENT, // this should be only targeted towards the ambient provider's channel ideally
+    ],
     clearState,
   ),
 ];

@@ -10,6 +10,10 @@ import {
   BalancerOnlineAction,
   BalancerQueueTimeoutAction,
   BalancerSetProviderCallRetryThresholdAction,
+  BalancerUnsetAmbientAction,
+  BalancerSetAmbientRequestedAction,
+  BalancerSetAmbientSucceededAction,
+  BalancerSetAmbientFailedAction,
 } from './types';
 
 export const balancerFlush = (): BalancerFlushAction => ({
@@ -57,4 +61,18 @@ export const setManual = (
 
 export const balancerQueueTimeout = (): BalancerQueueTimeoutAction => ({
   type: BALANCER.QUEUE_TIMEOUT,
+});
+
+export const balancerSetAmbientRequestedProvider = (): BalancerSetAmbientRequestedAction => ({
+  type: BALANCER.SET_AMBIENT_REQUESTED,
+});
+export const balancerSetAmbientSucceededProvider = (): BalancerSetAmbientSucceededAction => ({
+  type: BALANCER.SET_AMBIENT_SUCCEEDED,
+});
+export const balancerSetAmbientFailedProvider = (): BalancerSetAmbientFailedAction => ({
+  type: BALANCER.SET_AMBIENT_FAILED,
+});
+
+export const balancerUnsetAmbientProvider = (): BalancerUnsetAmbientAction => ({
+  type: BALANCER.UNSET_AMBIENT,
 });

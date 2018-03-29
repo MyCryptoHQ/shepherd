@@ -1,11 +1,13 @@
-import { BalancerManualAction } from '@src/ducks/providerBalancer/balancerConfig';
 import { DefaultNetworkIds } from '@src/types/networks';
 import { Reducer } from 'redux';
 import {
   BALANCER,
+  BalancerManualAction,
+  BalancerSetAmbientSucceededAction,
   BalancerAction,
   BalancerAutoAction,
   BalancerConfigState,
+  BalancerUnsetAmbientAction,
 } from './types';
 
 const INITIAL_STATE: BalancerConfigState = {
@@ -13,10 +15,11 @@ const INITIAL_STATE: BalancerConfigState = {
   offline: true,
   network: DefaultNetworkIds.ETH,
   providerCallRetryThreshold: 3,
+  ambientProviderSet: false,
 };
 
 const handleBalancerAuto: Reducer<BalancerConfigState> = (
-  state: BalancerConfigState,
+  state,
   _: BalancerAutoAction,
 ) => ({
   ...state,
@@ -24,12 +27,22 @@ const handleBalancerAuto: Reducer<BalancerConfigState> = (
 });
 
 const handleBalancerManual: Reducer<BalancerConfigState> = (
-  state: BalancerConfigState,
+  state,
   { payload }: BalancerManualAction,
 ) => ({
   ...state,
   manual: payload.providerId,
 });
+
+const handleBalancerSetAmbient: Reducer<BalancerConfigState> = (
+  state,
+  _: BalancerSetAmbientSucceededAction,
+) => ({ ...state, ambientProviderSet: true });
+
+const handleBalancerUnsetAmbient: Reducer<BalancerConfigState> = (
+  state,
+  _: BalancerUnsetAmbientAction,
+) => ({ ...state, ambientProviderSet: false });
 
 const balancerConfig: Reducer<BalancerConfigState> = (
   state: BalancerConfigState = INITIAL_STATE,
@@ -53,6 +66,10 @@ const balancerConfig: Reducer<BalancerConfigState> = (
         ...state,
         providerCallRetryThreshold: action.payload.threshold,
       };
+    case BALANCER.SET_AMBIENT_SUCCEEDED:
+      return handleBalancerSetAmbient(state, action);
+    case BALANCER.UNSET_AMBIENT:
+      return handleBalancerUnsetAmbient(state, action);
     default:
       return state;
   }

@@ -27,6 +27,8 @@ export interface IProvider {
 
 export type StrIdx<T> = { [key: string]: T };
 
+export type NumIdx<T> = { [key: number]: T };
+
 export interface TxObj {
   to: string;
   data: string;

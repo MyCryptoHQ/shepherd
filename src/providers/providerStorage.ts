@@ -52,9 +52,9 @@ class ProviderStorage implements IProviderStorage {
 }
 
 export const providerStorage = new ProviderStorage({
-  rpc: RPCProvider,
-  etherscan: EtherscanProvider,
-  infura: InfuraProvider,
-  web3: Web3Provider,
-  myccustom: MyCryptoCustomProvider,
+  RPC: RPCProvider,
+  Etherscan: EtherscanProvider,
+  Infura: InfuraProvider,
+  AmbientProvider: Web3Provider,
+  MYCCustom: MyCryptoCustomProvider,
 });

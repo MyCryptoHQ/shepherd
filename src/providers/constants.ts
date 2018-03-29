@@ -7,4 +7,16 @@ export const allRPCMethods: (keyof RpcProvider)[] = [
   'getTransactionCount',
   'getCurrentBlock',
   'sendRawTx',
+  /*
+  'getTransactionCount',
+  'getTransactionByHash',
+  'getTransactionReceipt',
+
+  'getTokenBalance',
+  'getTokenBalances',
+
+  getAccounts
+  */
 ];
+
+export const AMBIENT_PROVIDER = 'AMBIENT_PROVIDER';

@@ -12,10 +12,15 @@ export enum BALANCER {
   OFFLINE = 'BALANCER_OFFLINE',
   ONLINE = 'BALANCER_ONLINE',
   QUEUE_TIMEOUT = 'QUEUE_TIMEOUT',
+  SET_AMBIENT_REQUESTED = 'BALANCER_SET_AMBIENT_PROVIDER_REQUESTED',
+  SET_AMBIENT_SUCCEEDED = 'BALANCER_SET_AMBIENT_PROVIDER_SUCEEDED',
+  SET_AMBIENT_FAILED = 'BALANCER_SET_AMBIENT_PROVIDER_FAILED',
+  UNSET_AMBIENT = 'BALANCER_UNSET_AMBIENT_PROVIDER',
 }
 
+// clean this up
 export type BalancerConfigInitConfig = Partial<
-  Omit<BalancerConfigState, 'offline'>
+  Omit<BalancerConfigState, 'offline'> & { ambientProviderSet: boolean }
 >;
 
 export interface BalancerConfigState {
@@ -23,6 +28,7 @@ export interface BalancerConfigState {
   manual: false | string;
   offline: boolean;
   providerCallRetryThreshold: number;
+  ambientProviderSet: boolean;
 }
 
 export interface BalancerInitAction {
@@ -76,6 +82,36 @@ export interface BalancerManualAction {
   payload: { providerId: string };
 }
 
+// need to expose getAccounts() method on rpc providers
+// on request -> check for ambient provider
+// fail if it doesnt exist with proper error msg
+// if provider exists
+// flush current requests
+// if network is different
+// change network
+// re-route all sendtx calls to ambient provider
+export interface BalancerSetAmbientRequestedAction {
+  type: BALANCER.SET_AMBIENT_REQUESTED;
+}
+
+export interface BalancerSetAmbientSucceededAction {
+  type: BALANCER.SET_AMBIENT_SUCCEEDED;
+}
+
+// fail when no provider found
+// or trying to set ambient provider twice
+export interface BalancerSetAmbientFailedAction {
+  type: BALANCER.SET_AMBIENT_FAILED;
+}
+
+// un-reroute sendtx calls
+// cancel any tasks fired by setambient
+// remove ambient config
+// remove ambient instance
+export interface BalancerUnsetAmbientAction {
+  type: BALANCER.UNSET_AMBIENT;
+}
+
 export type BalancerAction =
   | BalancerInitAction
   | BalancerOfflineAction
@@ -85,4 +121,8 @@ export type BalancerAction =
   | BalancerAutoAction
   | BalancerManualAction
   | BalancerNetworkSwitchRequestedAction
-  | BalancerNetworkSwitchSucceededAction;
+  | BalancerNetworkSwitchSucceededAction
+  | BalancerSetAmbientRequestedAction
+  | BalancerSetAmbientSucceededAction
+  | BalancerSetAmbientFailedAction
+  | BalancerUnsetAmbientAction;

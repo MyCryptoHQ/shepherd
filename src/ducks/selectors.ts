@@ -1,4 +1,7 @@
-import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import {
+  getNetwork,
+  getAmbientProvider,
+} from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   getPendingProviderCallsByProviderId,
   IProviderCall,
@@ -15,7 +18,7 @@ import {
   providerSupportsMethod,
 } from '@src/ducks/providerConfigs';
 import { filterAgainstArr } from '@src/ducks/utils';
-import { allRPCMethods } from '@src/providers/constants';
+import { allRPCMethods, AMBIENT_PROVIDER } from '@src/providers/constants';
 import RpcProvider from '@src/providers/rpc';
 import { RootState } from '@src/types';
 import { StrIdx } from '@src/types';
@@ -69,7 +72,7 @@ export const getOnlineProviderIdsOfCurrentNetwork = (state: RootState) => {
 
 export const getAllMethodsAvailable = (state: RootState): boolean => {
   const availableProviderIds = getOnlineProviderIdsOfCurrentNetwork(state);
-
+  const ambientProviderSet = getAmbientProvider(state);
   // goes through each available provider and reduces all of their
   // available methods into a mapping that contains all supported methods
   const availableMethods: { [key in keyof RpcProvider]: boolean } = {
@@ -91,6 +94,17 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     // for the current provider config, OR each rpcMethod against the map
     Object.entries(providerConfig.supportedMethods).forEach(
       ([rpcMethod, isSupported]: [keyof RpcProvider, boolean]) => {
+        // if we have an ambient provider set
+        // then skip 'sendRawTx' and 'getAccounts' as being available
+        // as we want to funnel all rawtx/getAccounts calls to the ambient provider instead
+        if (
+          ambientProviderSet &&
+          providerId !== AMBIENT_PROVIDER &&
+          (rpcMethod === 'sendRawTx' || rpcMethod === 'getAccounts')
+        ) {
+          return;
+        }
+
         availableMethods[rpcMethod] =
           availableMethods[rpcMethod] || isSupported;
       },

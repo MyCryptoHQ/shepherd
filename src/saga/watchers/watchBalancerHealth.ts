@@ -4,6 +4,8 @@ import {
   BalancerNetworkSwitchSucceededAction,
   setOffline,
   setOnline,
+  BalancerUnsetAmbientAction,
+  BalancerSetAmbientSucceededAction,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
@@ -17,7 +19,9 @@ import { call, put, select, takeEvery } from 'redux-saga/effects';
 type WatchedActions =
   | ProviderStatsAction
   | BalancerNetworkSwitchRequestedAction
-  | BalancerNetworkSwitchSucceededAction;
+  | BalancerNetworkSwitchSucceededAction
+  | BalancerSetAmbientSucceededAction
+  | BalancerUnsetAmbientAction;
 
 function* dispatchOffline() {
   const offline: boolean = yield select(isOffline);
@@ -59,6 +63,8 @@ export const balancerHealthWatcher = [
       PROVIDER_STATS.REMOVED,
       BALANCER.NETWORK_SWITCH_SUCCEEDED,
       BALANCER.NETWORK_SWTICH_REQUESTED,
+      BALANCER.SET_AMBIENT_SUCCEEDED,
+      BALANCER.UNSET_AMBIENT,
     ],
     setBalancerOnlineState,
   ),
