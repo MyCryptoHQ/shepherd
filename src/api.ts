@@ -7,9 +7,9 @@ import { IProviderConfig } from '@src/ducks/providerConfigs';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
+import { logger } from '@src/utils/logging';
 import { store } from './ducks';
 import { addProvider, createProviderProxy, useProvider } from './providers';
-import { logger } from '@src/utils/logging';
 
 function waitForNetworkSwitch() {
   return new Promise(res =>

@@ -17,8 +17,7 @@ import {
 import { filterAgainstArr } from '@src/ducks/utils';
 import { allRPCMethods } from '@src/providers/constants';
 import RpcProvider from '@src/providers/rpc';
-import { RootState } from '@src/types';
-import { StrIdx } from '@src/types';
+import { RootState, StrIdx } from '@src/types';
 
 export const providerExceedsRequestFailureThreshold = (
   state: RootState,
