@@ -11,13 +11,10 @@ import {
 
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
-import { IProvider } from '@src/types';
+import { IProvider, Resolve, Reject } from '@src/types';
 import { allRPCMethods } from './constants';
 import RpcProvider from './rpc';
 import { logger } from '@src/utils/logging';
-
-type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
-type Reject = (reason?: any) => void;
 
 const respondToCallee = (resolve: Resolve, reject: Reject) => (
   action:
@@ -27,9 +24,11 @@ const respondToCallee = (resolve: Resolve, reject: Reject) => (
 ) => {
   if (action.type === PROVIDER_CALL.SUCCEEDED) {
     const { providerCall, result } = action.payload;
+
     logger.log(`CallId: ${providerCall.callId} Pid: ${providerCall.providerId}
      ${providerCall.rpcMethod} ${providerCall.rpcArgs}
      Result: ${result}`);
+
     resolve(action.payload.result);
   } else {
     reject(Error(action.payload.error));

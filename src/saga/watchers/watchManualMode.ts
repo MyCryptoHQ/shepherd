@@ -18,43 +18,53 @@ import {
   BalancerManualRequestedAction,
   setManualFailed,
   setManualSucceeded,
+  balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
+import { logger } from '@src/utils/logging';
 
-function* attemptManualMode(providerId: string): SagaIterator {
-  try {
-    const config: IProviderConfig | undefined = yield select(
-      getProviderConfigById,
-      providerId,
+function* attemptManualMode(
+  providerId: string,
+  skipOfflineCheck: boolean,
+): SagaIterator {
+  const config: IProviderConfig | undefined = yield select(
+    getProviderConfigById,
+    providerId,
+  );
+  if (!config) {
+    return yield put(
+      setManualFailed({
+        error: `Provider config for ${providerId} not found`,
+      }),
     );
-    if (!config) {
-      return yield put(setManualFailed());
-    }
-    const network: string = yield select(getNetwork);
-    if (config.network !== network) {
-      return yield put(setManualFailed());
-    }
-    const isOnline = yield call(checkProviderConnectivity, providerId);
-
-    if (!isOnline) {
-      return yield put(setManualFailed());
-    }
-
-    yield put(setManualSucceeded({ providerId }));
-  } finally {
-    if (yield cancelled()) {
-      return yield put(setManualFailed());
-    }
   }
+
+  const isOnline = yield call(checkProviderConnectivity, providerId);
+
+  if (!isOnline && !skipOfflineCheck) {
+    return yield put(
+      setManualFailed({
+        error: `${providerId} to manually set to is not online`,
+      }),
+    );
+  }
+
+  const network: string = yield select(getNetwork);
+  if (config.network !== network) {
+    logger.log(`Manually set provider ${providerId} has a different network 
+      (Provider network: ${config.network}, current network ${network}).
+       Setting new network`);
+    yield put(balancerNetworkSwitchRequested({ network: config.network }));
+    yield take(BALANCER.NETWORK_SWITCH_SUCCEEDED);
+  }
+
+  yield put(setManualSucceeded({ providerId }));
 }
 
 function* handleManualMode({
-  payload: { providerId },
+  payload: { providerId, skipOfflineCheck },
 }: BalancerManualRequestedAction): SagaIterator {
-  yield race({
-    manualMode: call(attemptManualMode, providerId),
-    networkSwtich: take(BALANCER.NETWORK_SWTICH_REQUESTED),
-  });
+  yield call(attemptManualMode, providerId, skipOfflineCheck);
 }
 
 export const manualModeWatcher = [

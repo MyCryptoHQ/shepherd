@@ -68,7 +68,10 @@ describe('Balancer config tests', () => {
     it('should set the balancer to manual and then back to auto', () => {
       let state: any;
       const selector = selectors.getManualMode;
-      state = rootReducer(state, actions.setManual({ providerId: 'metamask' }));
+      state = rootReducer(
+        state,
+        actions.setManualSucceeded({ providerId: 'metamask' }),
+      );
 
       expect(selector(state)).toEqual('metamask');
 

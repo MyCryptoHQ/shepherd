@@ -1,4 +1,4 @@
-import { BalancerManualAction } from '@src/ducks/providerBalancer/balancerConfig';
+import { BalancerManualSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
 import { DefaultNetworkIds } from '@src/types/networks';
 import { Reducer } from 'redux';
 import {
@@ -25,7 +25,7 @@ const handleBalancerAuto: Reducer<BalancerConfigState> = (
 
 const handleBalancerManual: Reducer<BalancerConfigState> = (
   state: BalancerConfigState,
-  { payload }: BalancerManualAction,
+  { payload }: BalancerManualSucceededAction,
 ) => ({
   ...state,
   manual: payload.providerId,
@@ -40,7 +40,7 @@ const balancerConfig: Reducer<BalancerConfigState> = (
       return { ...state, ...action.payload };
     case BALANCER.AUTO:
       return handleBalancerAuto(state, action);
-    case BALANCER.MANUAL:
+    case BALANCER.MANUAL_SUCCEEDED:
       return handleBalancerManual(state, action);
     case BALANCER.OFFLINE:
       return { ...state, offline: true };

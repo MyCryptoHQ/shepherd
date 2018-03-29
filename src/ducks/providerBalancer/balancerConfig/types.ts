@@ -18,7 +18,7 @@ export enum BALANCER {
 }
 
 export type BalancerConfigInitConfig = Partial<
-  Omit<BalancerConfigState, 'offline'>
+  Omit<BalancerConfigState, 'offline' | 'manual'>
 >;
 
 export interface BalancerConfigState {
@@ -76,7 +76,7 @@ export interface BalancerAutoAction {
 
 export interface BalancerManualRequestedAction {
   type: BALANCER.MANUAL_REQUESTED;
-  payload: { providerId: string };
+  payload: { providerId: string; skipOfflineCheck: boolean };
 }
 
 export interface BalancerManualSucceededAction {
@@ -86,6 +86,7 @@ export interface BalancerManualSucceededAction {
 
 export interface BalancerManualFailedAction {
   type: BALANCER.MANUAL_FAILED;
+  payload: { error: string };
 }
 
 export type BalancerAction =

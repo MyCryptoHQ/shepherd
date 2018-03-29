@@ -273,6 +273,58 @@ describe('Ducks tests', () => {
 
       expect(selector(storage)).toEqual(true);
     });
+
+    /**
+     * Manual mode tests
+     */
+    it('should return false', () => {
+      storage = rootReducer(
+        storage,
+        balancerConfigActions.setManualSucceeded({ providerId: 'p2' }),
+      );
+      expect(selector(storage)).toEqual(false);
+    });
+
+    it('should return true', () => {
+      storage = rootReducer(
+        storage,
+        balancerConfigActions.setManualSucceeded({ providerId: 'p3' }),
+      );
+
+      storage = rootReducer(
+        storage,
+        providerConfigsActions.changeProviderConfig({
+          id: 'p3',
+          config: {
+            supportedMethods: { getTransactionCount: true, getBalance: true },
+          },
+        }),
+      );
+      expect(selector(storage)).toEqual(true);
+    });
+
+    it('should return false', () => {
+      storage = rootReducer(
+        storage,
+        balancerConfigActions.setManualSucceeded({ providerId: 'p1' }),
+      );
+      expect(selector(storage)).toEqual(false);
+    });
+
+    it('should return true', () => {
+      storage = rootReducer(
+        storage,
+        providerConfigsActions.changeProviderConfig({
+          id: 'p3',
+          config: {
+            supportedMethods: { getTransactionCount: false, getBalance: false },
+          },
+        }),
+      );
+
+      storage = rootReducer(storage, balancerConfigActions.setAuto());
+      expect(selector(storage)).toEqual(true);
+    });
   });
 
   describe('getAvailableProviderId selector', () => {

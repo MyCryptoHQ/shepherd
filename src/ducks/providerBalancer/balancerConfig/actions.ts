@@ -67,9 +67,13 @@ export const setManualSucceeded = (
   payload,
 });
 
-export const setManualFailed = (): BalancerManualFailedAction => ({
+export const setManualFailed = (
+  payload: BalancerManualFailedAction['payload'],
+): BalancerManualFailedAction => ({
   type: BALANCER.MANUAL_FAILED,
+  payload,
 });
+
 export const balancerQueueTimeout = (): BalancerQueueTimeoutAction => ({
   type: BALANCER.QUEUE_TIMEOUT,
 });
