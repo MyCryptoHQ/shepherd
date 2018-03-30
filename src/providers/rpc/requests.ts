@@ -7,6 +7,8 @@ import {
   GetCurrentBlockRequest,
   GetTransactionCountRequest,
   SendRawTxRequest,
+  GetTransactionByHashRequest,
+  GetTransactionReceiptRequest,
 } from './types';
 
 export default class RPCRequests {
@@ -50,6 +52,24 @@ export default class RPCRequests {
     return {
       method: 'eth_getTransactionCount',
       params: [address, 'pending'],
+    };
+  }
+
+  public getTransactionByHash(
+    txhash: string,
+  ): GetTransactionByHashRequest | any {
+    return {
+      method: 'eth_getTransactionByHash',
+      params: [txhash],
+    };
+  }
+
+  public getTransactionReceipt(
+    txhash: string,
+  ): GetTransactionReceiptRequest | any {
+    return {
+      method: 'eth_getTransactionReceipt',
+      params: [txhash],
     };
   }
 

@@ -1,5 +1,5 @@
 import { IHexStrTransaction, IProvider, TxObj } from '@src/types';
-import { makeBN, Wei } from '@src/utils';
+import { makeBN, Wei, hexToNumber } from '@src/utils';
 import {
   isValidCallRequest,
   isValidCurrentBlock,
@@ -7,9 +7,12 @@ import {
   isValidGetBalance,
   isValidRawTxApi,
   isValidTransactionCount,
+  isValidTransactionByHash,
+  isValidTransactionReceipt,
 } from '@src/validators';
 import RPCClient from './client';
 import RPCRequests from './requests';
+import { TransactionReceipt, TransactionData } from '@src/providers/rpc/types';
 
 export default class RpcProvider implements IProvider {
   protected client: RPCClient;
@@ -72,5 +75,40 @@ export default class RpcProvider implements IProvider {
       .then(({ result }) => {
         return result;
       });
+  }
+
+  public getTransactionByHash(txhash: string): Promise<TransactionData> {
+    return this.client
+      .call(this.requests.getTransactionByHash(txhash))
+      .then(isValidTransactionByHash)
+      .then(({ result }) => ({
+        ...result,
+        to: result.to || '0x0',
+        value: Wei(result.value),
+        gasPrice: Wei(result.gasPrice),
+        gas: Wei(result.gas),
+        nonce: hexToNumber(result.nonce),
+        blockNumber: result.blockNumber
+          ? hexToNumber(result.blockNumber)
+          : null,
+        transactionIndex: result.transactionIndex
+          ? hexToNumber(result.transactionIndex)
+          : null,
+      }));
+  }
+
+  public getTransactionReceipt(txhash: string): Promise<TransactionReceipt> {
+    return this.client
+      .call(this.requests.getTransactionReceipt(txhash))
+      .then(isValidTransactionReceipt)
+      .then(({ result }) => ({
+        ...result,
+        transactionIndex: hexToNumber(result.transactionIndex),
+        blockNumber: hexToNumber(result.blockNumber),
+        cumulativeGasUsed: Wei(result.cumulativeGasUsed),
+        gasUsed: Wei(result.gasUsed),
+        status: result.status ? hexToNumber(result.status) : null,
+        root: result.root || null,
+      }));
   }
 }

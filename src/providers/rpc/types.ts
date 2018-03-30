@@ -1,4 +1,5 @@
 import { IHexStrTransaction } from '@src/types';
+import { Wei } from '@src/utils';
 
 export type DATA = string;
 export type QUANTITY = string;
@@ -69,8 +70,45 @@ export interface GetTransactionCountRequest extends RPCRequestBase {
   params: [DATA, DEFAULT_BLOCK];
 }
 
+export interface GetTransactionByHashRequest extends RPCRequestBase {
+  method: 'eth_getTransactionByHash';
+  params: [string];
+}
+
+export interface GetTransactionReceiptRequest extends RPCRequestBase {
+  method: 'eth_getTransactionReceipt';
+  params: [string];
+}
+
 export interface GetCurrentBlockRequest extends RPCRequestBase {
   method: 'eth_blockNumber';
+}
+
+export interface TransactionData {
+  hash: string;
+  nonce: number;
+  blockHash: string | null;
+  blockNumber: number | null;
+  transactionIndex: number | null;
+  from: string;
+  to: string;
+  value: Wei;
+  gasPrice: Wei;
+  gas: Wei;
+  input: string;
+}
+
+export interface TransactionReceipt {
+  transactionHash: string;
+  transactionIndex: number;
+  blockHash: string;
+  blockNumber: number;
+  cumulativeGasUsed: Wei;
+  gasUsed: Wei;
+  contractAddress: string | null;
+  logs: string[];
+  logsBloom: string;
+  status: number;
 }
 
 export type RPCRequest =
@@ -80,4 +118,6 @@ export type RPCRequest =
   | CallRequest
   | EstimateGasRequest
   | GetTransactionCountRequest
-  | GetCurrentBlockRequest;
+  | GetCurrentBlockRequest
+  | GetTransactionByHashRequest
+  | GetTransactionReceiptRequest;
