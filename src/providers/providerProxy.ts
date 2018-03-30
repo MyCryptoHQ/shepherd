@@ -79,7 +79,7 @@ const waitForResponse = (callId: number) =>
   );
 
 const providerCallDispatcher = (rpcMethod: keyof RpcProvider) => (
-  ...rpcArgs: string[]
+  ...rpcArgs: any[]
 ) => {
   const providerCall = makeProviderCall(rpcMethod, rpcArgs);
   const callId = dispatchRequest(providerCall);
