@@ -19,8 +19,7 @@ import {
 } from '@src/ducks/providerConfigs';
 import { filterAgainstArr } from '@src/ducks/utils';
 import { allRPCMethods } from '@src/providers/constants';
-import RpcProvider from '@src/providers/rpc';
-import { RootState, StrIdx } from '@src/types';
+import { AllProviderMethods, RootState, StrIdx } from '@src/types';
 
 export const providerExceedsRequestFailureThreshold = (
   state: RootState,
@@ -75,7 +74,8 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
 
   // goes through each available provider and reduces all of their
   // available methods into a mapping that contains all supported methods
-  const availableMethods: { [key in keyof RpcProvider]: boolean } = {
+  const availableMethods: { [key in AllProviderMethods]: boolean } = {
+    getNetVersion: false,
     estimateGas: false,
     getBalance: false,
     getCurrentBlock: false,
@@ -83,6 +83,12 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     ping: false,
     sendCallRequest: false,
     sendRawTx: false,
+    getTransactionByHash: false,
+    getTransactionReceipt: false,
+
+    /* Web3 Methods*/
+    sendTransaction: false,
+    signMessage: false,
   };
 
   for (const providerId of availableProviderIds) {
@@ -97,7 +103,7 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
 
     // for the current provider config, OR each rpcMethod against the map
     Object.entries(providerConfig.supportedMethods).forEach(
-      ([rpcMethod, isSupported]: [keyof RpcProvider, boolean]) => {
+      ([rpcMethod, isSupported]: [AllProviderMethods, boolean]) => {
         availableMethods[rpcMethod] =
           availableMethods[rpcMethod] || isSupported;
       },

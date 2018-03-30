@@ -3,20 +3,33 @@ import EtherscanProvider from '@src/providers/etherscan';
 import InfuraProvider from '@src/providers/infura';
 import RPCProvider from '@src/providers/rpc';
 import Web3Provider from '@src/providers/web3';
-import { IProvider, IProviderContructor, StrIdx } from '@src/types';
+import {
+  IProvider,
+  IProviderContructor,
+  IRPCProvider,
+  IRPCProviderContructor,
+  StrIdx,
+} from '@src/types';
 
 interface IProviderStorage {
-  setClass(providerName: string, Provider: IProviderContructor): void;
-  getClass(providerName: string): IProviderContructor;
-  setInstance(providerName: string, provider: IProvider): void;
-  getInstance(providerName: string): IProvider;
+  setClass(
+    providerName: string,
+    Provider: IProviderContructor | IRPCProviderContructor,
+  ): void;
+  getClass(providerName: string): IProviderContructor | IRPCProviderContructor;
+  setInstance(providerName: string, provider: IProvider | IRPCProvider): void;
+  getInstance(providerName: string): IProvider | IRPCProvider;
 }
 
 class ProviderStorage implements IProviderStorage {
-  private instances: Partial<StrIdx<IProvider>>;
-  private classes: Partial<StrIdx<IProviderContructor>>;
+  private instances: Partial<StrIdx<IProvider | IRPCProvider>>;
+  private classes: Partial<
+    StrIdx<IProviderContructor | IRPCProviderContructor>
+  >;
 
-  constructor(providers: StrIdx<IProviderContructor> = {}) {
+  constructor(
+    providers: StrIdx<IProviderContructor | IRPCProviderContructor> = {},
+  ) {
     this.classes = providers;
     this.instances = {};
   }
@@ -26,7 +39,10 @@ class ProviderStorage implements IProviderStorage {
    * @param providerName
    * @param Provider
    */
-  public setClass(providerName: string, Provider: IProviderContructor) {
+  public setClass(
+    providerName: string,
+    Provider: IProviderContructor | IRPCProviderContructor,
+  ) {
     this.classes[providerName] = Provider;
   }
 
@@ -38,7 +54,7 @@ class ProviderStorage implements IProviderStorage {
     return Provider;
   }
 
-  public setInstance(providerName: string, provider: IProvider) {
+  public setInstance(providerName: string, provider: IProvider | IRPCProvider) {
     this.instances[providerName] = provider;
   }
 

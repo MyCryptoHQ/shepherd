@@ -8,7 +8,7 @@ import { Task } from 'redux-saga';
 export const makeMockProviderConfig = (
   options: DeepPartial<IProviderConfig> = {},
 ): IProviderConfig => {
-  const defaultConfig = {
+  const defaultConfig: IProviderConfig = {
     concurrency: 3,
     network: 'ETH',
     requestFailureThreshold: 3,
@@ -20,6 +20,13 @@ export const makeMockProviderConfig = (
       getTransactionCount: true,
       getCurrentBlock: true,
       sendRawTx: true,
+      getTransactionByHash: true,
+      getTransactionReceipt: true,
+      getNetVersion: true,
+
+      /*web3 methods*/
+      sendTransaction: true,
+      signMessage: true,
     },
     timeoutThresholdMs: 5000,
   };

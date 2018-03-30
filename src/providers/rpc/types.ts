@@ -1,5 +1,4 @@
 import { IHexStrTransaction } from '@src/types';
-import { Wei } from '@src/utils';
 
 export type DATA = string;
 export type QUANTITY = string;
@@ -22,6 +21,10 @@ export interface JsonRpcResponse {
 export interface RPCRequestBase {
   method: string;
   params?: any[];
+}
+
+export interface GetNetVersionRequest extends RPCRequestBase {
+  method: 'net_version';
 }
 
 export interface SendRawTxRequest extends RPCRequestBase {
@@ -82,33 +85,6 @@ export interface GetTransactionReceiptRequest extends RPCRequestBase {
 
 export interface GetCurrentBlockRequest extends RPCRequestBase {
   method: 'eth_blockNumber';
-}
-
-export interface TransactionData {
-  hash: string;
-  nonce: number;
-  blockHash: string | null;
-  blockNumber: number | null;
-  transactionIndex: number | null;
-  from: string;
-  to: string;
-  value: Wei;
-  gasPrice: Wei;
-  gas: Wei;
-  input: string;
-}
-
-export interface TransactionReceipt {
-  transactionHash: string;
-  transactionIndex: number;
-  blockHash: string;
-  blockNumber: number;
-  cumulativeGasUsed: Wei;
-  gasUsed: Wei;
-  contractAddress: string | null;
-  logs: string[];
-  logsBloom: string;
-  status: number;
 }
 
 export type RPCRequest =

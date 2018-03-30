@@ -5,14 +5,15 @@ import {
   EstimateGasRequest,
   GetBalanceRequest,
   GetCurrentBlockRequest,
-  GetTransactionCountRequest,
-  SendRawTxRequest,
+  GetNetVersionRequest,
   GetTransactionByHashRequest,
+  GetTransactionCountRequest,
   GetTransactionReceiptRequest,
+  SendRawTxRequest,
 } from './types';
 
 export default class RPCRequests {
-  public getNetVersion() {
+  public getNetVersion(): GetNetVersionRequest | any {
     return { method: 'net_version' };
   }
 

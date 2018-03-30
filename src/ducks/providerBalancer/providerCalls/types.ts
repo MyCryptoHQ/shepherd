@@ -1,5 +1,4 @@
-import RpcProvider from '@src/providers/rpc';
-import { StrIdx } from '@src/types';
+import { AllProviderMethods, StrIdx } from '@src/types';
 
 export type ProviderCallState =
   | SuccessfulProviderCall
@@ -18,7 +17,7 @@ export enum PROVIDER_CALL {
 
 export interface IProviderCall {
   callId: number;
-  rpcMethod: keyof RpcProvider;
+  rpcMethod: AllProviderMethods;
   rpcArgs: string[];
   numOfRetries: number;
   minPriorityProviderList: string[];

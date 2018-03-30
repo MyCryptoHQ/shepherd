@@ -1,26 +1,37 @@
-import { IHexStrTransaction, IProvider, TxObj } from '@src/types';
-import { makeBN, Wei, hexToNumber } from '@src/utils';
+import {
+  IHexStrTransaction,
+  IRPCProvider,
+  TransactionData,
+  TransactionReceipt,
+  TxObj,
+} from '@src/types';
+import { hexToNumber, makeBN, Wei } from '@src/utils';
 import {
   isValidCallRequest,
   isValidCurrentBlock,
   isValidEstimateGas,
   isValidGetBalance,
   isValidRawTxApi,
-  isValidTransactionCount,
   isValidTransactionByHash,
+  isValidTransactionCount,
   isValidTransactionReceipt,
 } from '@src/validators';
 import RPCClient from './client';
 import RPCRequests from './requests';
-import { TransactionReceipt, TransactionData } from '@src/providers/rpc/types';
 
-export default class RpcProvider implements IProvider {
+export default class RpcProvider implements IRPCProvider {
   protected client: RPCClient;
   protected requests: RPCRequests;
 
   constructor(endpoint: string) {
     this.client = new RPCClient(endpoint);
     this.requests = new RPCRequests();
+  }
+
+  public getNetVersion(): Promise<string> {
+    return this.client
+      .call(this.requests.getNetVersion())
+      .then(({ result }) => result);
   }
 
   public ping(): Promise<boolean> {
