@@ -19,7 +19,7 @@ const handleProviderCallSucceeded = (
 ): ProviderCallsState => {
   const call = state[payload.providerCall.callId];
   if (!call || !call.pending) {
-    throw Error('Pending provider call not found');
+    throw Error(`Pending provider call not found ${call ? call.callId : ''}`);
   }
 
   return {

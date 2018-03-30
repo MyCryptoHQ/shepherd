@@ -8,6 +8,11 @@ export const getProviderCalls = (state: RootState) =>
 export const getProviderCallById = (state: RootState, id: number) =>
   getProviderCalls(state)[id];
 
+export const isStaleCall = (state: RootState, callId: number) => {
+  const call = getProviderCallById(state, callId);
+  return !call || !call.pending;
+};
+
 export const getPendingProviderCallsByProviderId = (
   state: RootState,
   providerId: string,

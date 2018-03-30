@@ -50,6 +50,9 @@ function* handleRequest(): SagaIterator {
     );
 
     function* process() {
+      if (!action) {
+        return;
+      }
       const { payload } = action;
       const providerId: string | undefined = yield call(
         getOptimalProviderId,

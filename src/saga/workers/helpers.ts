@@ -2,6 +2,9 @@ import {
   ProviderCallRequestedAction,
   providerCallSucceeded,
   providerCallTimeout,
+  getProviderCallById,
+  IProviderCall,
+  isStaleCall,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { workerProcessing } from '@src/ducks/providerBalancer/workers';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
@@ -10,6 +13,7 @@ import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
 import { IProvider } from '@src/types';
 import { delay } from 'redux-saga';
 import { apply, call, cancelled, put, race, select } from 'redux-saga/effects';
+import { logger } from '@src/utils/logging';
 
 function* sendRequestToProvider(
   providerId: string,
@@ -49,6 +53,10 @@ function* processRequest(providerId: string, workerId: string) {
   const { rpcArgs, rpcMethod } = payload;
   const callWithPid = addProviderIdToCall(payload, providerId);
 
+  if (yield select(isStaleCall, payload.callId)) {
+    logger.log(`Call ${payload.callId} is stale before processing`);
+    return;
+  }
   // after taking a request, declare processing state
   yield put(workerProcessing({ currentPayload: callWithPid, workerId }));
 
@@ -58,6 +66,11 @@ function* processRequest(providerId: string, workerId: string) {
     rpcMethod,
     rpcArgs,
   );
+
+  if (yield select(isStaleCall, payload.callId)) {
+    logger.log(`Call ${payload.callId} is stale after processing`);
+    return;
+  }
 
   if (result) {
     const action = providerCallSucceeded({

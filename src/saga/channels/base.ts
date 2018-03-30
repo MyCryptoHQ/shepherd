@@ -26,6 +26,7 @@ export abstract class BaseChannel {
   public *take(): SagaIterator {
     const action: ProviderCallRequestedAction = yield take(this.get());
     // set the current action, so when we flush all of the actions we dont miss the currently processing one
+    const callid = action.payload.callId;
     this.currentAction = action;
     this.log(`took call`, action.payload.callId);
 
@@ -36,9 +37,16 @@ export abstract class BaseChannel {
           this.currentAction.payload.callId,
           true,
         ),
-        callback: () => (this.currentAction = null),
+        callback: () => {
+          this.log(
+            `call ${this.currentAction &&
+              this.currentAction.payload.callId} is now null `,
+          );
+          this.currentAction = null;
+        },
       }),
     );
+    this.log(`Returning ${this.currentAction} ${callid}`);
     return this.currentAction;
   }
 
