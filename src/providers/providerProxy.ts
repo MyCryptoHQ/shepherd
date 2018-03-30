@@ -10,10 +10,9 @@ import {
 } from '@src/ducks/providerBalancer/providerCalls';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
-import { IProvider, Reject, Resolve } from '@src/types';
+import { AllProviderMethods, IProvider, Reject, Resolve } from '@src/types';
 import { logger } from '@src/utils/logging';
 import { allRPCMethods } from './constants';
-import RpcProvider from './rpc';
 
 const respondToCallee = (resolve: Resolve, reject: Reject) => (
   action:
@@ -44,7 +43,7 @@ const generateCallId = (() => {
 })();
 
 const makeProviderCall = (
-  rpcMethod: keyof RpcProvider,
+  rpcMethod: AllProviderMethods,
   rpcArgs: string[],
 ): IProviderCall => {
   const isManual = getManualMode(store.getState());
@@ -78,8 +77,8 @@ const waitForResponse = (callId: number) =>
     ),
   );
 
-const providerCallDispatcher = (rpcMethod: keyof RpcProvider) => (
-  ...rpcArgs: any[]
+const providerCallDispatcher = (rpcMethod: AllProviderMethods) => (
+  ...rpcArgs: string[]
 ) => {
   const providerCall = makeProviderCall(rpcMethod, rpcArgs);
   const callId = dispatchRequest(providerCall);
@@ -87,7 +86,7 @@ const providerCallDispatcher = (rpcMethod: keyof RpcProvider) => (
 };
 
 const handler: ProxyHandler<IProvider> = {
-  get: (target, methodName: keyof RpcProvider) => {
+  get: (target, methodName: AllProviderMethods) => {
     if (!allRPCMethods.includes(methodName)) {
       return target[methodName];
     }

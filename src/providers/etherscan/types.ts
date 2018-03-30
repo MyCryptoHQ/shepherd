@@ -39,6 +39,18 @@ export interface GetTransactionCountRequest extends EtherscanReqBase {
   tag: 'latest';
 }
 
+export interface GetTransactionByHashRequest extends EtherscanReqBase {
+  module: 'proxy';
+  action: 'eth_getTransactionByHash';
+  txhash: string;
+}
+
+export interface GetTransactionReceiptRequest extends EtherscanReqBase {
+  module: 'proxy';
+  action: 'eth_getTransactionReceipt';
+  txhash: string;
+}
+
 export interface GetCurrentBlockRequest extends EtherscanReqBase {
   module: 'proxy';
   action: 'eth_blockNumber';

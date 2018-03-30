@@ -24,7 +24,8 @@ const handleValues = (input: string | BN | number) => {
   }
 };
 
+const hexToNumber = (hex: string): number => handleValues(hex).toNumber();
 const makeBN = (input: string | BN | number): BN => handleValues(input);
 const Wei = (input: string | BN | number): Wei => handleValues(input);
 
-export { Wei, handleValues, makeBN };
+export { Wei, handleValues, makeBN, hexToNumber };

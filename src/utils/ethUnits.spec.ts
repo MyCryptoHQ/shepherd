@@ -1,4 +1,4 @@
-import { handleValues, makeBN, Wei } from '@src/utils';
+import { handleValues, hexToNumber, makeBN, Wei } from '@src/utils';
 
 describe('Testing ethUnits library ', () => {
   describe('handleValues', () => {
@@ -36,6 +36,12 @@ describe('Testing ethUnits library ', () => {
   describe('Wei', () => {
     it('should work', () => {
       expect(Wei('0xD').toString()).toEqual('13');
+    });
+  });
+
+  describe('hexToNum', () => {
+    it('should work', () => {
+      expect(hexToNumber('0xD').toString()).toEqual('13');
     });
   });
 });

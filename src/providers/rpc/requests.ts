@@ -5,12 +5,15 @@ import {
   EstimateGasRequest,
   GetBalanceRequest,
   GetCurrentBlockRequest,
+  GetNetVersionRequest,
+  GetTransactionByHashRequest,
   GetTransactionCountRequest,
+  GetTransactionReceiptRequest,
   SendRawTxRequest,
 } from './types';
 
 export default class RPCRequests {
-  public getNetVersion() {
+  public getNetVersion(): GetNetVersionRequest | any {
     return { method: 'net_version' };
   }
 
@@ -50,6 +53,24 @@ export default class RPCRequests {
     return {
       method: 'eth_getTransactionCount',
       params: [address, 'pending'],
+    };
+  }
+
+  public getTransactionByHash(
+    txhash: string,
+  ): GetTransactionByHashRequest | any {
+    return {
+      method: 'eth_getTransactionByHash',
+      params: [txhash],
+    };
+  }
+
+  public getTransactionReceipt(
+    txhash: string,
+  ): GetTransactionReceiptRequest | any {
+    return {
+      method: 'eth_getTransactionReceipt',
+      params: [txhash],
     };
   }
 

@@ -1,5 +1,4 @@
-import RpcProvider from '@src/providers/rpc';
-import { DeepPartial } from '@src/types';
+import { AllProviderMethods, DeepPartial } from '@src/types';
 
 export enum PROVIDER_CONFIG {
   ADD = 'PROVIDER_CONFIG_ADD',
@@ -11,7 +10,7 @@ export interface IProviderConfig {
   concurrency: number;
   requestFailureThreshold: number;
   timeoutThresholdMs: number;
-  supportedMethods: { [rpcMethod in keyof RpcProvider]: boolean };
+  supportedMethods: { [rpcMethod in AllProviderMethods]: boolean };
   network: string;
 }
 

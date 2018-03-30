@@ -5,7 +5,9 @@ import {
   EstimateGasRequest,
   GetBalanceRequest,
   GetCurrentBlockRequest,
+  GetTransactionByHashRequest,
   GetTransactionCountRequest,
+  GetTransactionReceiptRequest,
   SendRawTxRequest,
 } from './types';
 
@@ -51,6 +53,22 @@ export default class EtherscanRequests extends RPCRequests {
       action: 'eth_call',
       to: transaction.to,
       data: transaction.data,
+    };
+  }
+
+  public getTransactionByHash(txhash: string): GetTransactionByHashRequest {
+    return {
+      module: 'proxy',
+      action: 'eth_getTransactionByHash',
+      txhash,
+    };
+  }
+
+  public getTransactionReceipt(txhash: string): GetTransactionReceiptRequest {
+    return {
+      module: 'proxy',
+      action: 'eth_getTransactionReceipt',
+      txhash,
     };
   }
 

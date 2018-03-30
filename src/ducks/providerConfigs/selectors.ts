@@ -1,6 +1,5 @@
 import { providerStorage } from '@src/providers/providerStorage';
-import RpcProvider from '@src/providers/rpc';
-import { RootState } from '@src/types';
+import { AllProviderMethods, RootState } from '@src/types';
 
 export const getProviderConfigs = (state: RootState) => state.providerConfigs;
 
@@ -10,7 +9,7 @@ export const getProviderConfigById = (state: RootState, id: string) =>
 export const providerSupportsMethod = (
   state: RootState,
   id: string,
-  method: keyof RpcProvider,
+  method: AllProviderMethods,
 ): boolean => {
   const config = getProviderConfigById(state, id);
   return !!(config && config.supportedMethods[method]);

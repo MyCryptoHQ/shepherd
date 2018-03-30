@@ -14,19 +14,33 @@ type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
 export interface IProviderContructor<T = any> {
   new (args?: T): IProvider;
 }
+export interface IRPCProviderContructor<T = any> {
+  new (args?: T): IRPCProvider;
+}
 
 export type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
 export type Reject = (reason?: any) => void;
 
-export interface IProvider {
+export interface IRPCProvider {
+  getNetVersion(): Promise<string>;
   ping(): Promise<boolean>;
   getBalance(address: string): Promise<Wei>;
   estimateGas(tx: Partial<IHexStrTransaction>): Promise<Wei>;
   getTransactionCount(address: string): Promise<string>;
+  getTransactionByHash(txhash: string): Promise<TransactionData>;
+  getTransactionReceipt(txhash: string): Promise<TransactionReceipt>;
   sendRawTx(tx: string): Promise<string>;
   sendCallRequest(txObj: TxObj): Promise<string>;
   getCurrentBlock(): Promise<string>;
 }
+
+export interface IProvider extends IRPCProvider {
+  /*Web3 methods*/
+  sendTransaction(web3Tx: IHexStrWeb3Transaction): Promise<string>;
+  signMessage(msgHex: string, fromAddr: string): Promise<string>;
+}
+
+export type AllProviderMethods = keyof IProvider;
 
 export type StrIdx<T> = { [key: string]: T };
 
@@ -54,6 +68,33 @@ export interface IHexStrWeb3Transaction {
   gasPrice: string;
   nonce: string;
   chainId: number;
+}
+
+export interface TransactionData {
+  hash: string;
+  nonce: number;
+  blockHash: string | null;
+  blockNumber: number | null;
+  transactionIndex: number | null;
+  from: string;
+  to: string;
+  value: Wei;
+  gasPrice: Wei;
+  gas: Wei;
+  input: string;
+}
+
+export interface TransactionReceipt {
+  transactionHash: string;
+  transactionIndex: number;
+  blockHash: string;
+  blockNumber: number;
+  cumulativeGasUsed: Wei;
+  gasUsed: Wei;
+  contractAddress: string | null;
+  logs: string[];
+  logsBloom: string;
+  status: number;
 }
 
 export interface RootState {

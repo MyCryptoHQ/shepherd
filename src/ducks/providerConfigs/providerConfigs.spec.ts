@@ -28,6 +28,12 @@ export const mockConfig: IProviderConfig = {
     getTransactionCount: true,
     getCurrentBlock: true,
     sendRawTx: true,
+    getTransactionByHash: true,
+    getTransactionReceipt: true,
+    getNetVersion: true,
+
+    sendTransaction: true,
+    signMessage: true,
   },
   timeoutThresholdMs: 1000,
 };

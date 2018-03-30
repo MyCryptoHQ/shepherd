@@ -23,6 +23,10 @@ export interface RPCRequestBase {
   params?: any[];
 }
 
+export interface GetNetVersionRequest extends RPCRequestBase {
+  method: 'net_version';
+}
+
 export interface SendRawTxRequest extends RPCRequestBase {
   method: 'eth_sendRawTransaction';
   params: [TX];
@@ -69,6 +73,16 @@ export interface GetTransactionCountRequest extends RPCRequestBase {
   params: [DATA, DEFAULT_BLOCK];
 }
 
+export interface GetTransactionByHashRequest extends RPCRequestBase {
+  method: 'eth_getTransactionByHash';
+  params: [string];
+}
+
+export interface GetTransactionReceiptRequest extends RPCRequestBase {
+  method: 'eth_getTransactionReceipt';
+  params: [string];
+}
+
 export interface GetCurrentBlockRequest extends RPCRequestBase {
   method: 'eth_blockNumber';
 }
@@ -80,4 +94,6 @@ export type RPCRequest =
   | CallRequest
   | EstimateGasRequest
   | GetTransactionCountRequest
-  | GetCurrentBlockRequest;
+  | GetCurrentBlockRequest
+  | GetTransactionByHashRequest
+  | GetTransactionReceiptRequest;
