@@ -13,8 +13,8 @@ import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
 import { SubscribeAction, subscribeToAction } from '@src/ducks/subscribe';
 import { Reject, Resolve, RootState } from '@src/types';
-import { Dispatch } from 'redux';
 import { logger } from '@src/utils/logging';
+import { Dispatch } from 'redux';
 
 type AllActions =
   | ProviderCallAction

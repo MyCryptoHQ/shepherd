@@ -1,19 +1,17 @@
 import {
+  isStaleCall,
   ProviderCallRequestedAction,
   providerCallSucceeded,
   providerCallTimeout,
-  getProviderCallById,
-  IProviderCall,
-  isStaleCall,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { workerProcessing } from '@src/ducks/providerBalancer/workers';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
 import { providerChannels } from '@src/saga/channels';
 import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
 import { IProvider } from '@src/types';
+import { logger } from '@src/utils/logging';
 import { delay } from 'redux-saga';
 import { apply, call, cancelled, put, race, select } from 'redux-saga/effects';
-import { logger } from '@src/utils/logging';
 
 function* sendRequestToProvider(
   providerId: string,
