@@ -13,7 +13,7 @@ import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
 import { SubscribeAction, subscribeToAction } from '@src/ducks/subscribe';
 import { Reject, Resolve, RootState } from '@src/types';
-import { logger } from '@src/utils/logging';
+//import { logger } from '@src/utils/logging';
 import { Dispatch } from 'redux';
 
 type AllActions =
@@ -35,7 +35,7 @@ export const triggerOnMatchingCallId = (
     action.type === PROVIDER_CALL.FLUSHED ||
     (action.type === PROVIDER_CALL.TIMEOUT && includeTimeouts)
   ) {
-    logger.log(`Callid ${callId} Triggered on ${action.type}`);
+    // logger.log(`Callid ${callId} Triggered on ${action.type}`);
     // make sure its the same call
     return action.payload.providerCall.callId === callId;
   }
