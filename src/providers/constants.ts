@@ -4,6 +4,7 @@ export const allRPCMethods: (AllProviderMethods)[] = [
   'ping',
   'getNetVersion',
   'sendCallRequest',
+  'sendCallRequests',
   'getBalance',
   'estimateGas',
   'getTransactionCount',

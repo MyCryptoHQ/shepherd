@@ -31,6 +31,7 @@ export interface IRPCProvider {
   getTransactionReceipt(txhash: string): Promise<TransactionReceipt>;
   sendRawTx(tx: string): Promise<string>;
   sendCallRequest(txObj: TxObj): Promise<string>;
+  sendCallRequests(txObj: TxObj[]): Promise<string[]>;
   getCurrentBlock(): Promise<string>;
 }
 

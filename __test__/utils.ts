@@ -15,6 +15,7 @@ export const makeMockProviderConfig = (
     supportedMethods: {
       ping: true,
       sendCallRequest: true,
+      sendCallRequests: true,
       getBalance: true,
       estimateGas: true,
       getTransactionCount: true,

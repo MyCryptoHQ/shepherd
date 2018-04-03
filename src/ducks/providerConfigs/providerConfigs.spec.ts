@@ -23,6 +23,7 @@ export const mockConfig: IProviderConfig = {
   supportedMethods: {
     ping: true,
     sendCallRequest: true,
+    sendCallRequests: true,
     getBalance: true,
     estimateGas: true,
     getTransactionCount: true,

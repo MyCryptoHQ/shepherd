@@ -48,6 +48,13 @@ export default class RpcProvider implements IRPCProvider {
       .then(response => response.result);
   }
 
+  public sendCallRequests(txObjs: TxObj[]): Promise<string[]> {
+    return this.client
+      .batch(txObjs.map(this.requests.ethCall))
+      .then(r => r.map(isValidCallRequest))
+      .then(r => r.map(({ result }) => result));
+  }
+
   public getBalance(address: string): Promise<Wei> {
     return this.client
       .call(this.requests.getBalance(address))
