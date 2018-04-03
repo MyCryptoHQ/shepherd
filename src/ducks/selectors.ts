@@ -82,6 +82,7 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     getTransactionCount: false,
     ping: false,
     sendCallRequest: false,
+    sendCallRequests: false,
     sendRawTx: false,
     getTransactionByHash: false,
     getTransactionReceipt: false,
