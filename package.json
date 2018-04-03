@@ -79,6 +79,7 @@
       "@test/(.*)": "<rootDir>/__test__/$1"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
+    "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "src/providers/etherscan",
