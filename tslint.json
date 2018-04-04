@@ -16,6 +16,20 @@
     "no-var-requires": false,
     "comment-format": false,
     "ordered-imports": true,
-    "no-default-export": true
+    "no-default-export": true,
+    "prefer-readonly": true,
+    "no-reference": true,
+    "unified-signatures": true,
+    "await-promise": true,
+    "cyclomatic-complexity": [true, 10],
+    "prefer-const": true,
+    "no-boolean-literal-compare": true,
+    "no-unnecessary-callback-wrapper": true,
+    "no-unnecessary-initializer": true,
+    "one-variable-per-declaration": true,
+    "deprecation": true,
+    "no-mergeable-namespace": true,
+    "strict-type-predicates": true,
+    "prefer-conditional-expression": true
   }
 }

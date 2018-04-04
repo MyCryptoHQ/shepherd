@@ -11,7 +11,7 @@ export abstract class BaseChannel {
   protected chan: Channel<IProviderCallRequested> | undefined;
   protected name: string | undefined;
   private currentAction: IProviderCallRequested | null | undefined;
-  private shouldLog = false;
+  private readonly shouldLog = false;
 
   public get() {
     if (!this.chan) {

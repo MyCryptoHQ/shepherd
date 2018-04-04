@@ -22,8 +22,8 @@ interface IProviderStorage {
 }
 
 class ProviderStorage implements IProviderStorage {
-  private instances: Partial<StrIdx<IProvider | IRPCProvider>>;
-  private classes: Partial<
+  private readonly instances: Partial<StrIdx<IProvider | IRPCProvider>>;
+  private readonly classes: Partial<
     StrIdx<IProviderContructor | IRPCProviderContructor>
   >;
 

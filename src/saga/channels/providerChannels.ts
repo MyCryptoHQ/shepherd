@@ -9,7 +9,7 @@ import { SagaIterator } from 'redux-saga';
 import { apply, call, put } from 'redux-saga/effects';
 
 export class ProviderChannels {
-  private providerChannels: StrIdx<BaseChannel>;
+  private readonly providerChannels: StrIdx<BaseChannel>;
 
   constructor() {
     this.providerChannels = {};
