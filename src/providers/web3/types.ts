@@ -1,15 +1,15 @@
 import {
   DATA,
-  JsonRpcResponse,
+  IJsonRpcResponse,
+  IRPCRequestBase,
   QUANTITY,
   RPCRequest,
-  RPCRequestBase,
 } from '../rpc/types';
 
 type MESSAGE_HEX = string;
 type ADDRESS = string;
 
-export interface SendTransactionRequest extends RPCRequestBase {
+export interface ISendTransactionRequest extends IRPCRequestBase {
   method: 'eth_sendTransaction';
   params: [
     {
@@ -24,18 +24,18 @@ export interface SendTransactionRequest extends RPCRequestBase {
   ];
 }
 
-export interface SignMessageRequest extends RPCRequestBase {
+export interface ISignMessageRequest extends IRPCRequestBase {
   method: 'personal_sign';
   params: [MESSAGE_HEX, ADDRESS];
 }
 
-export interface GetAccountsRequest extends RPCRequestBase {
+export interface IGetAccountsRequest extends IRPCRequestBase {
   method: 'eth_accounts';
 }
 
 type TWeb3ProviderCallback = (
   error: any,
-  result: JsonRpcResponse | JsonRpcResponse[],
+  result: IJsonRpcResponse | IJsonRpcResponse[],
 ) => any;
 type TSendAsync = (
   request: RPCRequest | any,

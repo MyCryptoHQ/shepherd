@@ -1,7 +1,7 @@
 import * as BN from 'bn.js';
 import { Wei } from '@src/utils';
-import { ProviderBalancerState } from '@src/ducks/providerBalancer';
-import { ProviderConfigState } from '@src/ducks/providerConfigs';
+import { IProviderBalancerState } from '@src/ducks/providerBalancer';
+import { IProviderConfigState } from '@src/ducks/providerConfigs';
 
 type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
 
@@ -99,6 +99,6 @@ export interface TransactionReceipt {
 }
 
 export interface RootState {
-  providerBalancer: ProviderBalancerState;
-  providerConfigs: ProviderConfigState;
+  providerBalancer: IProviderBalancerState;
+  providerConfigs: IProviderConfigState;
 }

@@ -1,35 +1,35 @@
 import {
+  IProviderStatsAdded,
   PROVIDER_STATS,
   ProviderStatsAction,
-  ProviderStatsAddedAction,
 } from '@src/ducks/providerBalancer/providerStats';
 import { Reducer } from 'redux';
 import {
   BALANCER,
   BalancerAction,
-  BalancerNetworkSwitchSucceededAction,
+  IBalancerNetworkSwitchSucceeded,
 } from '../balancerConfig/types';
 import {
+  IProviderCallSucceeded,
+  IProviderCallTimeout,
   PROVIDER_CALL,
   ProviderCallAction,
-  ProviderCallSucceededAction,
-  ProviderCallTimeoutAction,
 } from '../providerCalls/types';
 import {
+  IWorkerKilled,
+  IWorkerProcessing,
+  IWorkerSpawned,
   WORKER,
   WorkerAction,
-  WorkerKilledAction,
-  WorkerProcessingAction,
-  WorkerSpawnedAction,
 } from '../workers/types';
-import { WorkerState } from './types';
+import { IWorkerState } from './types';
 
-type WReducer = Reducer<WorkerState>;
-const INITIAL_STATE: WorkerState = {};
+type WReducer = Reducer<IWorkerState>;
+const INITIAL_STATE: IWorkerState = {};
 
 const handleNetworkSwitch: WReducer = (
-  _: WorkerState,
-  { payload }: BalancerNetworkSwitchSucceededAction,
+  _: IWorkerState,
+  { payload }: IBalancerNetworkSwitchSucceeded,
 ) => {
   // validation
   for (const [workerId, worker] of Object.entries(payload.workers)) {
@@ -45,8 +45,8 @@ const handleNetworkSwitch: WReducer = (
 };
 
 const handleWorkerKilled: WReducer = (
-  state: WorkerState,
-  { payload }: WorkerKilledAction,
+  state: IWorkerState,
+  { payload }: IWorkerKilled,
 ) => {
   if (!state[payload.workerId]) {
     throw Error(`Worker ${payload.workerId} does not exist`);
@@ -58,8 +58,8 @@ const handleWorkerKilled: WReducer = (
 };
 
 const handleWorkerProcessing: WReducer = (
-  state: WorkerState,
-  { payload: { currentPayload, workerId } }: WorkerProcessingAction,
+  state: IWorkerState,
+  { payload: { currentPayload, workerId } }: IWorkerProcessing,
 ) => {
   if (!state[workerId]) {
     throw Error(`Worker ${workerId} does not exist`);
@@ -76,8 +76,8 @@ const handleWorkerProcessing: WReducer = (
 };
 
 const handleWorkerSpawned: WReducer = (
-  state: WorkerState,
-  { payload }: WorkerSpawnedAction,
+  state: IWorkerState,
+  { payload }: IWorkerSpawned,
 ) => {
   if (state[payload.workerId]) {
     throw Error(`Worker ${payload.workerId} already exists`);
@@ -95,7 +95,7 @@ const handleWorkerSpawned: WReducer = (
 
 const handleProviderAdded: WReducer = (
   state,
-  { payload }: ProviderStatsAddedAction,
+  { payload }: IProviderStatsAdded,
 ) => {
   const stateCopy = { ...state };
   for (const [workerId, worker] of Object.entries(payload.workers)) {
@@ -113,8 +113,8 @@ const handleProviderAdded: WReducer = (
 };
 
 const handleProviderCallSucceeded: WReducer = (
-  state: WorkerState,
-  { payload }: ProviderCallSucceededAction,
+  state: IWorkerState,
+  { payload }: IProviderCallSucceeded,
 ) => {
   const { providerCall: { callId } } = payload;
   const worker = Object.entries(state).find(
@@ -132,8 +132,8 @@ const handleProviderCallSucceeded: WReducer = (
 };
 
 const handleProviderCallTimeout: WReducer = (
-  state: WorkerState,
-  { payload }: ProviderCallTimeoutAction,
+  state: IWorkerState,
+  { payload }: IProviderCallTimeout,
 ) => {
   const { providerCall } = payload;
   const worker = Object.entries(state).find(
@@ -151,13 +151,13 @@ const handleProviderCallTimeout: WReducer = (
 };
 
 export const workerReducer: WReducer = (
-  state: WorkerState = INITIAL_STATE,
+  state: IWorkerState = INITIAL_STATE,
   action:
     | WorkerAction
     | ProviderCallAction
     | BalancerAction
     | ProviderStatsAction,
-): WorkerState => {
+): IWorkerState => {
   switch (action.type) {
     case WORKER.SPAWNED:
       return handleWorkerSpawned(state, action);

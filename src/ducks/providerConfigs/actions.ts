@@ -1,21 +1,21 @@
-import { ChangeProviderConfigAction } from '@src/ducks/providerConfigs';
+import { IChangeProviderConfig } from '@src/ducks/providerConfigs';
 import {
-  AddProviderConfigAction,
+  IAddProviderConfig,
+  IRemoveProviderConfig,
   PROVIDER_CONFIG,
-  RemoveProviderConfigAction,
 } from './types';
 
 export const addProviderConfig = (
-  payload: AddProviderConfigAction['payload'],
-): AddProviderConfigAction => ({
+  payload: IAddProviderConfig['payload'],
+): IAddProviderConfig => ({
   type: PROVIDER_CONFIG.ADD,
   payload,
 });
 
 export const removeProviderConfig = (
-  payload: RemoveProviderConfigAction['payload'],
-): RemoveProviderConfigAction => ({ type: PROVIDER_CONFIG.REMOVE, payload });
+  payload: IRemoveProviderConfig['payload'],
+): IRemoveProviderConfig => ({ type: PROVIDER_CONFIG.REMOVE, payload });
 
 export const changeProviderConfig = (
-  payload: ChangeProviderConfigAction['payload'],
-): ChangeProviderConfigAction => ({ type: PROVIDER_CONFIG.CHANGE, payload });
+  payload: IChangeProviderConfig['payload'],
+): IChangeProviderConfig => ({ type: PROVIDER_CONFIG.CHANGE, payload });

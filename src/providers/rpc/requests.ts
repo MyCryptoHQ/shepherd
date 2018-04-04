@@ -1,23 +1,23 @@
 import { IHexStrTransaction, TxObj } from '@src/types';
 import { stripHexPrefix } from '@src/utils';
 import {
-  CallRequest,
-  EstimateGasRequest,
-  GetBalanceRequest,
-  GetCurrentBlockRequest,
-  GetNetVersionRequest,
-  GetTransactionByHashRequest,
-  GetTransactionCountRequest,
-  GetTransactionReceiptRequest,
-  SendRawTxRequest,
+  ICallRequest,
+  IEstimateGasRequest,
+  IGetBalanceRequest,
+  IGetCurrentBlockRequest,
+  IGetNetVersionRequest,
+  IGetTransactionByHashRequest,
+  IGetTransactionCountRequest,
+  IGetTransactionReceiptRequest,
+  ISendRawTxRequest,
 } from './types';
 
 export class RPCRequests {
-  public getNetVersion(): GetNetVersionRequest | any {
+  public getNetVersion(): IGetNetVersionRequest | any {
     return { method: 'net_version' };
   }
 
-  public sendRawTx(signedTx: string): SendRawTxRequest | any {
+  public sendRawTx(signedTx: string): ISendRawTxRequest | any {
     return {
       method: 'eth_sendRawTransaction',
       params: [signedTx],
@@ -26,21 +26,21 @@ export class RPCRequests {
 
   public estimateGas(
     transaction: Partial<IHexStrTransaction>,
-  ): EstimateGasRequest | any {
+  ): IEstimateGasRequest | any {
     return {
       method: 'eth_estimateGas',
       params: [transaction],
     };
   }
 
-  public getBalance(address: string): GetBalanceRequest | any {
+  public getBalance(address: string): IGetBalanceRequest | any {
     return {
       method: 'eth_getBalance',
       params: [`0x${stripHexPrefix(address)}`, 'pending'],
     };
   }
 
-  public ethCall(txObj: TxObj): CallRequest | any {
+  public ethCall(txObj: TxObj): ICallRequest | any {
     return {
       method: 'eth_call',
       params: [txObj, 'pending'],
@@ -49,7 +49,7 @@ export class RPCRequests {
 
   public getTransactionCount(
     address: string,
-  ): GetTransactionCountRequest | any {
+  ): IGetTransactionCountRequest | any {
     return {
       method: 'eth_getTransactionCount',
       params: [address, 'pending'],
@@ -58,7 +58,7 @@ export class RPCRequests {
 
   public getTransactionByHash(
     txhash: string,
-  ): GetTransactionByHashRequest | any {
+  ): IGetTransactionByHashRequest | any {
     return {
       method: 'eth_getTransactionByHash',
       params: [txhash],
@@ -67,14 +67,14 @@ export class RPCRequests {
 
   public getTransactionReceipt(
     txhash: string,
-  ): GetTransactionReceiptRequest | any {
+  ): IGetTransactionReceiptRequest | any {
     return {
       method: 'eth_getTransactionReceipt',
       params: [txhash],
     };
   }
 
-  public getCurrentBlock(): GetCurrentBlockRequest | any {
+  public getCurrentBlock(): IGetCurrentBlockRequest | any {
     return {
       method: 'eth_blockNumber',
     };

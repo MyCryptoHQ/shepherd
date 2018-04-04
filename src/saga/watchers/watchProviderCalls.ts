@@ -4,8 +4,8 @@ import {
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
+  IProviderCallRequested,
   providerCallFailed,
-  ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { getAvailableProviderId } from '@src/ducks/selectors';
 import { balancerChannel, providerChannels } from '@src/saga/channels';
@@ -13,7 +13,7 @@ import { delay, SagaIterator } from 'redux-saga';
 import { apply, call, fork, put, race, select, take } from 'redux-saga/effects';
 
 function* getOptimalProviderId(
-  payload: ProviderCallRequestedAction['payload'],
+  payload: IProviderCallRequested['payload'],
 ): SagaIterator {
   // check if the app is offline
   if (yield select(isOffline)) {
@@ -44,7 +44,7 @@ function* handleRequest(): SagaIterator {
 
   while (true) {
     // test if this starts queue timeout
-    const action: ProviderCallRequestedAction = yield apply(
+    const action: IProviderCallRequested = yield apply(
       balancerChannel,
       balancerChannel.take,
     );

@@ -1,79 +1,79 @@
 import {
   BALANCER,
-  BalancerAutoAction,
-  BalancerFlushAction,
-  BalancerInitAction,
-  BalancerManualFailedAction,
-  BalancerManualRequestedAction,
-  BalancerManualSucceededAction,
-  BalancerNetworkSwitchRequestedAction,
-  BalancerNetworkSwitchSucceededAction,
-  BalancerOfflineAction,
-  BalancerOnlineAction,
-  BalancerQueueTimeoutAction,
-  BalancerSetProviderCallRetryThresholdAction,
+  IBalancerAuto,
+  IBalancerFlush,
+  IBalancerInit,
+  IBalancerManualFailed,
+  IBalancerManualRequested,
+  IBalancerManualSucceeded,
+  IBalancerNetworkSwitchRequested,
+  IBalancerNetworkSwitchSucceeded,
+  IBalancerOffline,
+  IBalancerOnline,
+  IBalancerQueueTimeout,
+  IBalancerSetProviderCallRetryThreshold,
 } from './types';
 
-export const balancerFlush = (): BalancerFlushAction => ({
+export const balancerFlush = (): IBalancerFlush => ({
   type: BALANCER.FLUSH,
 });
 
 export const balancerNetworkSwitchRequested = (
-  payload: BalancerNetworkSwitchRequestedAction['payload'],
-): BalancerNetworkSwitchRequestedAction => ({
+  payload: IBalancerNetworkSwitchRequested['payload'],
+): IBalancerNetworkSwitchRequested => ({
   payload,
   type: BALANCER.NETWORK_SWTICH_REQUESTED,
 });
 
 export const balancerNetworkSwitchSucceeded = (
-  payload: BalancerNetworkSwitchSucceededAction['payload'],
-): BalancerNetworkSwitchSucceededAction => ({
+  payload: IBalancerNetworkSwitchSucceeded['payload'],
+): IBalancerNetworkSwitchSucceeded => ({
   type: BALANCER.NETWORK_SWITCH_SUCCEEDED,
   payload,
 });
 
 export const balancerSetProviderCallRetryThreshold = (
-  payload: BalancerSetProviderCallRetryThresholdAction['payload'],
-): BalancerSetProviderCallRetryThresholdAction => ({
+  payload: IBalancerSetProviderCallRetryThreshold['payload'],
+): IBalancerSetProviderCallRetryThreshold => ({
   type: BALANCER.SET_PROVIDER_CALL_RETRY_THRESHOLD,
   payload,
 });
 
 export const balancerInit = (
-  payload: BalancerInitAction['payload'],
-): BalancerInitAction => ({ type: BALANCER.INIT, payload });
+  payload: IBalancerInit['payload'],
+): IBalancerInit => ({ type: BALANCER.INIT, payload });
 
-export const setOffline = (): BalancerOfflineAction => ({
+export const setOffline = (): IBalancerOffline => ({
   type: BALANCER.OFFLINE,
 });
 
-export const setOnline = (): BalancerOnlineAction => ({
+export const setOnline = (): IBalancerOnline => ({
   type: BALANCER.ONLINE,
 });
 
-export const setAuto = (): BalancerAutoAction => ({ type: BALANCER.AUTO });
+export const setAuto = (): IBalancerAuto => ({ type: BALANCER.AUTO });
 
 export const setManualRequested = (
-  payload: BalancerManualRequestedAction['payload'],
-): BalancerManualRequestedAction => ({
+  payload: IBalancerManualRequested['payload'],
+): IBalancerManualRequested => ({
   type: BALANCER.MANUAL_REQUESTED,
   payload,
 });
 
 export const setManualSucceeded = (
-  payload: BalancerManualSucceededAction['payload'],
-): BalancerManualSucceededAction => ({
+  payload: IBalancerManualSucceeded['payload'],
+): IBalancerManualSucceeded => ({
   type: BALANCER.MANUAL_SUCCEEDED,
   payload,
 });
 
 export const setManualFailed = (
-  payload: BalancerManualFailedAction['payload'],
-): BalancerManualFailedAction => ({
+  payload: IBalancerManualFailed['payload'],
+): IBalancerManualFailed => ({
   type: BALANCER.MANUAL_FAILED,
   payload,
 });
 
-export const balancerQueueTimeout = (): BalancerQueueTimeoutAction => ({
+export const balancerQueueTimeout = (): IBalancerQueueTimeout => ({
   type: BALANCER.QUEUE_TIMEOUT,
 });

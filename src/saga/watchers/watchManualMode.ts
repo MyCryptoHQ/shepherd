@@ -1,7 +1,7 @@
 import {
   BALANCER,
-  BalancerManualRequestedAction,
   balancerNetworkSwitchRequested,
+  IBalancerManualRequested,
   setManualFailed,
   setManualSucceeded,
 } from '@src/ducks/providerBalancer/balancerConfig';
@@ -55,7 +55,7 @@ function* attemptManualMode(
 
 function* handleManualMode({
   payload: { providerId, skipOfflineCheck },
-}: BalancerManualRequestedAction): SagaIterator {
+}: IBalancerManualRequested): SagaIterator {
   yield call(attemptManualMode, providerId, skipOfflineCheck);
 }
 

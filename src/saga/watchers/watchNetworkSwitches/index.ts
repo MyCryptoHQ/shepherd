@@ -1,8 +1,8 @@
 import {
   BALANCER,
-  BalancerInitAction,
-  BalancerNetworkSwitchRequestedAction,
   balancerNetworkSwitchSucceeded,
+  IBalancerInit,
+  IBalancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { SagaIterator } from 'redux-saga';
 import { call, fork, put, take } from 'redux-saga/effects';
@@ -12,7 +12,7 @@ function* handleNetworkSwitch(): SagaIterator {
   while (true) {
     const {
       payload,
-    }: BalancerNetworkSwitchRequestedAction | BalancerInitAction = yield take([
+    }: IBalancerNetworkSwitchRequested | IBalancerInit = yield take([
       BALANCER.NETWORK_SWTICH_REQUESTED,
       BALANCER.INIT,
     ]);

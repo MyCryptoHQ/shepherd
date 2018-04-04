@@ -1,6 +1,6 @@
 import {
   IProviderStats,
-  ProviderStatsState,
+  IProviderStatsState,
 } from '@src/ducks/providerBalancer/providerStats';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 import { RootState } from '@src/types';
@@ -14,7 +14,7 @@ export const getProviderStatsById = (
 ): Readonly<IProviderStats> | null => getProviderStats(state)[id];
 
 export type OnlineProviders = {
-  [providerId in keyof ProviderStatsState]: ProviderStatsState[providerId] & {
+  [providerId in keyof IProviderStatsState]: IProviderStatsState[providerId] & {
     isOffline: false;
   }
 };
@@ -28,7 +28,7 @@ export const getOnlineProviders = (state: RootState): OnlineProviders => {
   const initialState: OnlineProviders = {};
 
   const isOnline = (
-    provider: ProviderStatsState[string],
+    provider: IProviderStatsState[string],
   ): provider is OnlineProviders[string] => !provider.isOffline;
 
   return Object.entries(providers).reduce(

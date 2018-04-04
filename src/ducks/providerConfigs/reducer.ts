@@ -1,20 +1,20 @@
 import { Reducer } from 'redux';
 import {
-  AddProviderConfigAction,
-  ChangeProviderConfigAction,
+  IAddProviderConfig,
+  IChangeProviderConfig,
+  IProviderConfigState,
+  IRemoveProviderConfig,
   PROVIDER_CONFIG,
   ProviderConfigAction,
-  ProviderConfigState,
-  RemoveProviderConfigAction,
 } from './types';
 
-export const INITIAL_STATE: ProviderConfigState = {};
+export const INITIAL_STATE: IProviderConfigState = {};
 
-type PCReducer = Reducer<ProviderConfigState>;
+type PCReducer = Reducer<IProviderConfigState>;
 
 const handleProviderConfigAdd: PCReducer = (
   state,
-  { payload }: AddProviderConfigAction,
+  { payload }: IAddProviderConfig,
 ) => {
   if (state[payload.id]) {
     throw Error(`Provider config ${payload.id} already exists`);
@@ -24,7 +24,7 @@ const handleProviderConfigAdd: PCReducer = (
 
 const handleProviderConfigChange: PCReducer = (
   state,
-  { payload }: ChangeProviderConfigAction,
+  { payload }: IChangeProviderConfig,
 ) => {
   const { config, id } = payload;
   if (!state[id]) {
@@ -46,7 +46,7 @@ const handleProviderConfigChange: PCReducer = (
 
 const handleProviderConfigRemove: PCReducer = (
   state,
-  { payload }: RemoveProviderConfigAction,
+  { payload }: IRemoveProviderConfig,
 ) => {
   if (!state[payload.id]) {
     throw Error(`Provider config ${payload.id} does not exist`);
@@ -58,9 +58,9 @@ const handleProviderConfigRemove: PCReducer = (
 };
 
 export const providerConfigs = (
-  state: ProviderConfigState = INITIAL_STATE,
+  state: IProviderConfigState = INITIAL_STATE,
   action: ProviderConfigAction,
-): ProviderConfigState => {
+): IProviderConfigState => {
   switch (action.type) {
     case PROVIDER_CONFIG.ADD:
       return handleProviderConfigAdd(state, action);

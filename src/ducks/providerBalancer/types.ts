@@ -1,11 +1,11 @@
-import { BalancerConfigState } from './balancerConfig';
+import { IBalancerConfigState } from './balancerConfig';
 import { ProviderCallsState } from './providerCalls';
-import { ProviderStatsState } from './providerStats';
-import { WorkerState } from './workers';
+import { IProviderStatsState } from './providerStats';
+import { IWorkerState } from './workers';
 
-export interface ProviderBalancerState {
-  providerStats: ProviderStatsState;
-  workers: WorkerState;
-  balancerConfig: BalancerConfigState;
+export interface IProviderBalancerState {
+  providerStats: IProviderStatsState;
+  workers: IWorkerState;
+  balancerConfig: IBalancerConfigState;
   providerCalls: ProviderCallsState;
 }

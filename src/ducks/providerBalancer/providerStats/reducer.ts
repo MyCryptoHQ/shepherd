@@ -1,35 +1,38 @@
 import {
   BALANCER,
   BalancerAction,
-  BalancerFlushAction,
-  BalancerNetworkSwitchSucceededAction,
+  IBalancerFlush,
+  IBalancerNetworkSwitchSucceeded,
 } from '../balancerConfig/types';
 import {
+  IProviderCallTimeout,
   PROVIDER_CALL,
   ProviderCallAction,
-  ProviderCallTimeoutAction,
 } from '../providerCalls/types';
 import {
+  IWorkerKilled,
+  IWorkerSpawned,
   WORKER,
   WorkerAction,
-  WorkerKilledAction,
-  WorkerSpawnedAction,
 } from '../workers/types';
 import {
+  IProviderStatsAdded,
+  IProviderStatsOffline,
+  IProviderStatsOnline,
+  IProviderStatsRemoved,
+  IProviderStatsState,
   PROVIDER_STATS,
   ProviderStatsAction,
-  ProviderStatsAddedAction,
-  ProviderStatsOfflineAction,
-  ProviderStatsOnlineAction,
-  ProviderStatsRemovedAction,
-  ProviderStatsState,
 } from './types';
 
-type NReducer<T> = (state: ProviderStatsState, action: T) => ProviderStatsState;
+type NReducer<T> = (
+  state: IProviderStatsState,
+  action: T,
+) => IProviderStatsState;
 
-const INITIAL_STATE: ProviderStatsState = {};
+const INITIAL_STATE: IProviderStatsState = {};
 
-const handleNetworkSwitch: NReducer<BalancerNetworkSwitchSucceededAction> = (
+const handleNetworkSwitch: NReducer<IBalancerNetworkSwitchSucceeded> = (
   _,
   { payload: { providerStats } },
 ) => {
@@ -45,7 +48,7 @@ const handleNetworkSwitch: NReducer<BalancerNetworkSwitchSucceededAction> = (
   return providerStats;
 };
 
-const handleWorkerKilled: NReducer<WorkerKilledAction> = (
+const handleWorkerKilled: NReducer<IWorkerKilled> = (
   state,
   { payload: { providerId, workerId } },
 ) => {
@@ -67,7 +70,7 @@ const handleWorkerKilled: NReducer<WorkerKilledAction> = (
   return { ...state, [providerId]: nextProviderProviderStatsState };
 };
 
-const handleWorkerSpawned: NReducer<WorkerSpawnedAction> = (
+const handleWorkerSpawned: NReducer<IWorkerSpawned> = (
   state,
   { payload: { providerId, workerId } },
 ) => {
@@ -89,7 +92,7 @@ const handleWorkerSpawned: NReducer<WorkerSpawnedAction> = (
   return { ...state, [providerId]: nextProviderProviderStatsState };
 };
 
-const handleProviderOnline: NReducer<ProviderStatsOnlineAction> = (
+const handleProviderOnline: NReducer<IProviderStatsOnline> = (
   state,
   { payload: { providerId } },
 ) => {
@@ -108,7 +111,7 @@ const handleProviderOnline: NReducer<ProviderStatsOnlineAction> = (
   };
 };
 
-const handleProviderOffline: NReducer<ProviderStatsOfflineAction> = (
+const handleProviderOffline: NReducer<IProviderStatsOffline> = (
   state,
   { payload: { providerId } },
 ) => {
@@ -129,8 +132,8 @@ const handleProviderOffline: NReducer<ProviderStatsOfflineAction> = (
   };
 };
 
-const handleProviderAdded: NReducer<ProviderStatsAddedAction> = (
-  state: ProviderStatsState,
+const handleProviderAdded: NReducer<IProviderStatsAdded> = (
+  state: IProviderStatsState,
   { payload: { providerId, stats } },
 ) => {
   if (state[providerId]) {
@@ -140,7 +143,7 @@ const handleProviderAdded: NReducer<ProviderStatsAddedAction> = (
   return { ...state, [providerId]: stats };
 };
 
-const handleProviderRemoved: NReducer<ProviderStatsRemovedAction> = (
+const handleProviderRemoved: NReducer<IProviderStatsRemoved> = (
   state,
   { payload },
 ) => {
@@ -152,9 +155,9 @@ const handleProviderRemoved: NReducer<ProviderStatsRemovedAction> = (
   return stateCopy;
 };
 
-const handleProviderCallTimeout: NReducer<ProviderCallTimeoutAction> = (
-  state: ProviderStatsState,
-  { payload: { providerCall: { providerId } } }: ProviderCallTimeoutAction,
+const handleProviderCallTimeout: NReducer<IProviderCallTimeout> = (
+  state: IProviderStatsState,
+  { payload: { providerCall: { providerId } } }: IProviderCallTimeout,
 ) => {
   // check for existence of provider
   const providerToChange = state[providerId];
@@ -171,8 +174,8 @@ const handleProviderCallTimeout: NReducer<ProviderCallTimeoutAction> = (
   };
 };
 
-const handleBalancerFlush: NReducer<BalancerFlushAction> = state =>
-  Object.entries(state).reduce<ProviderStatsState>(
+const handleBalancerFlush: NReducer<IBalancerFlush> = state =>
+  Object.entries(state).reduce<IProviderStatsState>(
     (obj, [providerId, stats]) => ({
       ...obj,
       [providerId]: { ...stats, requestFailures: 0 },
@@ -182,7 +185,7 @@ const handleBalancerFlush: NReducer<BalancerFlushAction> = state =>
 
 export const providerStatsReducer: NReducer<
   ProviderStatsAction | WorkerAction | ProviderCallAction | BalancerAction
-> = (state = INITIAL_STATE, action): ProviderStatsState => {
+> = (state = INITIAL_STATE, action): IProviderStatsState => {
   switch (action.type) {
     case WORKER.KILLED:
       return handleWorkerKilled(state, action);

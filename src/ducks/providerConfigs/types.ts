@@ -14,26 +14,26 @@ export interface IProviderConfig {
   network: string;
 }
 
-export interface ProviderConfigState {
+export interface IProviderConfigState {
   [key: string]: IProviderConfig;
 }
 
-export interface AddProviderConfigAction {
+export interface IAddProviderConfig {
   type: PROVIDER_CONFIG.ADD;
   payload: { id: string; config: IProviderConfig };
 }
 
-export interface ChangeProviderConfigAction {
+export interface IChangeProviderConfig {
   type: PROVIDER_CONFIG.CHANGE;
   payload: { id: string; config: DeepPartial<IProviderConfig> };
 }
 
-export interface RemoveProviderConfigAction {
+export interface IRemoveProviderConfig {
   type: PROVIDER_CONFIG.REMOVE;
   payload: { id: string };
 }
 
 export type ProviderConfigAction =
-  | AddProviderConfigAction
-  | ChangeProviderConfigAction
-  | RemoveProviderConfigAction;
+  | IAddProviderConfig
+  | IChangeProviderConfig
+  | IRemoveProviderConfig;

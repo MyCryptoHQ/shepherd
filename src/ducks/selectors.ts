@@ -5,7 +5,7 @@ import {
 import {
   getPendingProviderCallsByProviderId,
   IProviderCall,
-  ProviderCallTimeoutAction,
+  IProviderCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
 import {
   getOnlineProviders,
@@ -23,7 +23,7 @@ import { AllProviderMethods, RootState, StrIdx } from '@src/types';
 
 export const providerExceedsRequestFailureThreshold = (
   state: RootState,
-  { payload }: ProviderCallTimeoutAction,
+  { payload }: IProviderCallTimeout,
 ) => {
   const { providerCall: { providerId } } = payload;
   const providerStats = getProviderStatsById(state, providerId);

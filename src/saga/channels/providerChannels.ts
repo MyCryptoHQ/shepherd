@@ -1,6 +1,6 @@
 import {
   IProviderCall,
-  ProviderCallRequestedAction,
+  IProviderCallRequested,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { BaseChannel } from '@src/saga/channels/base';
 import { providerChannelFactory } from '@src/saga/channels/providerChannel';
@@ -17,7 +17,7 @@ export class ProviderChannels {
 
   public *put(
     providerId: string,
-    action: ProviderCallRequestedAction,
+    action: IProviderCallRequested,
   ): SagaIterator {
     const chan = this.getChannel(providerId).get();
     yield put(chan, action);

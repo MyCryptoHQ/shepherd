@@ -1,7 +1,7 @@
 import {
   BALANCER,
-  BalancerManualFailedAction,
-  BalancerManualSucceededAction,
+  IBalancerManualFailed,
+  IBalancerManualSucceeded,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig/types';
 import {
@@ -11,7 +11,7 @@ import {
 import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
 import { WorkerAction } from '@src/ducks/providerBalancer/workers';
 import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
-import { SubscribeAction, subscribeToAction } from '@src/ducks/subscribe';
+import { ISubscribe, subscribeToAction } from '@src/ducks/subscribe';
 import { Reject, Resolve, RootState } from '@src/types';
 //import { logger } from '@src/utils/logging';
 import { Dispatch } from 'redux';
@@ -22,7 +22,7 @@ type AllActions =
   | ProviderStatsAction
   | ProviderConfigAction
   | BalancerAction
-  | SubscribeAction;
+  | ISubscribe;
 
 export const triggerOnMatchingCallId = (
   callId: number,
@@ -63,7 +63,7 @@ export function waitForManualMode(
   }
 
   const returnSuccessOrFail = (resolve: Resolve, reject: Reject) => (
-    action: BalancerManualFailedAction | BalancerManualSucceededAction,
+    action: IBalancerManualFailed | IBalancerManualSucceeded,
   ) =>
     action.type === BALANCER.MANUAL_SUCCEEDED
       ? resolve(action.payload.providerId)

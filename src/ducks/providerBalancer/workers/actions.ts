@@ -1,27 +1,27 @@
 import {
+  IWorkerKilled,
+  IWorkerProcessing,
+  IWorkerSpawned,
   WORKER,
-  WorkerKilledAction,
-  WorkerProcessingAction,
-  WorkerSpawnedAction,
 } from './types';
 
 export const workerSpawned = (
-  payload: WorkerSpawnedAction['payload'],
-): WorkerSpawnedAction => ({
+  payload: IWorkerSpawned['payload'],
+): IWorkerSpawned => ({
   type: WORKER.SPAWNED,
   payload,
 });
 
 export const workerProcessing = (
-  payload: WorkerProcessingAction['payload'],
-): WorkerProcessingAction => ({
+  payload: IWorkerProcessing['payload'],
+): IWorkerProcessing => ({
   type: WORKER.PROCESSING,
   payload,
 });
 
 export const workerKilled = (
-  payload: WorkerKilledAction['payload'],
-): WorkerKilledAction => ({
+  payload: IWorkerKilled['payload'],
+): IWorkerKilled => ({
   type: WORKER.KILLED,
   payload,
 });

@@ -1,9 +1,9 @@
 import { AllProviderMethods, StrIdx } from '@src/types';
 
 export type ProviderCallState =
-  | SuccessfulProviderCall
-  | PendingProviderCall
-  | FailedProviderCall;
+  | ISuccessfulProviderCall
+  | IPendingProviderCall
+  | IFailedProviderCall;
 
 export type ProviderCallsState = StrIdx<ProviderCallState>;
 
@@ -27,58 +27,58 @@ export interface IProviderCall {
 
 export type ProviderCallWithPid = IProviderCall & { providerId: string };
 
-export interface SuccessfulProviderCall extends IProviderCall {
+export interface ISuccessfulProviderCall extends IProviderCall {
   result: string;
   error: null;
   pending: false;
 }
 
-export interface FailedProviderCall extends ProviderCallWithPid {
+export interface IFailedProviderCall extends ProviderCallWithPid {
   result: null;
   error: string;
   pending: false;
 }
 
-export interface FlushedProviderCall extends IProviderCall {
+export interface IFlushedProviderCall extends IProviderCall {
   result: null;
   error: string;
   pending: false;
 }
 
-export interface PendingProviderCall extends IProviderCall {
+export interface IPendingProviderCall extends IProviderCall {
   result: null;
   error: null;
   pending: true;
 }
 
-export interface ProviderCallRequestedAction {
+export interface IProviderCallRequested {
   type: PROVIDER_CALL.REQUESTED;
   payload: IProviderCall;
 }
 
-export interface ProviderCallTimeoutAction {
+export interface IProviderCallTimeout {
   type: PROVIDER_CALL.TIMEOUT;
   payload: { error: Error; providerCall: ProviderCallWithPid };
 }
 
-export interface ProviderCallFailedAction {
+export interface IProviderCallFailed {
   type: PROVIDER_CALL.FAILED;
   payload: { error: string; providerCall: ProviderCallWithPid };
 }
 
-export interface ProviderCallFlushedAction {
+export interface IProviderCallFlushed {
   type: PROVIDER_CALL.FLUSHED;
   payload: { error: string; providerCall: IProviderCall };
 }
 
-export interface ProviderCallSucceededAction {
+export interface IProviderCallSucceeded {
   type: PROVIDER_CALL.SUCCEEDED;
   payload: { result: string; providerCall: ProviderCallWithPid };
 }
 
 export type ProviderCallAction =
-  | ProviderCallRequestedAction
-  | ProviderCallTimeoutAction
-  | ProviderCallFailedAction
-  | ProviderCallSucceededAction
-  | ProviderCallFlushedAction;
+  | IProviderCallRequested
+  | IProviderCallTimeout
+  | IProviderCallFailed
+  | IProviderCallSucceeded
+  | IProviderCallFlushed;

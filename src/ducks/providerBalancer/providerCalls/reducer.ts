@@ -1,21 +1,21 @@
-import { ProviderCallFlushedAction } from '@src/ducks/providerBalancer/providerCalls';
+import { IProviderCallFlushed } from '@src/ducks/providerBalancer/providerCalls';
 import {
+  IWorkerProcessing,
   WORKER,
   WorkerAction,
-  WorkerProcessingAction,
 } from '@src/ducks/providerBalancer/workers';
 import {
+  IProviderCallFailed,
+  IProviderCallRequested,
+  IProviderCallSucceeded,
   PROVIDER_CALL,
   ProviderCallAction,
-  ProviderCallFailedAction,
-  ProviderCallRequestedAction,
   ProviderCallsState,
-  ProviderCallSucceededAction,
 } from './types';
 
 const handleProviderCallSucceeded = (
   state: ProviderCallsState,
-  { payload }: ProviderCallSucceededAction,
+  { payload }: IProviderCallSucceeded,
 ): ProviderCallsState => {
   const call = state[payload.providerCall.callId];
   if (!call || !call.pending) {
@@ -35,7 +35,7 @@ const handleProviderCallSucceeded = (
 
 const handleProviderCallFailed = (
   state: ProviderCallsState,
-  { payload }: ProviderCallFailedAction,
+  { payload }: IProviderCallFailed,
 ): ProviderCallsState => {
   const call = state[payload.providerCall.callId];
   if (!call || !call.pending) {
@@ -55,7 +55,7 @@ const handleProviderCallFailed = (
 
 const handleProviderCallFlushed = (
   state: ProviderCallsState,
-  { payload }: ProviderCallFlushedAction,
+  { payload }: IProviderCallFlushed,
 ): ProviderCallsState => {
   const call = state[payload.providerCall.callId];
 
@@ -76,7 +76,7 @@ const handleProviderCallFlushed = (
 
 const handleProviderCallPending = (
   state: ProviderCallsState,
-  { payload }: ProviderCallRequestedAction,
+  { payload }: IProviderCallRequested,
 ): ProviderCallsState => {
   const call = state[payload.callId];
 
@@ -92,7 +92,7 @@ const handleProviderCallPending = (
 
 const handleWorkerProcessing = (
   state: ProviderCallsState,
-  { payload: { currentPayload } }: WorkerProcessingAction,
+  { payload: { currentPayload } }: IWorkerProcessing,
 ) => {
   const prevPayload = state[currentPayload.callId];
   if (!prevPayload || !prevPayload.pending) {

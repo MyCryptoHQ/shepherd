@@ -1,4 +1,4 @@
-import { ProviderCallTimeoutAction } from '@src/ducks/providerBalancer/providerCalls';
+import { IProviderCallTimeout } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 import { RootState } from '@src/types';
 
@@ -18,7 +18,7 @@ export const getProviderCallRetryThreshold = (state: RootState) =>
 
 export const callMeetsBalancerRetryThreshold = (
   state: RootState,
-  { payload: { providerCall } }: ProviderCallTimeoutAction,
+  { payload: { providerCall } }: IProviderCallTimeout,
 ) => {
   const providerCallRetryThreshold = getProviderCallRetryThreshold(state);
 

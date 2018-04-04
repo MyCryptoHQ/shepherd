@@ -1,11 +1,11 @@
 import {
   BALANCER,
   balancerFlush,
-  BalancerManualSucceededAction,
-  BalancerNetworkSwitchRequestedAction,
-  BalancerQueueTimeoutAction,
+  IBalancerManualSucceeded,
+  IBalancerNetworkSwitchRequested,
+  IBalancerQueueTimeout,
 } from '@src/ducks/providerBalancer/balancerConfig';
-import { getWorkers, WorkerState } from '@src/ducks/providerBalancer/workers';
+import { getWorkers, IWorkerState } from '@src/ducks/providerBalancer/workers';
 import { balancerChannel, providerChannels } from '@src/saga/channels';
 import { SagaIterator } from 'redux-saga';
 import {
@@ -18,7 +18,7 @@ import {
 } from 'redux-saga/effects';
 
 function* clearWorkers(): SagaIterator {
-  const workers: WorkerState = yield select(getWorkers);
+  const workers: IWorkerState = yield select(getWorkers);
   for (const worker of Object.values(workers)) {
     yield cancel(worker.task);
   }
@@ -34,9 +34,9 @@ function* deleteProviderChannels() {
 }
 
 type FlushingActions =
-  | BalancerQueueTimeoutAction
-  | BalancerNetworkSwitchRequestedAction
-  | BalancerManualSucceededAction;
+  | IBalancerQueueTimeout
+  | IBalancerNetworkSwitchRequested
+  | IBalancerManualSucceeded;
 
 function* clearState({ type }: FlushingActions): SagaIterator {
   const isNetworkSwitch = type === BALANCER.NETWORK_SWTICH_REQUESTED;
