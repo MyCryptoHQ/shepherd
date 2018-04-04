@@ -1,5 +1,5 @@
 import { IHexStrTransaction } from '@src/types';
-import RPCRequests from '../rpc/requests';
+import { RPCRequests } from '../rpc/requests';
 import {
   CallRequest,
   EstimateGasRequest,
@@ -11,7 +11,7 @@ import {
   SendRawTxRequest,
 } from './types';
 
-export default class EtherscanRequests extends RPCRequests {
+export class EtherscanRequests extends RPCRequests {
   public sendRawTx(signedTx: string): SendRawTxRequest {
     return {
       module: 'proxy',

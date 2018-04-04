@@ -1,7 +1,7 @@
 import { StrIdx } from '@src/types';
 import btoa from 'btoa';
-import RPCProvider from '../rpc';
-import RPCClient from '../rpc/client';
+import { RPCProvider } from '../rpc';
+import { RPCClient } from '../rpc/client';
 
 interface IMyCryptoCustomProviderConfig {
   url: string;
@@ -11,7 +11,7 @@ interface IMyCryptoCustomProviderConfig {
   };
 }
 
-export default class MyCryptoCustomProvider extends RPCProvider {
+export class MyCryptoCustomProvider extends RPCProvider {
   constructor(config: IMyCryptoCustomProviderConfig) {
     super(config.url);
 

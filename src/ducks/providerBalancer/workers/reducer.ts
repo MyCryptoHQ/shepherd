@@ -150,7 +150,7 @@ const handleProviderCallTimeout: WReducer = (
   return { ...state, [workerId]: { ...workerInst, currentPayload: null } };
 };
 
-const workers: WReducer = (
+export const workerReducer: WReducer = (
   state: WorkerState = INITIAL_STATE,
   action:
     | WorkerAction
@@ -180,5 +180,3 @@ const workers: WReducer = (
       return state;
   }
 };
-
-export default workers;

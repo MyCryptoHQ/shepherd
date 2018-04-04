@@ -1,8 +1,8 @@
-import RPCProvider from '../rpc';
-import EtherscanClient from './client';
-import EtherscanRequests from './requests';
+import { RPCProvider } from '../rpc';
+import { EtherscanClient } from './client';
+import { EtherscanRequests } from './requests';
 
-export default class EtherscanProvider extends RPCProvider {
+export class EtherscanProvider extends RPCProvider {
   public client: EtherscanClient;
   public requests: EtherscanRequests;
 

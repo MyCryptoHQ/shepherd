@@ -2,7 +2,7 @@ import { StrIdx } from '@src/types';
 import { randomBytes } from 'crypto';
 import { JsonRpcResponse, RPCRequest } from './types';
 
-export default class RPCClient {
+export class RPCClient {
   public endpoint: string;
   public headers: StrIdx<string>;
   constructor(endpoint: string, headers: StrIdx<string> = {}) {

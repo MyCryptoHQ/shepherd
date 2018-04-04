@@ -16,10 +16,10 @@ import {
   isValidTransactionCount,
   isValidTransactionReceipt,
 } from '@src/validators';
-import RPCClient from './client';
-import RPCRequests from './requests';
+import { RPCClient } from './client';
+import { RPCRequests } from './requests';
 
-export default class RpcProvider implements IRPCProvider {
+export class RPCProvider implements IRPCProvider {
   protected client: RPCClient;
   protected requests: RPCRequests;
 

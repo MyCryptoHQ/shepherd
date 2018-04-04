@@ -98,6 +98,7 @@ export function* createWorker(thisId: string, providerId: string) {
     console.error(`${thisId} as errored with ${e.message}`);
   } finally {
     if (yield cancelled()) {
+      logger.log(`${thisId} has been cancelled`);
     }
   }
 }

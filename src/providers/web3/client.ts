@@ -1,8 +1,8 @@
-import RPCClient from '../rpc/client';
+import { RPCClient } from '../rpc/client';
 import { JsonRpcResponse, RPCRequest } from '../rpc/types';
 import { IWeb3Provider } from './types';
 
-export default class Web3Client extends RPCClient {
+export class Web3Client extends RPCClient {
   private provider: IWeb3Provider;
 
   constructor() {

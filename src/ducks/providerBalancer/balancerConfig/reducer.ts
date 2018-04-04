@@ -31,7 +31,7 @@ const handleBalancerManual: Reducer<BalancerConfigState> = (
   manual: payload.providerId,
 });
 
-const balancerConfig: Reducer<BalancerConfigState> = (
+export const balancerConfigReducer: Reducer<BalancerConfigState> = (
   state: BalancerConfigState = INITIAL_STATE,
   action: BalancerAction,
 ): BalancerConfigState => {
@@ -57,5 +57,3 @@ const balancerConfig: Reducer<BalancerConfigState> = (
       return state;
   }
 };
-
-export default balancerConfig;

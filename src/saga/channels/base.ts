@@ -66,7 +66,9 @@ export abstract class BaseChannel {
   }
 
   protected log(...args: any[]) {
-    this.shouldLog && console.log(this.name, ...args);
+    if (this.shouldLog) {
+      console.log(this.name, ...args);
+    }
   }
 
   private *flushChannel(): SagaIterator {

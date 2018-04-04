@@ -14,19 +14,16 @@ import * as workerActions from './providerBalancer/workers/actions';
 import * as providerConfigsActions from './providerConfigs/actions';
 import * as selectors from './selectors';
 
-const addAllProviderConfigs = (
-  _storage: any,
-  configs: StrIdx<IProviderConfig>,
-) => {
+const addAllProviderConfigs = (stor: any, configs: StrIdx<IProviderConfig>) => {
   for (const [id, config] of Object.entries(configs)) {
     const action = providerConfigsActions.addProviderConfig({ id, config });
 
-    _storage = rootReducer(_storage, action);
+    stor = rootReducer(stor, action);
   }
-  return _storage;
+  return stor;
 };
 
-const addAllProviderStats = (_storage: any, providerIds: string[]) => {
+const addAllProviderStats = (stor: any, providerIds: string[]) => {
   providerIds.forEach(id => {
     const actionCreator = providerStatsActions.providerAdded;
     const workerId = `${id}_worker`;
@@ -36,9 +33,9 @@ const addAllProviderStats = (_storage: any, providerIds: string[]) => {
       workers: { [workerId]: makeMockWorker({ assignedProvider: id }) },
     });
 
-    _storage = rootReducer(_storage, action);
+    stor = rootReducer(stor, action);
   });
-  return _storage;
+  return stor;
 };
 
 let storage: any;

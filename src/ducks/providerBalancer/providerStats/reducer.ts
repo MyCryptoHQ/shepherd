@@ -206,5 +206,3 @@ export const providerStatsReducer: NReducer<
       return state;
   }
 };
-
-export default providerStatsReducer;

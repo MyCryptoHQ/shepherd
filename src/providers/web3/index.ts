@@ -1,6 +1,6 @@
-import RPCProvider from '../rpc';
-import Web3Client from './client';
-import Web3Requests from './requests';
+import { RPCProvider } from '../rpc';
+import { Web3Client } from './client';
+import { Web3Requests } from './requests';
 
 import { IHexStrWeb3Transaction, IProvider } from '@src/types';
 import {
@@ -10,7 +10,7 @@ import {
   isValidSignMessage,
 } from '@src/validators';
 
-export default class Web3Provider extends RPCProvider {
+export class Web3Provider extends RPCProvider {
   public client: Web3Client;
   public requests: Web3Requests;
 

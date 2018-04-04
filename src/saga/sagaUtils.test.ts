@@ -87,8 +87,6 @@ describe('Saga utils tests', () => {
     });
   });
 
-  describe('reducerProcessedProviders', () => {});
-
   describe('makeRetVal', () => {
     it('should make a return value with an error', () => {
       const error = Error('return error');

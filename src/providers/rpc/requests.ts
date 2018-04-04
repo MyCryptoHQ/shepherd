@@ -12,7 +12,7 @@ import {
   SendRawTxRequest,
 } from './types';
 
-export default class RPCRequests {
+export class RPCRequests {
   public getNetVersion(): GetNetVersionRequest | any {
     return { method: 'net_version' };
   }

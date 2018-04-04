@@ -7,7 +7,7 @@ import * as balancerActions from '../balancerConfig/actions';
 import * as providerCallActions from '../providerCalls/actions';
 import * as providerStatsActions from '../providerStats';
 import * as workerActions from './actions';
-import workerReducer from './reducer';
+import { workerReducer } from './reducer';
 import * as selectors from './selectors';
 
 const states: StrIdx<any> = {};

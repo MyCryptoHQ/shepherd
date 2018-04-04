@@ -7,8 +7,3 @@ export enum DefaultNetworkIds {
   UBQ = 'UBQ',
   EXP = 'EXP',
 }
-
-export interface NetworkConfig {
-  name: DefaultNetworkIds;
-  chainId: number;
-}
