@@ -22,7 +22,9 @@
     "build":
       "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts && npm run gulp",
     "precommit": "lint-staged",
-    "prepush": "npm run lint && npm run tsc"
+    "prepush": "npm run lint && npm run tsc",
+    "docs":
+      "typedoc --out ./docs ./src --exclude '**/*.spec*' --externalPattern '*node_modules*' --excludeExternals  --includeDeclarations --tsconfig ./tsconfig-build.json  --mode file  --theme minimal"
   },
   "lint-staged": {
     "{src,__test__}/**/*.ts": ["npm run format", "npm run lint:fix", "git add"]
