@@ -1,40 +1,40 @@
 import {
+  IProviderCallFailed,
+  IProviderCallFlushed,
+  IProviderCallRequested,
+  IProviderCallSucceeded,
+  IProviderCallTimeout,
   PROVIDER_CALL,
-  ProviderCallFailedAction,
-  ProviderCallFlushedAction,
-  ProviderCallRequestedAction,
-  ProviderCallSucceededAction,
-  ProviderCallTimeoutAction,
 } from './types';
 
 export const providerCallRequested = (
-  payload: ProviderCallRequestedAction['payload'],
-): ProviderCallRequestedAction => ({
+  payload: IProviderCallRequested['payload'],
+): IProviderCallRequested => ({
   type: PROVIDER_CALL.REQUESTED,
   payload,
 });
 
 export const providerCallTimeout = (
-  payload: ProviderCallTimeoutAction['payload'],
-): ProviderCallTimeoutAction => ({
+  payload: IProviderCallTimeout['payload'],
+): IProviderCallTimeout => ({
   type: PROVIDER_CALL.TIMEOUT,
   payload,
 });
 
 export const providerCallFailed = (
-  payload: ProviderCallFailedAction['payload'],
-): ProviderCallFailedAction => ({
+  payload: IProviderCallFailed['payload'],
+): IProviderCallFailed => ({
   type: PROVIDER_CALL.FAILED,
   payload,
 });
 
 export const providerCallFlushed = (
-  payload: ProviderCallFlushedAction['payload'],
-): ProviderCallFlushedAction => ({ type: PROVIDER_CALL.FLUSHED, payload });
+  payload: IProviderCallFlushed['payload'],
+): IProviderCallFlushed => ({ type: PROVIDER_CALL.FLUSHED, payload });
 
 export const providerCallSucceeded = (
-  payload: ProviderCallSucceededAction['payload'],
-): ProviderCallSucceededAction => ({
+  payload: IProviderCallSucceeded['payload'],
+): IProviderCallSucceeded => ({
   type: PROVIDER_CALL.SUCCEEDED,
   payload,
 });

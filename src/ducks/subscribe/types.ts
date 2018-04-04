@@ -2,7 +2,7 @@ export enum SUBSCRIBE {
   ACTION = 'SUBSCRIBE_TO_ACTION',
 }
 
-export interface SubscribeAction {
+export interface ISubscribe {
   type: SUBSCRIBE.ACTION;
   payload: {
     trigger: any;

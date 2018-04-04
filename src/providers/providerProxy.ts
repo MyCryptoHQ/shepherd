@@ -2,11 +2,11 @@ import { store } from '@src/ducks';
 import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   IProviderCall,
+  IProviderCallFailed,
+  IProviderCallFlushed,
+  IProviderCallSucceeded,
   PROVIDER_CALL,
-  ProviderCallFailedAction,
-  ProviderCallFlushedAction,
   providerCallRequested,
-  ProviderCallSucceededAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
@@ -15,10 +15,7 @@ import { logger } from '@src/utils/logging';
 import { allRPCMethods } from './constants';
 
 const respondToCallee = (resolve: Resolve, reject: Reject) => (
-  action:
-    | ProviderCallFailedAction
-    | ProviderCallSucceededAction
-    | ProviderCallFlushedAction,
+  action: IProviderCallFailed | IProviderCallSucceeded | IProviderCallFlushed,
 ) => {
   if (action.type === PROVIDER_CALL.SUCCEEDED) {
     const { providerCall, result } = action.payload;

@@ -1,6 +1,6 @@
 import {
+  IProviderCallRequested,
   providerCallFlushed,
-  ProviderCallRequestedAction,
 } from '@src/ducks/providerBalancer/providerCalls';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
@@ -8,9 +8,9 @@ import { Channel, SagaIterator } from 'redux-saga';
 import { apply, flush, put, take } from 'redux-saga/effects';
 
 export abstract class BaseChannel {
-  protected chan: Channel<ProviderCallRequestedAction> | undefined;
+  protected chan: Channel<IProviderCallRequested> | undefined;
   protected name: string | undefined;
-  private currentAction: ProviderCallRequestedAction | null | undefined;
+  private currentAction: IProviderCallRequested | null | undefined;
   private shouldLog = false;
 
   public get() {
@@ -24,7 +24,7 @@ export abstract class BaseChannel {
   public abstract init(): void;
 
   public *take(): SagaIterator {
-    const action: ProviderCallRequestedAction = yield take(this.get());
+    const action: IProviderCallRequested = yield take(this.get());
     // set the current action, so when we flush all of the actions we dont miss the currently processing one
     const callid = action.payload.callId;
     this.currentAction = action;
@@ -51,7 +51,7 @@ export abstract class BaseChannel {
   }
 
   public *cancelPendingCalls(): SagaIterator {
-    const pendingCalls: ProviderCallRequestedAction[] = yield apply(
+    const pendingCalls: IProviderCallRequested[] = yield apply(
       this,
       this.getPendingCalls,
     );
@@ -66,7 +66,9 @@ export abstract class BaseChannel {
   }
 
   protected log(...args: any[]) {
-    this.shouldLog && console.log(this.name, ...args);
+    if (this.shouldLog) {
+      console.log(this.name, ...args);
+    }
   }
 
   private *flushChannel(): SagaIterator {

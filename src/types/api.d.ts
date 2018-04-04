@@ -6,11 +6,11 @@ import {
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
 
-interface IInitConfig extends BalancerConfigInitConfig {
+export interface IInitConfig extends BalancerConfigInitConfig {
   customProviders?: StrIdx<IProviderContructor>;
 }
 
-interface IShepherd {
+export interface IShepherd {
   init(config: IInitConfig): Promise<IProvider>;
   addProvider(providerName: string, Provider: IProviderContructor): void;
   useProvider(

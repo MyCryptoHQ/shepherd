@@ -1,8 +1,8 @@
 import { StrIdx } from '@src/types';
 import { randomBytes } from 'crypto';
-import { JsonRpcResponse, RPCRequest } from './types';
+import { IJsonRpcResponse, RPCRequest } from './types';
 
-export default class RPCClient {
+export class RPCClient {
   public endpoint: string;
   public headers: StrIdx<string>;
   constructor(endpoint: string, headers: StrIdx<string> = {}) {
@@ -20,7 +20,7 @@ export default class RPCClient {
     jsonrpc: '2.0',
   });
 
-  public call = (request: RPCRequest | any): Promise<JsonRpcResponse> => {
+  public call = (request: RPCRequest | any): Promise<IJsonRpcResponse> => {
     return fetch(this.endpoint, {
       method: 'POST',
       headers: this.createHeaders({
@@ -31,7 +31,9 @@ export default class RPCClient {
     }).then(r => r.json());
   };
 
-  public batch = (requests: RPCRequest[] | any): Promise<JsonRpcResponse[]> => {
+  public batch = (
+    requests: RPCRequest[] | any,
+  ): Promise<IJsonRpcResponse[]> => {
     return fetch(this.endpoint, {
       method: 'POST',
       headers: this.createHeaders({

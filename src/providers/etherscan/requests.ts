@@ -1,18 +1,18 @@
 import { IHexStrTransaction } from '@src/types';
-import RPCRequests from '../rpc/requests';
+import { RPCRequests } from '../rpc/requests';
 import {
-  CallRequest,
-  EstimateGasRequest,
-  GetBalanceRequest,
-  GetCurrentBlockRequest,
-  GetTransactionByHashRequest,
-  GetTransactionCountRequest,
-  GetTransactionReceiptRequest,
-  SendRawTxRequest,
+  ICallRequest,
+  IEstimateGasRequest,
+  IGetBalanceRequest,
+  IGetCurrentBlockRequest,
+  IGetTransactionByHashRequest,
+  IGetTransactionCountRequest,
+  IGetTransactionReceiptRequest,
+  ISendRawTxRequest,
 } from './types';
 
-export default class EtherscanRequests extends RPCRequests {
-  public sendRawTx(signedTx: string): SendRawTxRequest {
+export class EtherscanRequests extends RPCRequests {
+  public sendRawTx(signedTx: string): ISendRawTxRequest {
     return {
       module: 'proxy',
       action: 'eth_sendRawTransaction',
@@ -25,7 +25,7 @@ export default class EtherscanRequests extends RPCRequests {
       IHexStrTransaction & { from: string },
       'to' | 'data' | 'from' | 'value'
     >,
-  ): EstimateGasRequest {
+  ): IEstimateGasRequest {
     return {
       module: 'proxy',
       action: 'eth_estimateGas',
@@ -36,7 +36,7 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public getBalance(address: string): GetBalanceRequest {
+  public getBalance(address: string): IGetBalanceRequest {
     return {
       module: 'account',
       action: 'balance',
@@ -47,7 +47,7 @@ export default class EtherscanRequests extends RPCRequests {
 
   public ethCall(
     transaction: Pick<IHexStrTransaction, 'to' | 'data'>,
-  ): CallRequest {
+  ): ICallRequest {
     return {
       module: 'proxy',
       action: 'eth_call',
@@ -56,7 +56,7 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public getTransactionByHash(txhash: string): GetTransactionByHashRequest {
+  public getTransactionByHash(txhash: string): IGetTransactionByHashRequest {
     return {
       module: 'proxy',
       action: 'eth_getTransactionByHash',
@@ -64,7 +64,7 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public getTransactionReceipt(txhash: string): GetTransactionReceiptRequest {
+  public getTransactionReceipt(txhash: string): IGetTransactionReceiptRequest {
     return {
       module: 'proxy',
       action: 'eth_getTransactionReceipt',
@@ -72,7 +72,7 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public getTransactionCount(address: string): GetTransactionCountRequest {
+  public getTransactionCount(address: string): IGetTransactionCountRequest {
     return {
       module: 'proxy',
       action: 'eth_getTransactionCount',
@@ -81,7 +81,7 @@ export default class EtherscanRequests extends RPCRequests {
     };
   }
 
-  public getCurrentBlock(): GetCurrentBlockRequest {
+  public getCurrentBlock(): IGetCurrentBlockRequest {
     return {
       module: 'proxy',
       action: 'eth_blockNumber',

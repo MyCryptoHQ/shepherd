@@ -8,7 +8,7 @@ export interface IWorker {
   currentPayload: IProviderCall | null;
 }
 
-export interface WorkerState {
+export interface IWorkerState {
   [workerId: string]: Readonly<IWorker>;
 }
 
@@ -18,7 +18,7 @@ export enum WORKER {
   KILLED = 'WORKER_KILLED',
 }
 
-export interface WorkerSpawnedAction {
+export interface IWorkerSpawned {
   type: WORKER.SPAWNED;
   payload: {
     providerId: string;
@@ -27,7 +27,7 @@ export interface WorkerSpawnedAction {
   };
 }
 
-export interface WorkerProcessingAction {
+export interface IWorkerProcessing {
   type: WORKER.PROCESSING;
   payload: {
     workerId: string;
@@ -35,7 +35,7 @@ export interface WorkerProcessingAction {
   };
 }
 
-export interface WorkerKilledAction {
+export interface IWorkerKilled {
   type: WORKER.KILLED;
   payload: {
     providerId: string;
@@ -44,7 +44,4 @@ export interface WorkerKilledAction {
   };
 }
 
-export type WorkerAction =
-  | WorkerSpawnedAction
-  | WorkerProcessingAction
-  | WorkerKilledAction;
+export type WorkerAction = IWorkerSpawned | IWorkerProcessing | IWorkerKilled;

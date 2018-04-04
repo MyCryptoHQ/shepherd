@@ -1,6 +1,6 @@
 import {
+  IProviderCallRequested,
   isStaleCall,
-  ProviderCallRequestedAction,
   providerCallSucceeded,
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
@@ -43,7 +43,7 @@ function* sendRequestToProvider(
 
 function* processRequest(providerId: string, workerId: string) {
   // take from the assigned action channel
-  const { payload }: ProviderCallRequestedAction = yield apply(
+  const { payload }: IProviderCallRequested = yield apply(
     providerChannels,
     providerChannels.take,
     [providerId],
@@ -98,6 +98,7 @@ export function* createWorker(thisId: string, providerId: string) {
     console.error(`${thisId} as errored with ${e.message}`);
   } finally {
     if (yield cancelled()) {
+      logger.log(`${thisId} has been cancelled`);
     }
   }
 }

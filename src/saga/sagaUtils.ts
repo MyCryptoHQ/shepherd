@@ -1,4 +1,4 @@
-import { BalancerNetworkSwitchSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
+import { IBalancerNetworkSwitchSucceeded } from '@src/ducks/providerBalancer/balancerConfig';
 import {
   IProviderCall,
   ProviderCallWithPid,
@@ -66,7 +66,7 @@ export const makeWorker = (providerId: string, task: Task): IWorker => ({
   task,
 });
 
-type NetworkPayload = BalancerNetworkSwitchSucceededAction['payload'];
+type NetworkPayload = IBalancerNetworkSwitchSucceeded['payload'];
 
 export const reduceProcessedProviders = (
   processedProviders: ProcessedProvider[],

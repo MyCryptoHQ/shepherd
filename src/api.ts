@@ -78,4 +78,4 @@ class Shepherd implements IShepherd {
   }
 }
 
-export default new Shepherd();
+export const shepherd = new Shepherd();

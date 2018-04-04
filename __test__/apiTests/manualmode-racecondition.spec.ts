@@ -82,6 +82,7 @@ it(
 
     await shepherd.manual('eth3', true);
 
+    /* tslint:disable */
     Promise.all([
       node.getBalance('0x0'),
       node.getBalance('0x1'),
@@ -110,7 +111,7 @@ it(
         node.getBalance('0x5'),
       ]);
     } catch {}
-
+    /* tslint:enable */
     await asyncTimeout(5000);
   },
   15000,

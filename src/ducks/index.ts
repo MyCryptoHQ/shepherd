@@ -14,7 +14,7 @@ const composeEnhancers = composeWithDevTools({
   actionsBlacklist: ['SUBSCRIBE_TO_ACTION'],
 });
 
-export const rootReducer = combineReducers<RootState>({
+const rootReducer = combineReducers<RootState>({
   providerBalancer,
   providerConfigs,
 });
@@ -24,10 +24,10 @@ const middleware =
     ? composeEnhancers(applyMiddleware(sagaMiddleware))
     : applyMiddleware(sagaMiddleware);
 
-export const store = createStore<RootState>(rootReducer, middleware);
+const store = createStore<RootState>(rootReducer, middleware);
 
-export const INITIAL_ROOT_STATE = rootReducer(undefined as any, {} as any);
+const INITIAL_ROOT_STATE = rootReducer(undefined as any, {} as any);
 
 sagaMiddleware.run(providerBalancerSaga);
 
-export { providerBalancerSaga };
+export { providerBalancerSaga, rootReducer, store, INITIAL_ROOT_STATE };

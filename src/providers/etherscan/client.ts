@@ -1,9 +1,9 @@
 import URLSearchParams from 'url-search-params';
-import RPCClient from '../rpc/client';
-import { JsonRpcResponse } from '../rpc/types';
+import { RPCClient } from '../rpc/client';
+import { IJsonRpcResponse } from '../rpc/types';
 import { EtherscanRequest } from './types';
 
-export default class EtherscanClient extends RPCClient {
+export class EtherscanClient extends RPCClient {
   public encodeRequest(request: EtherscanRequest): string {
     const encoded = new URLSearchParams();
     Object.keys(request).forEach((key: keyof EtherscanRequest) => {
@@ -14,7 +14,7 @@ export default class EtherscanClient extends RPCClient {
     return encoded.toString();
   }
 
-  public call = (request: EtherscanRequest): Promise<JsonRpcResponse> =>
+  public call = (request: EtherscanRequest): Promise<IJsonRpcResponse> =>
     fetch(this.endpoint, {
       method: 'POST',
       headers: new Headers({
@@ -23,7 +23,9 @@ export default class EtherscanClient extends RPCClient {
       body: this.encodeRequest(request),
     }).then(r => r.json());
 
-  public batch = (requests: EtherscanRequest[]): Promise<JsonRpcResponse[]> => {
+  public batch = (
+    requests: EtherscanRequest[],
+  ): Promise<IJsonRpcResponse[]> => {
     const promises = requests.map(req => this.call(req));
     return Promise.all(promises);
   };

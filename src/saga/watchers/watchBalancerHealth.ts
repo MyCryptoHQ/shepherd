@@ -1,9 +1,9 @@
 import {
   BALANCER,
-  BalancerAutoAction,
-  BalancerManualSucceededAction,
-  BalancerNetworkSwitchRequestedAction,
-  BalancerNetworkSwitchSucceededAction,
+  IBalancerAuto,
+  IBalancerManualSucceeded,
+  IBalancerNetworkSwitchRequested,
+  IBalancerNetworkSwitchSucceeded,
   setOffline,
   setOnline,
 } from '@src/ducks/providerBalancer/balancerConfig';
@@ -18,10 +18,10 @@ import { call, put, select, takeEvery } from 'redux-saga/effects';
 
 type WatchedActions =
   | ProviderStatsAction
-  | BalancerNetworkSwitchRequestedAction
-  | BalancerNetworkSwitchSucceededAction
-  | BalancerAutoAction
-  | BalancerManualSucceededAction;
+  | IBalancerNetworkSwitchRequested
+  | IBalancerNetworkSwitchSucceeded
+  | IBalancerAuto
+  | IBalancerManualSucceeded;
 
 function* dispatchOffline() {
   const offline: boolean = yield select(isOffline);

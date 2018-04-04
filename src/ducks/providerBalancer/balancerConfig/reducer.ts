@@ -1,40 +1,39 @@
-import { BalancerManualSucceededAction } from '@src/ducks/providerBalancer/balancerConfig';
-import { DefaultNetworkIds } from '@src/types/networks';
+import { IBalancerManualSucceeded } from '@src/ducks/providerBalancer/balancerConfig';
 import { Reducer } from 'redux';
 import {
   BALANCER,
   BalancerAction,
-  BalancerAutoAction,
-  BalancerConfigState,
+  IBalancerAuto,
+  IBalancerConfigState,
 } from './types';
 
-const INITIAL_STATE: BalancerConfigState = {
+const INITIAL_STATE: IBalancerConfigState = {
   manual: false,
   offline: true,
-  network: DefaultNetworkIds.ETH,
+  network: 'ETH',
   providerCallRetryThreshold: 3,
 };
 
-const handleBalancerAuto: Reducer<BalancerConfigState> = (
-  state: BalancerConfigState,
-  _: BalancerAutoAction,
+const handleBalancerAuto: Reducer<IBalancerConfigState> = (
+  state: IBalancerConfigState,
+  _: IBalancerAuto,
 ) => ({
   ...state,
   manual: false,
 });
 
-const handleBalancerManual: Reducer<BalancerConfigState> = (
-  state: BalancerConfigState,
-  { payload }: BalancerManualSucceededAction,
+const handleBalancerManual: Reducer<IBalancerConfigState> = (
+  state: IBalancerConfigState,
+  { payload }: IBalancerManualSucceeded,
 ) => ({
   ...state,
   manual: payload.providerId,
 });
 
-const balancerConfig: Reducer<BalancerConfigState> = (
-  state: BalancerConfigState = INITIAL_STATE,
+export const balancerConfigReducer: Reducer<IBalancerConfigState> = (
+  state: IBalancerConfigState = INITIAL_STATE,
   action: BalancerAction,
-): BalancerConfigState => {
+): IBalancerConfigState => {
   switch (action.type) {
     case BALANCER.INIT:
       return { ...state, ...action.payload };
@@ -57,5 +56,3 @@ const balancerConfig: Reducer<BalancerConfigState> = (
       return state;
   }
 };
-
-export default balancerConfig;

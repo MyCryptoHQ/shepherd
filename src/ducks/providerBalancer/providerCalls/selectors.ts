@@ -1,4 +1,4 @@
-import { PendingProviderCall } from '@src/ducks/providerBalancer/providerCalls';
+import { IPendingProviderCall } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
 import { RootState } from '@src/types';
 
@@ -25,11 +25,13 @@ export const getPendingProviderCallsByProviderId = (
   return pendingCallsByProviderId.length;
 };
 
-export const getAllPendingCalls = (state: RootState): PendingProviderCall[] => {
+export const getAllPendingCalls = (
+  state: RootState,
+): IPendingProviderCall[] => {
   const providerCalls = getProviderCalls(state);
   const providerCallsArr = Object.values(providerCalls);
-  const pendingCalls: PendingProviderCall[] = providerCallsArr.filter(
-    (providerCall): providerCall is PendingProviderCall => {
+  const pendingCalls: IPendingProviderCall[] = providerCallsArr.filter(
+    (providerCall): providerCall is IPendingProviderCall => {
       if (providerCall.pending) {
         return true;
       } else {

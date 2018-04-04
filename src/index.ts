@@ -1,11 +1,5 @@
 require('isomorphic-fetch');
-import { IShepherd } from '@src/types/api';
-import { providerBalancerSaga, rootReducer, store } from './ducks';
-export { default as shepherd } from './api';
-export const redux = { store, rootReducer, providerBalancerSaga };
-type IRedux = typeof redux;
+import { shepherd } from './api';
+import * as redux from './ducks';
 
-export interface IIndex {
-  shepherd: IShepherd;
-  redux: IRedux;
-}
+export { redux, shepherd };

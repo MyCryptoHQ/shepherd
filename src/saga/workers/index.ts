@@ -1,7 +1,8 @@
+import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { providerChannels } from '@src/saga/channels';
 import { makeWorker, makeWorkerId } from '@src/saga/sagaUtils';
-import { Workers } from '@src/saga/types';
 import { createWorker } from '@src/saga/workers/helpers';
+import { StrIdx } from '@src/types';
 import { Task } from 'redux-saga';
 import { apply, spawn } from 'redux-saga/effects';
 
@@ -16,7 +17,7 @@ export function* spawnWorkers(
     [providerId],
   );
 
-  const workers: Workers = {};
+  const workers: StrIdx<IWorker> = {};
 
   for (
     let workerNumber = currentWorkers.length;

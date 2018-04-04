@@ -8,7 +8,7 @@ export interface IProviderStats {
   avgResponseTime: number;
 }
 
-export interface ProviderStatsState {
+export interface IProviderStatsState {
   [providerId: string]: Readonly<IProviderStats>;
 }
 
@@ -19,21 +19,21 @@ export enum PROVIDER_STATS {
   REMOVED = 'PROVIDER_STATS_REMOVED',
 }
 
-export interface ProviderStatsOnlineAction {
+export interface IProviderStatsOnline {
   type: PROVIDER_STATS.ONLINE;
   payload: {
     providerId: string;
   };
 }
 
-export interface ProviderStatsOfflineAction {
+export interface IProviderStatsOffline {
   type: PROVIDER_STATS.OFFLINE;
   payload: {
     providerId: string;
   };
 }
 
-export interface ProviderStatsAddedAction {
+export interface IProviderStatsAdded {
   type: PROVIDER_STATS.ADDED;
   payload: {
     providerId: string;
@@ -42,15 +42,15 @@ export interface ProviderStatsAddedAction {
   };
 }
 
-export type ProcessedProvider = ProviderStatsAddedAction['payload'];
+export type ProcessedProvider = IProviderStatsAdded['payload'];
 
-export interface ProviderStatsRemovedAction {
+export interface IProviderStatsRemoved {
   type: PROVIDER_STATS.REMOVED;
   payload: { providerId: string };
 }
 
 export type ProviderStatsAction =
-  | ProviderStatsOnlineAction
-  | ProviderStatsOfflineAction
-  | ProviderStatsAddedAction
-  | ProviderStatsRemovedAction;
+  | IProviderStatsOnline
+  | IProviderStatsOffline
+  | IProviderStatsAdded
+  | IProviderStatsRemoved;

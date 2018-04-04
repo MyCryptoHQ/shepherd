@@ -5,7 +5,7 @@ import {
   providerAdded,
 } from '@src/ducks/providerBalancer/providerStats';
 import {
-  AddProviderConfigAction,
+  IAddProviderConfig,
   PROVIDER_CONFIG,
 } from '@src/ducks/providerConfigs/types';
 import { processProvider } from '@src/saga/helpers/processing';
@@ -13,7 +13,7 @@ import { call, put, race, select, take, takeEvery } from 'redux-saga/effects';
 
 function* handleAddingProviderConfig({
   payload: { config, id },
-}: AddProviderConfigAction) {
+}: IAddProviderConfig) {
   const network: string = yield select(getNetwork);
   if (network !== config.network) {
     return;

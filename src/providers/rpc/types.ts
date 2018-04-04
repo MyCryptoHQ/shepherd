@@ -8,7 +8,7 @@ export type DEFAULT_BLOCK = string | 'earliest' | 'latest' | 'pending';
 
 export type JSONRPC2 = '2.0';
 
-export interface JsonRpcResponse {
+export interface IJsonRpcResponse {
   id: string;
   result: string;
   error?: {
@@ -18,26 +18,26 @@ export interface JsonRpcResponse {
   };
 }
 
-export interface RPCRequestBase {
+export interface IRPCRequestBase {
   method: string;
   params?: any[];
 }
 
-export interface GetNetVersionRequest extends RPCRequestBase {
+export interface IGetNetVersionRequest extends IRPCRequestBase {
   method: 'net_version';
 }
 
-export interface SendRawTxRequest extends RPCRequestBase {
+export interface ISendRawTxRequest extends IRPCRequestBase {
   method: 'eth_sendRawTransaction';
   params: [TX];
 }
 
-export interface GetBalanceRequest extends RPCRequestBase {
+export interface IGetBalanceRequest extends IRPCRequestBase {
   method: 'eth_getBalance';
   params: [DATA, DEFAULT_BLOCK];
 }
 
-export interface GetTokenBalanceRequest extends RPCRequestBase {
+export interface IGetTokenBalanceRequest extends IRPCRequestBase {
   method: 'eth_call';
   params: [
     {
@@ -48,7 +48,7 @@ export interface GetTokenBalanceRequest extends RPCRequestBase {
   ];
 }
 
-export interface CallRequest extends RPCRequestBase {
+export interface ICallRequest extends IRPCRequestBase {
   method: 'eth_call';
   params: [
     {
@@ -63,37 +63,37 @@ export interface CallRequest extends RPCRequestBase {
   ];
 }
 
-export interface EstimateGasRequest extends RPCRequestBase {
+export interface IEstimateGasRequest extends IRPCRequestBase {
   method: 'eth_estimateGas';
   params: [Partial<IHexStrTransaction>];
 }
 
-export interface GetTransactionCountRequest extends RPCRequestBase {
+export interface IGetTransactionCountRequest extends IRPCRequestBase {
   method: 'eth_getTransactionCount';
   params: [DATA, DEFAULT_BLOCK];
 }
 
-export interface GetTransactionByHashRequest extends RPCRequestBase {
+export interface IGetTransactionByHashRequest extends IRPCRequestBase {
   method: 'eth_getTransactionByHash';
   params: [string];
 }
 
-export interface GetTransactionReceiptRequest extends RPCRequestBase {
+export interface IGetTransactionReceiptRequest extends IRPCRequestBase {
   method: 'eth_getTransactionReceipt';
   params: [string];
 }
 
-export interface GetCurrentBlockRequest extends RPCRequestBase {
+export interface IGetCurrentBlockRequest extends IRPCRequestBase {
   method: 'eth_blockNumber';
 }
 
 export type RPCRequest =
-  | RPCRequestBase //base added so I can add an empty params array in decorateRequest without TS complaining
-  | GetBalanceRequest
-  | GetTokenBalanceRequest
-  | CallRequest
-  | EstimateGasRequest
-  | GetTransactionCountRequest
-  | GetCurrentBlockRequest
-  | GetTransactionByHashRequest
-  | GetTransactionReceiptRequest;
+  | IRPCRequestBase //base added so I can add an empty params array in decorateRequest without TS complaining
+  | IGetBalanceRequest
+  | IGetTokenBalanceRequest
+  | ICallRequest
+  | IEstimateGasRequest
+  | IGetTransactionCountRequest
+  | IGetCurrentBlockRequest
+  | IGetTransactionByHashRequest
+  | IGetTransactionReceiptRequest;

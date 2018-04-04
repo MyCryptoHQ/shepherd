@@ -1,17 +1,5 @@
-import { JsonRpcResponse } from '@src/providers/rpc/types';
+import { IJsonRpcResponse } from '@src/providers/rpc/types';
 import { Validator } from 'jsonschema';
-
-export function isValidHex(str: string): boolean {
-  if (str === '') {
-    return true;
-  }
-  str =
-    str.substring(0, 2) === '0x'
-      ? str.substring(2).toUpperCase()
-      : str.toUpperCase();
-  const re = /^[0-9A-F]*$/g; // Match 0 -> unlimited times, 0 being "0x" case
-  return re.test(str);
-}
 
 // JSONSchema Validations for Rpc responses
 const v = new Validator();
@@ -33,13 +21,13 @@ export const schema = {
 };
 
 function isValidResult(
-  response: JsonRpcResponse,
+  response: IJsonRpcResponse,
   schemaFormat: typeof schema.RpcProvider,
 ): boolean {
   return v.validate(response, schemaFormat).valid;
 }
 
-function formatErrors(response: JsonRpcResponse, apiType: string) {
+function formatErrors(response: IJsonRpcResponse, apiType: string) {
   if (response.error) {
     // Metamask errors are sometimes full-blown stacktraces, no bueno. Instead,
     // We'll just take the first line of it, and the last thing after all of
@@ -72,9 +60,9 @@ enum API_NAME {
 }
 
 const isValidEthCall = (
-  response: JsonRpcResponse,
+  response: IJsonRpcResponse,
   schemaType: typeof schema.RpcProvider,
-) => (apiName: API_NAME, cb?: (res: JsonRpcResponse) => any) => {
+) => (apiName: API_NAME, cb?: (res: IJsonRpcResponse) => any) => {
   if (!isValidResult(response, schemaType)) {
     if (cb) {
       return cb(response);
@@ -84,40 +72,38 @@ const isValidEthCall = (
   return response;
 };
 
-export const isValidGetBalance = (response: JsonRpcResponse) =>
+export const isValidGetBalance = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Balance);
 
-export const isValidEstimateGas = (response: JsonRpcResponse) =>
+export const isValidEstimateGas = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Estimate_Gas);
 
-export const isValidCallRequest = (response: JsonRpcResponse) =>
+export const isValidCallRequest = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Call_Request);
 
-export const isValidTransactionCount = (response: JsonRpcResponse) =>
+export const isValidTransactionCount = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Transaction_Count);
 
-export const isValidTransactionByHash = (response: JsonRpcResponse) =>
+export const isValidTransactionByHash = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Transaction_By_Hash);
 
-export const isValidTransactionReceipt = (response: JsonRpcResponse) =>
+export const isValidTransactionReceipt = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Transaction_Receipt);
 
-export const isValidCurrentBlock = (response: JsonRpcResponse) =>
+export const isValidCurrentBlock = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Current_Block);
 
-export const isValidRawTxApi = (response: JsonRpcResponse) =>
+export const isValidRawTxApi = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Raw_Tx);
 
-export const isValidSendTransaction = (response: JsonRpcResponse) =>
+export const isValidSendTransaction = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Send_Transaction);
 
-export const isValidSignMessage = (response: JsonRpcResponse) =>
+export const isValidSignMessage = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Sign_Message);
 
-export const isValidGetAccounts = (response: JsonRpcResponse) =>
+export const isValidGetAccounts = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Accounts);
 
-export const isValidGetNetVersion = (response: JsonRpcResponse) =>
+export const isValidGetNetVersion = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Net_Version);
-export const isValidTxHash = (hash: string) =>
-  hash.substring(0, 2) === '0x' && hash.length === 66 && isValidHex(hash);

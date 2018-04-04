@@ -1,25 +1,20 @@
-import * as BN from 'bn.js';
 import { Wei } from '@src/utils';
-import { ProviderBalancerState } from '@src/ducks/providerBalancer';
-import { ProviderConfigState } from '@src/ducks/providerConfigs';
+import { IProviderBalancerState } from '@src/ducks/providerBalancer';
+import { IProviderConfigState } from '@src/ducks/providerConfigs';
 
-type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
+export type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
 
-// Diff / Omit taken from https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766
-type Diff<T extends string, U extends string> = ({ [P in T]: P } &
-  { [P in U]: never } & { [x: string]: never })[T];
+export type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
 
-type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>;
+export type Reject = (reason?: any) => void;
 
 export interface IProviderContructor<T = any> {
   new (args?: T): IProvider;
 }
+
 export interface IRPCProviderContructor<T = any> {
   new (args?: T): IRPCProvider;
 }
-
-export type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
-export type Reject = (reason?: any) => void;
 
 export interface IRPCProvider {
   getNetVersion(): Promise<string>;
@@ -99,6 +94,6 @@ export interface TransactionReceipt {
 }
 
 export interface RootState {
-  providerBalancer: ProviderBalancerState;
-  providerConfigs: ProviderConfigState;
+  providerBalancer: IProviderBalancerState;
+  providerConfigs: IProviderConfigState;
 }
