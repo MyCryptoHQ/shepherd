@@ -1,30 +1,31 @@
 {
   "name": "myc-shepherd",
   "version": "0.0.9",
-  "description": "Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!",
+  "description":
+    "Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!",
   "main": "dist/shepherd.umd.js",
   "module": "dist/shepherd.es6.js",
   "typings": "dist/lib",
   "scripts": {
     "gulp": "node node_modules/gulp/bin/gulp.js",
     "test": "jest",
+    "test:mem": "npm test -- --coverage --silent --logHeapUsage",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "tsc": "tsc --noEmit -p ./tsconfig.json",
-    "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
+    "format":
+      "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
     "remotedev": "remotedev --hostname=localhost --port=8000",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts && npm run gulp",
+    "build":
+      "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts && npm run gulp",
     "precommit": "lint-staged",
     "prepush": "npm run lint && npm run tsc"
   },
   "lint-staged": {
-    "{src,__test__}/**/*.ts": [
-      "npm run format",
-      "git add"
-    ]
+    "{src,__test__}/**/*.ts": ["npm run format", "git add"]
   },
   "repository": {
     "type": "git",
@@ -35,9 +36,7 @@
   "bugs": {
     "url": "https://github.com/MyCryptoHQ/shepherd/issues"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
@@ -71,13 +70,7 @@
     "remote-redux-devtools": "^0.5.12"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "ts",
-      "tsx"
-    ],
+    "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
     "transform": {
       "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
@@ -86,10 +79,7 @@
       "@test/(.*)": "<rootDir>/__test__/$1"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
+    "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "src/providers/etherscan",
