@@ -16,6 +16,7 @@
     "no-var-requires": false,
     "comment-format": false,
     "ordered-imports": true,
-    "no-default-export": true
+    "no-default-export": true,
+    "prefer-readonly": true
   }
 }

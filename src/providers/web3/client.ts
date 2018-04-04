@@ -3,7 +3,7 @@ import { IJsonRpcResponse, RPCRequest } from '../rpc/types';
 import { IWeb3Provider } from './types';
 
 export class Web3Client extends RPCClient {
-  private provider: IWeb3Provider;
+  private readonly provider: IWeb3Provider;
 
   constructor() {
     super('web3'); // initialized with fake endpoint
@@ -25,7 +25,7 @@ export class Web3Client extends RPCClient {
       IJsonRpcResponse[]
     >;
 
-  private sendAsync = (
+  private readonly sendAsync = (
     request: any,
   ): Promise<IJsonRpcResponse | IJsonRpcResponse[]> => {
     return new Promise((resolve, reject) => {

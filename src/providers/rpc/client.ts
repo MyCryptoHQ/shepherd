@@ -44,7 +44,7 @@ export class RPCClient {
     }).then(r => r.json());
   };
 
-  private createHeaders = (headerObject: StrIdx<string>) => {
+  private readonly createHeaders = (headerObject: StrIdx<string>) => {
     const headers = new Headers();
     Object.keys(headerObject).forEach(name => {
       headers.append(name, headerObject[name]);
