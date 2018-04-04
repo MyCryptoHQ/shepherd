@@ -19,13 +19,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["./src/"],
   "inlineSources": true,
   "inlineSourceMap": true,
-  "exclude": [
-    "node_modules",
-    "dist",
-    "./src/**/*.test.ts",
-    "./src/**/*.spec.ts"
-  ]
+  "include": ["src"],
+  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
 }
