@@ -1,9 +1,12 @@
+import { IIndex } from '@src/';
 import { IProviderCall } from '@src/ducks/providerBalancer/providerCalls';
 import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
 import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { DeepPartial } from '@src/types';
+import { DeepPartial, IProviderContructor } from '@src/types';
 import { Task } from 'redux-saga';
+import { setTimeout } from 'timers';
+import { promisify } from 'util';
 
 export const makeMockProviderConfig = (
   options: DeepPartial<IProviderConfig> = {},
@@ -88,3 +91,13 @@ export const makeMockWorker = (options: Partial<IWorker> = {}): IWorker => {
     ...options,
   };
 };
+
+export const asyncTimeout = promisify(setTimeout);
+
+export const getAPI = () => {
+  jest.resetModules();
+  const API: IIndex = require('../src/index');
+  return API;
+};
+
+export const MockProviderImplem = (Proxy as any) as IProviderContructor;
