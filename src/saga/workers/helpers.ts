@@ -19,14 +19,17 @@ function* sendRequestToProvider(
   rpcArgs: any,
 ) {
   try {
-    const { provider, timeoutThreshold } = yield select(
+    const {
+      provider,
+      timeoutThreshold,
+    }: ReturnType<typeof getProviderInstAndTimeoutThreshold> = yield select(
       getProviderInstAndTimeoutThreshold,
       providerId,
     );
 
     // make the call in the allotted timeout time
     const { result } = yield race({
-      result: apply(provider, provider[rpcMethod], rpcArgs),
+      result: apply(provider, (provider as any)[rpcMethod], rpcArgs),
       timeout: call(delay, timeoutThreshold),
     });
 

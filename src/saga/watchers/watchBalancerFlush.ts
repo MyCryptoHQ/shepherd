@@ -5,7 +5,7 @@ import {
   IBalancerNetworkSwitchRequested,
   IBalancerQueueTimeout,
 } from '@src/ducks/providerBalancer/balancerConfig';
-import { getWorkers, IWorkerState } from '@src/ducks/providerBalancer/workers';
+import { getWorkers } from '@src/ducks/providerBalancer/workers';
 import { balancerChannel, providerChannels } from '@src/saga/channels';
 import { SagaIterator } from 'redux-saga';
 import {
@@ -18,7 +18,7 @@ import {
 } from 'redux-saga/effects';
 
 function* clearWorkers(): SagaIterator {
-  const workers: IWorkerState = yield select(getWorkers);
+  const workers: ReturnType<typeof getWorkers> = yield select(getWorkers);
   for (const worker of Object.values(workers)) {
     yield cancel(worker.task);
   }

@@ -21,7 +21,7 @@ function* getOptimalProviderId(
   }
 
   // get an available providerId to put the action to the channel
-  const providerId: string | null = yield select(
+  const providerId: ReturnType<typeof getAvailableProviderId> = yield select(
     getAvailableProviderId,
     payload,
   );
