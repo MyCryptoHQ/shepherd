@@ -1,10 +1,13 @@
 import { providerStorage } from '@src/providers/providerStorage';
 import { AllProviderMethods, RootState } from '@src/types';
+import { IProviderConfigState } from './types';
 
 export const getProviderConfigs = (state: RootState) => state.providerConfigs;
 
-export const getProviderConfigById = (state: RootState, id: string) =>
-  getProviderConfigs(state)[id];
+export const getProviderConfigById = (
+  state: RootState,
+  id: string,
+): IProviderConfigState[string] | undefined => getProviderConfigs(state)[id];
 
 export const providerSupportsMethod = (
   state: RootState,

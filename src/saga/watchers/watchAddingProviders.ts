@@ -14,7 +14,7 @@ import { call, put, race, select, take, takeEvery } from 'redux-saga/effects';
 function* handleAddingProviderConfig({
   payload: { config, id },
 }: IAddProviderConfig) {
-  const network: string = yield select(getNetwork);
+  const network: ReturnType<typeof getNetwork> = yield select(getNetwork);
   if (network !== config.network) {
     return;
   }

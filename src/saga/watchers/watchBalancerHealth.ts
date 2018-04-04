@@ -24,14 +24,14 @@ type WatchedActions =
   | IBalancerManualSucceeded;
 
 function* dispatchOffline() {
-  const offline: boolean = yield select(isOffline);
+  const offline: ReturnType<typeof isOffline> = yield select(isOffline);
   if (!offline) {
     return yield put(setOffline());
   }
 }
 
 function* dispatchOnline() {
-  const offline: boolean = yield select(isOffline);
+  const offline: ReturnType<typeof isOffline> = yield select(isOffline);
   const online = !offline;
   if (!online) {
     return yield put(setOnline());
@@ -44,7 +44,9 @@ function* setBalancerOnlineState({ type }: WatchedActions): SagaIterator {
   }
 
   // check if all methods are available after this provider is online
-  const isAllMethodsAvailable: boolean = yield select(getAllMethodsAvailable);
+  const isAllMethodsAvailable: ReturnType<
+    typeof getAllMethodsAvailable
+  > = yield select(getAllMethodsAvailable);
 
   // if they are, put app in online state
   if (isAllMethodsAvailable) {

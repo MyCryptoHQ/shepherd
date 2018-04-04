@@ -15,19 +15,17 @@ function* handleCallTimeouts(action: IProviderCallTimeout) {
   const { payload: { error, providerCall } } = action;
   const { providerId } = providerCall;
 
-  const shouldSetProviderOffline: boolean = yield select(
-    providerExceedsRequestFailureThreshold,
-    action,
-  );
+  const shouldSetProviderOffline: ReturnType<
+    typeof providerExceedsRequestFailureThreshold
+  > = yield select(providerExceedsRequestFailureThreshold, action);
 
   if (shouldSetProviderOffline) {
     yield put(providerOffline({ providerId }));
   }
 
-  const callFailed: boolean = yield select(
-    callMeetsBalancerRetryThreshold,
-    action,
-  );
+  const callFailed: ReturnType<
+    typeof callMeetsBalancerRetryThreshold
+  > = yield select(callMeetsBalancerRetryThreshold, action);
 
   if (callFailed) {
     yield put(providerCallFailed({ error: error.message, providerCall }));

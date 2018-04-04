@@ -28,7 +28,10 @@ export function* pollProviderUntilConnected(providerId: string): SagaIterator {
  */
 export function* waitForProviderStatsToExist(providerId: string) {
   while (true) {
-    const stats = yield select(getProviderStatsById, providerId);
+    const stats: ReturnType<typeof getProviderStatsById> = yield select(
+      getProviderStatsById,
+      providerId,
+    );
     if (stats) {
       return true;
     }

@@ -6,10 +6,7 @@ import {
   setManualSucceeded,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
-import {
-  getProviderConfigById,
-  IProviderConfig,
-} from '@src/ducks/providerConfigs';
+import { getProviderConfigById } from '@src/ducks/providerConfigs';
 import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
 import { logger } from '@src/utils/logging';
 import { SagaIterator } from 'redux-saga';
@@ -19,10 +16,11 @@ function* attemptManualMode(
   providerId: string,
   skipOfflineCheck: boolean,
 ): SagaIterator {
-  const config: IProviderConfig | undefined = yield select(
+  const config: ReturnType<typeof getProviderConfigById> = yield select(
     getProviderConfigById,
     providerId,
   );
+
   if (!config) {
     return yield put(
       setManualFailed({
@@ -31,7 +29,7 @@ function* attemptManualMode(
     );
   }
 
-  const isOnline = yield call(checkProviderConnectivity, providerId);
+  const isOnline: boolean = yield call(checkProviderConnectivity, providerId);
 
   if (!isOnline && !skipOfflineCheck) {
     return yield put(
@@ -41,7 +39,8 @@ function* attemptManualMode(
     );
   }
 
-  const network: string = yield select(getNetwork);
+  const network: ReturnType<typeof getNetwork> = yield select(getNetwork);
+
   if (config.network !== network) {
     logger.log(`Manually set provider ${providerId} has a different network 
       (Provider network: ${config.network}, current network ${network}).

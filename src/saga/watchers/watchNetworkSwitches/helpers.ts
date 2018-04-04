@@ -1,9 +1,7 @@
 import { ProcessedProvider } from '@src/ducks/providerBalancer/providerStats';
-import { IProviderConfig } from '@src/ducks/providerConfigs';
 import { getAllProvidersOfNetwork } from '@src/ducks/selectors';
 import { processProvider } from '@src/saga/helpers/processing';
 import { reduceProcessedProviders } from '@src/saga/sagaUtils';
-import { StrIdx } from '@src/types';
 import { all, call, select } from 'redux-saga/effects';
 
 /**
@@ -12,7 +10,7 @@ import { all, call, select } from 'redux-saga/effects';
  * @param network
  */
 export function* initializeNewNetworkProviders(network: string) {
-  const providers: StrIdx<IProviderConfig> = yield select(
+  const providers: ReturnType<typeof getAllProvidersOfNetwork> = yield select(
     getAllProvidersOfNetwork,
     network,
   );

@@ -10,10 +10,9 @@ import { apply, call, race, select } from 'redux-saga/effects';
  */
 export function* checkProviderConnectivity(providerId: string) {
   const provider = providerStorage.getInstance(providerId);
-  const timeoutThreshold = yield select(
-    getProviderTimeoutThreshold,
-    providerId,
-  );
+  const timeoutThreshold: ReturnType<
+    typeof getProviderTimeoutThreshold
+  > = yield select(getProviderTimeoutThreshold, providerId);
   try {
     const { lb } = yield race({
       lb: apply(provider, provider.getCurrentBlock),
