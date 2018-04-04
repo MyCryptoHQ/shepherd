@@ -80,7 +80,7 @@
       "@src/(.*)": "<rootDir>/src/$1",
       "@test/(.*)": "<rootDir>/__test__/$1"
     },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
+    "testRegex": "(/__tests__/.*|(\\.|/)(spec))\\.ts$",
     "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
