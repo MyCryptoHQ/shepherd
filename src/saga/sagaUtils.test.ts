@@ -1,8 +1,6 @@
 import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
-import { makeMockCall } from '@test/utils';
+import { asyncTimeout, makeMockCall } from '@test/utils';
 import { Task } from 'redux-saga';
-import { setTimeout } from 'timers';
-import { promisify } from 'util';
 import {
   addProviderIdToCall,
   createRetryCall,
@@ -12,13 +10,12 @@ import {
   makeWorkerId,
   trackTime,
 } from './sagaUtils';
-describe('Saga utils tests', () => {
-  const setTimeoutAsync = promisify(setTimeout);
 
+describe('Saga utils tests', () => {
   describe('trackTime tests', () => {
     it('should track one second', async () => {
       const timer = trackTime();
-      await setTimeoutAsync(1000);
+      await asyncTimeout(1000);
       const time = timer.end();
       expect(time).toBeGreaterThanOrEqual(900);
     });
@@ -59,7 +56,7 @@ describe('Saga utils tests', () => {
   describe('makeProviderStats', () => {
     it('should create provider statistics based on average response time and online status', async () => {
       const timer = trackTime();
-      await setTimeoutAsync(1000);
+      await asyncTimeout(1000);
       const offline = true;
       const stats = makeProviderStats(timer, offline);
       expect(stats.avgResponseTime).toBeGreaterThanOrEqual(900);

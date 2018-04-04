@@ -1,5 +1,4 @@
 import { IProviderBalancerState } from '@src/ducks/providerBalancer';
-import { Omit } from '@src/types';
 
 export enum BALANCER {
   NETWORK_SWTICH_REQUESTED = 'BALANCER_NETWORK_SWTICH_REQUESTED',
@@ -17,9 +16,10 @@ export enum BALANCER {
   QUEUE_TIMEOUT = 'QUEUE_TIMEOUT',
 }
 
-export type BalancerConfigInitConfig = Partial<
-  Omit<IBalancerConfigState, 'offline' | 'manual'>
->;
+export type BalancerConfigInitConfig = Partial<{
+  providerCallRetryThreshold: number;
+  network: string;
+}>;
 
 export interface IBalancerConfigState {
   network: string;

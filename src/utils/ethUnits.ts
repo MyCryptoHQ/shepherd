@@ -6,8 +6,6 @@ export function stripHexPrefix(value: string) {
 
 type Wei = BN;
 
-export const ETH_DECIMAL = 18;
-
 const handleValues = (input: string | BN | number) => {
   if (typeof input === 'string') {
     return input.startsWith('0x')

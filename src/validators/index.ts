@@ -1,18 +1,6 @@
 import { IJsonRpcResponse } from '@src/providers/rpc/types';
 import { Validator } from 'jsonschema';
 
-export function isValidHex(str: string): boolean {
-  if (str === '') {
-    return true;
-  }
-  str =
-    str.substring(0, 2) === '0x'
-      ? str.substring(2).toUpperCase()
-      : str.toUpperCase();
-  const re = /^[0-9A-F]*$/g; // Match 0 -> unlimited times, 0 being "0x" case
-  return re.test(str);
-}
-
 // JSONSchema Validations for Rpc responses
 const v = new Validator();
 
@@ -119,5 +107,3 @@ export const isValidGetAccounts = (response: IJsonRpcResponse) =>
 
 export const isValidGetNetVersion = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Net_Version);
-export const isValidTxHash = (hash: string) =>
-  hash.substring(0, 2) === '0x' && hash.length === 66 && isValidHex(hash);

@@ -1,9 +1,10 @@
-import { IIndex } from '@src/';
+import { redux } from '@src/';
 import { IProviderCall } from '@src/ducks/providerBalancer/providerCalls';
 import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
 import { IWorker } from '@src/ducks/providerBalancer/workers';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
 import { DeepPartial, IProviderContructor } from '@src/types';
+import { IShepherd } from '@src/types/api';
 import { Task } from 'redux-saga';
 import { setTimeout } from 'timers';
 import { promisify } from 'util';
@@ -95,6 +96,13 @@ export const makeMockWorker = (options: Partial<IWorker> = {}): IWorker => {
 export const asyncTimeout = promisify(setTimeout);
 
 export const getAPI = () => {
+  type IRedux = typeof redux;
+
+  interface IIndex {
+    shepherd: IShepherd;
+    redux: IRedux;
+  }
+
   jest.resetModules();
   const API: IIndex = require('../src/index');
   return API;

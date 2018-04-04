@@ -1,5 +1,4 @@
 import { IBalancerManualSucceeded } from '@src/ducks/providerBalancer/balancerConfig';
-import { DefaultNetworkIds } from '@src/types/networks';
 import { Reducer } from 'redux';
 import {
   BALANCER,
@@ -11,7 +10,7 @@ import {
 const INITIAL_STATE: IBalancerConfigState = {
   manual: false,
   offline: true,
-  network: DefaultNetworkIds.ETH,
+  network: 'ETH',
   providerCallRetryThreshold: 3,
 };
 
