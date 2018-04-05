@@ -1,3 +1,7 @@
+[![Coverage Status](https://coveralls.io/repos/github/MyCryptoHQ/shepherd/badge.svg?branch=master)](https://coveralls.io/github/MyCryptoHQ/shepherd?branch=master)
+[![Build Status](https://travis-ci.org/MyCryptoHQ/shepherd.svg?branch=master)](https://travis-ci.org/MyCryptoHQ/shepherd)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 # Alpha Software
 
 Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!
