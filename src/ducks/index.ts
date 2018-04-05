@@ -25,7 +25,7 @@ const rootReducer = combineReducers<RootState>({
 });
 
 const middleware =
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
     ? composeEnhancers(
         applyMiddleware(sagaMiddleware, filterMiddlware as Middleware),
       )
