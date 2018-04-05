@@ -1,7 +1,8 @@
 {
   "name": "myc-shepherd",
   "version": "0.1.0",
-  "description": "Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!",
+  "description":
+    "Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!",
   "main": "dist/shepherd.umd.js",
   "module": "dist/shepherd.es6.js",
   "typings": "dist/lib",
@@ -10,26 +11,27 @@
     "test": "jest",
     "test:mem": "npm test -- --coverage --silent --logHeapUsage",
     "test:watch": "jest --watch",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "test:prod": "npm run test -- --coverage --no-cache",
     "test:prepublish": "npm run lint && npm run test -- --silent --no-cache",
     "tsc": "tsc --noEmit -p ./tsconfig.json",
-    "format": "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
+    "format":
+      "find ./src/ -name '*.ts*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
     "remotedev": "remotedev --hostname=localhost --port=8000",
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts && npm run gulp",
-    "prepublishOnly": "rimraf node_modules && npm i && npm run lint && npm run tsc && npm run test:prepublish && npm run build",
+    "build":
+      "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts && npm run gulp",
+    "prepublishOnly":
+      "rimraf node_modules && npm i && npm run tsc && npm run test:prepublish && npm run build",
     "precommit": "lint-staged",
     "prepush": "npm run lint && npm run tsc",
-    "docs": "typedoc --out ./docs ./src --exclude '**/*.spec*' --externalPattern '*node_modules*' --excludeExternals  --includeDeclarations --tsconfig ./tsconfig-build.json  --mode file  --theme minimal"
+    "report-coverage": " cat ./coverage/lcov.info | coveralls",
+    "docs":
+      "typedoc --out ./docs ./src --exclude '**/*.spec*' --externalPattern '*node_modules*' --excludeExternals  --includeDeclarations --tsconfig ./tsconfig-build.json  --mode file  --theme minimal"
   },
   "lint-staged": {
-    "{src,__test__}/**/*.ts": [
-      "npm run format",
-      "npm run lint:fix",
-      "git add"
-    ]
+    "{src,__test__}/**/*.ts": ["npm run format", "npm run lint:fix", "git add"]
   },
   "repository": {
     "type": "git",
@@ -40,11 +42,10 @@
   "bugs": {
     "url": "https://github.com/MyCryptoHQ/shepherd/issues"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
+    "coveralls": "^3.0.0",
     "gulp": "^3.9.1",
     "husky": "^0.14.3",
     "jest": "^22.4.3",
@@ -76,13 +77,7 @@
     "url-search-params": "^0.10.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "jsx",
-      "json",
-      "ts",
-      "tsx"
-    ],
+    "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
     "transform": {
       "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
@@ -91,10 +86,7 @@
       "@test/(.*)": "<rootDir>/__test__/$1"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(spec))\\.ts$",
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/dist/"
-    ],
+    "testPathIgnorePatterns": ["/node_modules/", "/dist/"],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "src/providers/etherscan",
@@ -104,6 +96,7 @@
       "src/providers/web3",
       "src/validators",
       "mockNode.ts"
-    ]
+    ],
+    "collectCoverage": true
   }
 }

@@ -1,0 +1,25 @@
+language: node_js
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install --quiet
+
+jobs:
+  include:
+    - stage: test
+      script: npm run test:prod -- --maxWorkers=2 --silent
+    - stage: test
+      script: npm run tsc
+    - stage: test
+      script: npm run tslint
+
+after_success:
+  - npm run report-coverage
+
+notifications:
+  email:
+    on_success: never
+    on_failure: never
