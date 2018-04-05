@@ -14,10 +14,9 @@ jobs:
     - stage: test
       script: npm run tsc
     - stage: test
-      script: npm run tslint
-
-after_success:
-  - npm run report-coverage
+      script: npm run lint
+    - stage: report-cov
+      script: npm run report-coverage
 
 notifications:
   email:
