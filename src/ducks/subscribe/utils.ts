@@ -3,26 +3,11 @@ import {
   IBalancerManualFailed,
   IBalancerManualSucceeded,
 } from '@src/ducks/providerBalancer/balancerConfig';
-import { BalancerAction } from '@src/ducks/providerBalancer/balancerConfig/types';
-import {
-  PROVIDER_CALL,
-  ProviderCallAction,
-} from '@src/ducks/providerBalancer/providerCalls';
-import { ProviderStatsAction } from '@src/ducks/providerBalancer/providerStats';
-import { WorkerAction } from '@src/ducks/providerBalancer/workers';
-import { ProviderConfigAction } from '@src/ducks/providerConfigs/types';
-import { ISubscribe, subscribeToAction } from '@src/ducks/subscribe';
+import { PROVIDER_CALL } from '@src/ducks/providerBalancer/providerCalls';
+import { subscribeToAction } from '@src/ducks/subscribe';
+import { AllActions } from '@src/ducks/types';
 import { Reject, Resolve, RootState } from '@src/types';
-//import { logger } from '@src/utils/logging';
 import { Dispatch } from 'redux';
-
-type AllActions =
-  | ProviderCallAction
-  | WorkerAction
-  | ProviderStatsAction
-  | ProviderConfigAction
-  | BalancerAction
-  | ISubscribe;
 
 export const triggerOnMatchingCallId = (
   callId: number,
@@ -30,12 +15,11 @@ export const triggerOnMatchingCallId = (
 ) => (action: AllActions) => {
   // check if the action is a provider failed or succeeded call
   if (
-    action.type === PROVIDER_CALL.FAILED ||
     action.type === PROVIDER_CALL.SUCCEEDED ||
+    action.type === PROVIDER_CALL.FAILED ||
     action.type === PROVIDER_CALL.FLUSHED ||
-    (action.type === PROVIDER_CALL.TIMEOUT && includeTimeouts)
+    (includeTimeouts && action.type === PROVIDER_CALL.TIMEOUT)
   ) {
-    // logger.log(`Callid ${callId} Triggered on ${action.type}`);
     // make sure its the same call
     return action.payload.providerCall.callId === callId;
   }

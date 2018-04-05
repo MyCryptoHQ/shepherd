@@ -9,3 +9,5 @@ export interface ISubscribe {
     callback(resultingAction: any): void;
   };
 }
+
+export type SubscribeAction = ISubscribe;
