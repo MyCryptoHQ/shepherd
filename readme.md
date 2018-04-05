@@ -10,7 +10,7 @@ Shepherd is built to have high configurability for users.
 
 # Shepherd API
 
-#### init()
+### init()
 
 Initializes the balancer, returning a single instance of a provider to be used across your application
 
@@ -24,7 +24,7 @@ Initializes the balancer, returning a single instance of a provider to be used a
 
 * `Promise.<IProvider>` A provider instance to be used for making rpc calls
 
-#### addProvider(providerName, Provider)
+### addProvider(providerName, Provider)
 
 Adds a custom Provider implementation to be later used and instantiated by useProvider. This library comes with default Provider implementations of 'rpc' 'etherscan' 'infura' 'web3' 'myccustom'
 already availble for use in useProvider. This method can be used before init
@@ -40,7 +40,7 @@ already availble for use in useProvider. This method can be used before init
 
 * `Void`
 
-#### auto()
+### auto()
 
 Switches the balancer back to "auto" mode. This is the default mode of the balancer. If the balancer was previously in "manual" mode, this will now instead change it back to normal
 behaviour, which means balancing between all available providers of the current network
@@ -49,7 +49,7 @@ behaviour, which means balancing between all available providers of the current 
 
 * `Void`
 
-#### manual(providerId, skipOfflineCheck)
+### manual(providerId, skipOfflineCheck)
 
 Switches the balancer to "manual" mode. This will switch the balancer's current network to the manual providers network if it is different, then route all requests to the provider. This method
 can be used before init
@@ -65,7 +65,7 @@ can be used before init
 
 * `Promise.<string>` Resolves when the manual provider has successfully been switched to, returns a promise containing the provider ID switched to
 
-#### useProvider(providerName, instanceName, config, args)
+### useProvider(providerName, instanceName, config, args)
 
 Add a provider instance to the balancer to be used for incoming rpc calls, this is distinctly different from addProvider, as addProvider does not add any providers to be
 used for incoming calls. All addProvider does is add a custom implementation to the pool of default
@@ -85,7 +85,7 @@ This method can be used before init
 
 * `Void`
 
-#### switchNetworks(network)
+### switchNetworks(network)
 
 Switch the network for the balancer to use, all provider instances added by useProvider that match the same network to be swiched to will be used. Can not be used when the balancer is in
 manual mode, switch to auto mode first.
@@ -100,7 +100,7 @@ manual mode, switch to auto mode first.
 
 * `Promise.<undefined>` Resolves when the network is finished being switched to
 
-#### enableLogging()
+### enableLogging()
 
 Enables logging for the library
 
