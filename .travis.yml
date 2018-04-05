@@ -10,13 +10,11 @@ install:
 jobs:
   include:
     - stage: test
-      script: npm run test:prod -- --maxWorkers=2 --silent
+      script: npm run test:prod -- --maxWorkers=2 --silent && npm run report-coverage
     - stage: test
       script: npm run tsc
     - stage: test
       script: npm run lint
-    - stage: report-cov
-      script: npm run report-coverage
 
 notifications:
   email:
