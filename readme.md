@@ -56,10 +56,10 @@ can be used before init
 
 ##### Parameters
 
-| Name             | Type      | Description                                                                    |        |
-| ---------------- | --------- | ------------------------------------------------------------------------------ | ------ |
-| providerId       | `string`  |                                                                                | &nbsp; |
-| skipOfflineCheck | `boolean` | Will not fail and throw an error if the manual provider switched to is offline | &nbsp; |
+| Name             | Type      | Description                                                                    |
+| ---------------- | --------- | ------------------------------------------------------------------------------ |
+| providerId       | `string`  |                                                                                |
+| skipOfflineCheck | `boolean` | Will not fail and throw an error if the manual provider switched to is offline |
 
 ##### Returns
 
@@ -74,12 +74,12 @@ This method can be used before init
 
 ##### Parameters
 
-| Name         | Type              | Description                                                                                                                                                                                                             |        |
-| ------------ | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| providerName | `string`          | The name of the Provider implementation to use as previously defined in either init (as customProviders), or addProvider, or one of the default implementations supplied: 'rpc' 'etherscan' 'infura' 'web3' 'myccustom' | &nbsp; |
-| instanceName | `string`          | The unique name of the instance to be used                                                                                                                                                                              | &nbsp; |
-| config       | `IProviderConfig` |                                                                                                                                                                                                                         | &nbsp; |
-| args         | `Array.<any>`     | The constructor arguments to be supplied to the specifed Provider constructor                                                                                                                                           | &nbsp; |
+| Name         | Type              | Description                                                                                                                                                                                                             |
+| ------------ | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| providerName | `string`          | The name of the Provider implementation to use as previously defined in either init (as customProviders), or addProvider, or one of the default implementations supplied: 'rpc' 'etherscan' 'infura' 'web3' 'myccustom' |
+| instanceName | `string`          | The unique name of the instance to be used                                                                                                                                                                              |
+| config       | `IProviderConfig` |                                                                                                                                                                                                                         |
+| args         | `Array.<any>`     | The constructor arguments to be supplied to the specifed Provider constructor                                                                                                                                           |
 
 ##### Returns
 
@@ -92,9 +92,9 @@ manual mode, switch to auto mode first.
 
 ##### Parameters
 
-| Name    | Type     | Description |        |
-| ------- | -------- | ----------- | ------ |
-| network | `string` |             | &nbsp; |
+| Name    | Type     | Description |
+| ------- | -------- | ----------- |
+| network | `string` |             |
 
 ##### Returns
 
@@ -110,8 +110,8 @@ Enables logging for the library
 
 # IProviderConfig
 
-| Name                    | Type     | Description                                                                                                                                                                                                                                                                                                              |     |
-| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --- |
+| Name                    | Type     | Description                                                                                                                                                                                                                                                                                                              |
+| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | concurrency             | `string` | The maximum number of concurrent calls to make to the provider instance using this config. This number determines how many workers to spawn to process incoming rpc requests                                                                                                                                             |
 | requestFailureThreshold | `string` | The threshold of failed calls before deeming a provider to be offline (which means it will no longer have rpc calls routed to it), which will then be polled until it responds. If it responds, it will be changed to an online state and continue to have applicable calls as outlined in supportedMethods routed to it |
 | timeoutThresholdMs      | `string` | How long to wait on an rpc call (also applies to the initial ping to determine if a provider is online) before determining that it has timed out                                                                                                                                                                         |
