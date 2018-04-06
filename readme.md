@@ -10,7 +10,7 @@ Shepherd is built to have high configurability for users.
 
 # Installation
 
-`npm i myc-shepherd`
+`npm i mycrypto-shepherd`
 
 # Shepherd API
 
