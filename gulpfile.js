@@ -1,5 +1,5 @@
 const gulp = require('gulp');
-const alias = require('myc-path-alias-resolver/gulp');
+const alias = require('mycrypto-path-alias-resolver/gulp');
 
 gulp.task('default', () => {
   return gulp
