@@ -52,7 +52,7 @@ describe('offline provider tests', () => {
         getProviderStatsById(store.getState(), 'failingProvider')!.isOffline,
       ).toEqual(true);
 
-      await asyncTimeout(2100);
+      await asyncTimeout(2500);
 
       expect(
         getProviderStatsById(store.getState(), 'failingProvider')!.isOffline,
