@@ -65,7 +65,10 @@ async function main() {
   );
 }
 
-it('should work', async () => {
-  await main();
-}),
-  7000;
+it(
+  'should work',
+  async () => {
+    await main();
+  },
+  7000,
+);
