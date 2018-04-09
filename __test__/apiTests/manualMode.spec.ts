@@ -306,7 +306,7 @@ describe('manual mode tests', () => {
       expect(getProviderCallById(state, 16).providerId).toEqual('eth1');
       expect(getProviderCallById(state, 17).providerId).toEqual('eth2');
     },
-    7500,
+    8500,
   );
 
   it('should successfully switch networks if the manual provider is on a different network', async () => {
