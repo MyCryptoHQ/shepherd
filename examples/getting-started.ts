@@ -1,5 +1,5 @@
-import { IProviderConfig } from '@src/ducks/providerConfigs/types';
 import { shepherd } from '@src/';
+import { IProviderConfig } from '@src/ducks/providerConfigs/types';
 
 const myProviderConfig: IProviderConfig = {
   // size of the worker pool / maximum concurrent requests
