@@ -114,5 +114,5 @@ it(
     /* tslint:enable */
     await asyncTimeout(5000);
   },
-  15000,
+  17000,
 );

@@ -58,6 +58,6 @@ describe('offline provider tests', () => {
         getProviderStatsById(store.getState(), 'failingProvider')!.isOffline,
       ).toEqual(false);
     },
-    6500,
+    7500,
   );
 });

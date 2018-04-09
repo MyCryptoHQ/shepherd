@@ -158,6 +158,6 @@ describe('race condition tests', () => {
         getProviderStatsById(store.getState(), 'failingProvider2')!.isOffline,
       ).toEqual(false);
     },
-    10000,
+    11000,
   );
 });
