@@ -31,7 +31,11 @@
       "typedoc --out ./docs ./src --exclude '**/*.spec*' --externalPattern '*node_modules*' --excludeExternals  --includeDeclarations --tsconfig ./tsconfig-build.json  --mode file  --theme minimal"
   },
   "lint-staged": {
-    "{src,__test__}/**/*.ts": ["npm run format", "npm run lint:fix", "git add"]
+    "{src,__test__,examples}/**/*.ts": [
+      "npm run format",
+      "npm run lint:fix",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
