@@ -70,6 +70,9 @@ export class MockProvider {
   public getTransactionCount() {
     return true;
   }
+  public sendTransaction() {
+    return true;
+  }
   public sendRawTx() {
     return true;
   }

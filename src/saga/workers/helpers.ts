@@ -1,6 +1,7 @@
 import {
   IProviderCallRequested,
   isStaleCall,
+  providerCallFailed,
   providerCallSucceeded,
   providerCallTimeout,
 } from '@src/ducks/providerBalancer/providerCalls';
@@ -80,10 +81,15 @@ function* processRequest(providerId: string, workerId: string) {
     });
     return yield put(action);
   } else {
-    const action = providerCallTimeout({
+    const isWeb3SendTx = rpcMethod === 'sendTransaction';
+    const actionParams = {
       providerCall: callWithPid,
       error,
-    });
+    };
+    const action = isWeb3SendTx
+      ? providerCallFailed(actionParams)
+      : providerCallTimeout(actionParams);
+
     return yield put(action);
   }
 }
