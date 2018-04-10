@@ -12,6 +12,9 @@ Shepherd is built to have high configurability for users.
 
 `npm i mycrypto-shepherd`
 
+# Examples
+[Find examples here on how to get started with Shepherd](./examples)
+
 # Shepherd API
 
 ### init()
