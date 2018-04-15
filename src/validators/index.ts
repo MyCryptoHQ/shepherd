@@ -7,7 +7,7 @@ const v = new Validator();
 export const schema = {
   RpcProvider: {
     type: 'object',
-    additionalProperties: false,
+    additionalProperties: true,
     properties: {
       jsonrpc: { type: 'string' },
       id: { oneOf: [{ type: 'string' }, { type: 'integer' }] },
