@@ -13,8 +13,15 @@ import {
   ProviderStatsAction,
 } from '@src/ducks/providerBalancer/providerStats';
 import { getAllMethodsAvailable } from '@src/ducks/selectors';
-import { SagaIterator } from 'redux-saga';
-import { call, put, select, takeEvery } from 'redux-saga/effects';
+import { buffers, SagaIterator } from 'redux-saga';
+import {
+  actionChannel,
+  call,
+  fork,
+  put,
+  select,
+  take,
+} from 'redux-saga/effects';
 
 type WatchedActions =
   | ProviderStatsAction
@@ -40,7 +47,9 @@ function* dispatchOnline() {
 
 function* setBalancerOnlineState({ type }: WatchedActions): SagaIterator {
   if (type === BALANCER.NETWORK_SWTICH_REQUESTED) {
-    return yield call(dispatchOffline);
+    yield call(dispatchOffline);
+    //block until network switch is done
+    return yield take(BALANCER.NETWORK_SWITCH_SUCCEEDED);
   }
 
   // check if all methods are available after this provider is online
@@ -56,8 +65,8 @@ function* setBalancerOnlineState({ type }: WatchedActions): SagaIterator {
   }
 }
 
-export const balancerHealthWatcher = [
-  takeEvery(
+function* handleBalancerHealth() {
+  const chan = yield actionChannel(
     [
       PROVIDER_STATS.ONLINE,
       PROVIDER_STATS.OFFLINE,
@@ -68,6 +77,12 @@ export const balancerHealthWatcher = [
       BALANCER.AUTO,
       BALANCER.MANUAL_SUCCEEDED,
     ],
-    setBalancerOnlineState,
-  ),
-];
+    buffers.expanding(50),
+  );
+  while (true) {
+    const action = yield take(chan);
+    yield call(setBalancerOnlineState, action);
+  }
+}
+
+export const balancerHealthWatcher = [fork(handleBalancerHealth)];

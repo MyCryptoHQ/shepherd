@@ -4,6 +4,7 @@ import { IProviderConfig } from '@src/ducks/providerConfigs';
 import { StrIdx } from '@src/types';
 import { createMockProxyHandler, MockProvider } from '@test/mockNode';
 import {
+  asyncTimeout,
   getAPI,
   makeMockProviderConfig,
   MockProviderImplem,
@@ -159,5 +160,66 @@ describe('race condition tests', () => {
       ).toEqual(false);
     },
     11000,
+  );
+
+  it(
+    'should fail gracefully via call flush',
+    async () => {
+      const { shepherd } = getAPI();
+      const node = await shepherd.init({
+        customProviders: { MockProvider: MockProviderImplem },
+        network: 'ETH',
+      });
+
+      const providerConfigs: StrIdx<IProviderConfig> = {
+        eth: makeMockProviderConfig({
+          concurrency: 2,
+          network: 'ETH',
+          requestFailureThreshold: 3,
+          timeoutThresholdMs: 5000,
+        }),
+
+        etc: makeMockProviderConfig({
+          concurrency: 2,
+          network: 'ETC',
+          requestFailureThreshold: 2,
+          timeoutThresholdMs: 5000,
+        }),
+      };
+
+      shepherd.useProvider(
+        'MockProvider',
+        'eth',
+        providerConfigs.eth,
+        new MockProvider(),
+        createMockProxyHandler({
+          baseDelay: 100,
+          failureRate: 0,
+          numberOfFailuresBeforeConnection: 0,
+        }),
+      );
+
+      shepherd.useProvider(
+        'MockProvider',
+        'etc',
+        providerConfigs.etc,
+        new MockProvider(),
+        createMockProxyHandler({
+          baseDelay: 1000,
+          failureRate: 0,
+          numberOfFailuresBeforeConnection: 0,
+          getCurrentBlockDelay: 3000,
+        }),
+      );
+
+      shepherd.manual('etc', false);
+      await asyncTimeout(3000);
+      shepherd.auto();
+
+      /* tslint:disable */
+      await node.getBalance('0x').catch(() => {});
+      /* tslint:enable */
+    },
+    7000,
   );
 });
