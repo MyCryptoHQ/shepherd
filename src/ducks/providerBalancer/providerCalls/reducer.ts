@@ -60,7 +60,7 @@ const handleProviderCallFlushed = (
   const call = state[payload.providerCall.callId];
 
   if (!call || !call.pending) {
-    throw Error('Pending provider call not found');
+    console.error('Pending provider call not found when flushing');
   }
 
   return {
