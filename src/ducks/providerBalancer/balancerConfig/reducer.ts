@@ -12,6 +12,7 @@ const INITIAL_STATE: IBalancerConfigState = {
   offline: true,
   network: 'ETH',
   providerCallRetryThreshold: 3,
+  networkSwitchPending: false,
 };
 
 const handleBalancerAuto: Reducer<IBalancerConfigState> = (
@@ -46,7 +47,13 @@ export const balancerConfigReducer: Reducer<IBalancerConfigState> = (
     case BALANCER.ONLINE:
       return { ...state, offline: false };
     case BALANCER.NETWORK_SWITCH_SUCCEEDED:
-      return { ...state, network: action.payload.network };
+      return {
+        ...state,
+        network: action.payload.network,
+        networkSwitchPending: false,
+      };
+    case BALANCER.NETWORK_SWTICH_REQUESTED:
+      return { ...state, networkSwitchPending: true };
     case BALANCER.SET_PROVIDER_CALL_RETRY_THRESHOLD:
       return {
         ...state,

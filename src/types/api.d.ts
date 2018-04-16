@@ -1,13 +1,16 @@
-import { StrIdx, IProviderContructor, IProvider } from '@src/types';
 import {
-  balancerInit,
   BalancerConfigInitConfig,
+  balancerInit,
   balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
+import { IProvider, IProviderContructor, StrIdx } from '@src/types';
+import { Store } from 'redux';
 
 export interface IInitConfig extends BalancerConfigInitConfig {
   customProviders?: StrIdx<IProviderContructor>;
+  storeRoot?: string;
+  store?: Store<any>;
 }
 
 export interface IShepherd {

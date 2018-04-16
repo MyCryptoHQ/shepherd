@@ -1,8 +1,10 @@
+import { getRootState } from '@src/ducks/rootState';
 import { providerStorage } from '@src/providers/providerStorage';
 import { AllProviderMethods, RootState } from '@src/types';
 import { IProviderConfigState } from './types';
 
-export const getProviderConfigs = (state: RootState) => state.providerConfigs;
+export const getProviderConfigs = (state: RootState) =>
+  getRootState(state).providerConfigs;
 
 export const getProviderConfigById = (
   state: RootState,
