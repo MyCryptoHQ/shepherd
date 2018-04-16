@@ -1,5 +1,5 @@
-import { store } from '@src/ducks';
 import { addProviderConfig, IProviderConfig } from '@src/ducks/providerConfigs';
+import { storeManager } from '@src/ducks/store';
 import { IProviderContructor } from '@src/types';
 import { providerStorage } from './providerStorage';
 
@@ -20,6 +20,6 @@ export function useProvider(
   const provider = new Provider(...args);
   providerStorage.setInstance(instanceName, provider);
   const action = addProviderConfig({ config, id: instanceName });
-  store.dispatch(action);
+  storeManager.getStore().dispatch(action);
   return config;
 }

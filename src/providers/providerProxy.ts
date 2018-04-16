@@ -1,4 +1,3 @@
-import { store } from '@src/ducks';
 import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   IProviderCall,
@@ -8,6 +7,7 @@ import {
   PROVIDER_CALL,
   providerCallRequested,
 } from '@src/ducks/providerBalancer/providerCalls';
+import { storeManager } from '@src/ducks/store';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
 import { AllProviderMethods, IProvider, Reject, Resolve } from '@src/types';
@@ -43,7 +43,7 @@ const makeProviderCall = (
   rpcMethod: AllProviderMethods,
   rpcArgs: string[],
 ): IProviderCall => {
-  const isManual = getManualMode(store.getState());
+  const isManual = getManualMode(storeManager.getStore().getState());
 
   const providerCall: IProviderCall = {
     callId: generateCallId(),
@@ -60,13 +60,13 @@ const makeProviderCall = (
 const dispatchRequest = (providerCall: IProviderCall) => {
   // make the request to the load balancer
   const networkReq = providerCallRequested(providerCall);
-  store.dispatch(networkReq);
+  storeManager.getStore().dispatch(networkReq);
   return networkReq.payload.callId;
 };
 
 const waitForResponse = (callId: number) =>
   new Promise((resolve, reject) =>
-    store.dispatch(
+    storeManager.getStore().dispatch(
       subscribeToAction({
         trigger: triggerOnMatchingCallId(callId, false),
         callback: respondToCallee(resolve, reject),

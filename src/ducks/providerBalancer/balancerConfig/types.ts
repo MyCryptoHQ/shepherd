@@ -26,6 +26,7 @@ export interface IBalancerConfigState {
   manual: false | string;
   offline: boolean;
   providerCallRetryThreshold: number;
+  networkSwitchPending: boolean;
 }
 
 export interface IBalancerInit {

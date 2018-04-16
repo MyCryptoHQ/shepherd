@@ -16,6 +16,9 @@ export const getNetwork = (state: RootState) =>
 export const getProviderCallRetryThreshold = (state: RootState) =>
   getBalancerConfig(state).providerCallRetryThreshold;
 
+export const isSwitchingNetworks = (state: RootState) =>
+  getBalancerConfig(state).networkSwitchPending;
+
 export const callMeetsBalancerRetryThreshold = (
   state: RootState,
   { payload: { providerCall } }: IProviderCallTimeout,

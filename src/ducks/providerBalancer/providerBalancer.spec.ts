@@ -9,6 +9,7 @@ describe('Provider balancer tests', () => {
         network: 'ETH',
         offline: true,
         providerCallRetryThreshold: 3,
+        networkSwitchPending: false,
       },
       providerCalls: {},
       providerStats: {},

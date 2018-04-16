@@ -6,6 +6,7 @@ import {
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { getManualMode } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
+import { storeManager } from '@src/ducks/store';
 import {
   waitForManualMode,
   waitForNetworkSwitch,
@@ -13,7 +14,6 @@ import {
 import { IProviderContructor } from '@src/types';
 import { IInitConfig, IShepherd } from '@src/types/api';
 import { logger } from '@src/utils/logging';
-import { store } from './ducks';
 import { addProvider, createProviderProxy, useProvider } from './providers';
 
 class Shepherd implements IShepherd {
@@ -23,11 +23,26 @@ class Shepherd implements IShepherd {
    * @param {IInitConfig} [{ customProviders, ...config }={}] Initialization configuration parameter, custom providers are
    * your own supplied implementations that adhere to the {IProvider} interface. The {providerCallRetryThreshold} determines
    * how many times a provider can fail a call before its determined to be offline. The {network} is what network the balancer
-   * will initialize to, defaulting to 'ETH'
+   * will initialize to, defaulting to 'ETH'. The {storeRoot} is the shepherd rootReducer when using a custom store.
+   * E.g If the top level is { foo, shepherdReducer } then `storeRoot` would be `shepherdReducer`. Note that this setting only supports one level of nesting.
+   * The {store} is the custom store to use if you want to use your own, make sure to supply the setting above too or else it will not work.
    * @returns {Promise<IProvider>} A provider instances to be used for making rpc calls
    * @memberof Shepherd
    */
-  public async init({ customProviders, ...config }: IInitConfig = {}) {
+  public async init({
+    customProviders,
+    storeRoot,
+    store,
+    ...config
+  }: IInitConfig = {}) {
+    if (storeRoot) {
+      storeManager.setRoot(storeRoot);
+    }
+
+    if (store) {
+      storeManager.setStore(store);
+    }
+
     if (customProviders) {
       for (const [customProviderName, Provider] of Object.entries(
         customProviders,
@@ -44,9 +59,9 @@ class Shepherd implements IShepherd {
       config.providerCallRetryThreshold = 3;
     }
     const node = createProviderProxy();
-    const promise = waitForNetworkSwitch(store.dispatch);
+    const promise = waitForNetworkSwitch(storeManager.getStore().dispatch);
 
-    store.dispatch(balancerInit(config));
+    storeManager.getStore().dispatch(balancerInit(config));
     await promise;
     return node;
   }
@@ -73,7 +88,7 @@ class Shepherd implements IShepherd {
    * @memberof Shepherd
    */
   public auto() {
-    store.dispatch(setAuto());
+    storeManager.getStore().dispatch(setAuto());
   }
 
   /**
@@ -89,8 +104,10 @@ class Shepherd implements IShepherd {
    * @memberof Shepherd
    */
   public async manual(providerId: string, skipOfflineCheck: boolean) {
-    const promise = waitForManualMode(store.dispatch);
-    store.dispatch(setManualRequested({ providerId, skipOfflineCheck }));
+    const promise = waitForManualMode(storeManager.getStore().dispatch);
+    storeManager
+      .getStore()
+      .dispatch(setManualRequested({ providerId, skipOfflineCheck }));
     return await promise;
   }
 
@@ -127,12 +144,12 @@ class Shepherd implements IShepherd {
    * @memberof Shepherd
    */
   public async switchNetworks(network: string) {
-    if (getManualMode(store.getState())) {
+    if (getManualMode(storeManager.getStore().getState())) {
       throw Error(`Can't switch networks when in manual mode!`);
     }
-    const promise = waitForNetworkSwitch(store.dispatch);
+    const promise = waitForNetworkSwitch(storeManager.getStore().dispatch);
     const action = balancerNetworkSwitchRequested({ network });
-    store.dispatch(action);
+    storeManager.getStore().dispatch(action);
     await promise;
   }
 

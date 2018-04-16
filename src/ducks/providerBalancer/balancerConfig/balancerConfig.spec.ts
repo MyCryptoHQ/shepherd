@@ -24,12 +24,17 @@ describe('Balancer config tests', () => {
       ).toEqual(3);
     });
 
+    it('should select the network switching pending as false', () => {
+      expect(selectors.isSwitchingNetworks(INITIAL_ROOT_STATE)).toEqual(false);
+    });
+
     it('should select the entire inital state', () => {
       expect(selectors.getBalancerConfig(INITIAL_ROOT_STATE)).toEqual({
         manual: false,
         offline: true,
         network: 'ETH',
         providerCallRetryThreshold: 3,
+        networkSwitchPending: false,
       });
     });
   });
@@ -56,7 +61,6 @@ describe('Balancer config tests', () => {
     it('should set the balancer to online', () => {
       const action = actions.setOnline();
       const selector = selectors.isOffline;
-
       expect(selector(rootReducer(undefined as any, action))).toEqual(false);
     });
     it('should set the balancer to offline', () => {
@@ -79,14 +83,23 @@ describe('Balancer config tests', () => {
       expect(selector(state)).toEqual(false);
     });
 
-    it('should set the network after a successful network switch', () => {
+    it('should set the network switch is pending flag to true', () => {
+      const action = actions.balancerNetworkSwitchRequested({ network: 'ETH' });
+      const selector = selectors.isSwitchingNetworks;
+
+      expect(selector(rootReducer(undefined as any, action))).toEqual(true);
+    });
+
+    it('should set the network after a successful network switch, and set isSwitchingNetworks to false', () => {
       const action = actions.balancerNetworkSwitchSucceeded({
         network: 'ETC',
         providerStats: {},
         workers: {},
       });
       const selector = selectors.getNetwork;
+      const selector2 = selectors.isSwitchingNetworks;
       expect(selector(rootReducer(undefined as any, action))).toEqual('ETC');
+      expect(selector2(rootReducer(undefined as any, action))).toEqual(false);
     });
 
     it('should handle callExceedsBalancerRetryThreshold selector', () => {

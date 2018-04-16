@@ -13,6 +13,7 @@ Shepherd is built to have high configurability for users.
 `npm i mycrypto-shepherd`
 
 # Examples
+
 [Find examples here on how to get started with Shepherd](./examples)
 
 # Shepherd API
@@ -117,13 +118,15 @@ Enables logging for the library
 
 # IProviderConfig
 
-| Name                    | Type     | Description                                                                                                                                                                                                                                                                                                              |
-| ----------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| concurrency             | `string` | The maximum number of concurrent calls to make to the provider instance using this config. This number determines how many workers to spawn to process incoming rpc requests                                                                                                                                             |
-| requestFailureThreshold | `string` | The threshold of failed calls before deeming a provider to be offline (which means it will no longer have rpc calls routed to it), which will then be polled until it responds. If it responds, it will be changed to an online state and continue to have applicable calls as outlined in supportedMethods routed to it |
-| timeoutThresholdMs      | `string` | How long to wait on an rpc call (also applies to the initial ping to determine if a provider is online) before determining that it has timed out                                                                                                                                                                         |
-| supportedMethods        | `string` | All supported rpc methods by this provider config, disable a method for a config by setting it to false, this will prevent any rpc calls set to false to be routed to the provider instance using this config                                                                                                            |
-| network                 | `string` | The associated network name of this provider config to be used by the balancer when switching networks                                                                                                                                                                                                                   |
+| Name                    | Type         | Description                                                                                                                                                                                                                                                                                                              |
+| ----------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| concurrency             | `string`     | The maximum number of concurrent calls to make to the provider instance using this config. This number determines how many workers to spawn to process incoming rpc requests                                                                                                                                             |
+| requestFailureThreshold | `string`     | The threshold of failed calls before deeming a provider to be offline (which means it will no longer have rpc calls routed to it), which will then be polled until it responds. If it responds, it will be changed to an online state and continue to have applicable calls as outlined in supportedMethods routed to it |
+| timeoutThresholdMs      | `string`     | How long to wait on an rpc call (also applies to the initial ping to determine if a provider is online) before determining that it has timed out                                                                                                                                                                         |
+| supportedMethods        | `string`     | All supported rpc methods by this provider config, disable a method for a config by setting it to false, this will prevent any rpc calls set to false to be routed to the provider instance using this config                                                                                                            |
+| network                 | `string`     | The associated network name of this provider config to be used by the balancer when switching networks                                                                                                                                                                                                                   |
+| storeRoot               | `string`     | The root the shepherd rootReducer when using a custom store. E.g If the top level is { foo, shepherdReducer } then `storeRoot` would be `shepherdReducer`. Note that this setting only supports one level of nesting                                                                                                     |
+| store                   | `Store<any>` | The custom store to use if you want to use your own, make sure to supply the setting above too or else it will not work.                                                                                                                                                                                                 |
 
 # FAQ
 
