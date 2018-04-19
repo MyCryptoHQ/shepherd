@@ -7,6 +7,7 @@ import {
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { getProviderConfigById } from '@src/ducks/providerConfigs';
+import { AllActions } from '@src/ducks/types';
 import { checkProviderConnectivity } from '@src/saga/helpers/connectivity';
 import { logger } from '@src/utils/logging';
 import { SagaIterator } from 'redux-saga';
@@ -42,11 +43,19 @@ function* attemptManualMode(
   const network: ReturnType<typeof getNetwork> = yield select(getNetwork);
 
   if (config.network !== network) {
-    logger.log(`Manually set provider ${providerId} has a different network 
+    logger.log(`Manually set provider ${providerId} has a different network
       (Provider network: ${config.network}, current network ${network}).
        Setting new network`);
-    yield put(balancerNetworkSwitchRequested({ network: config.network }));
-    yield take(BALANCER.NETWORK_SWITCH_SUCCEEDED);
+    const requestAction = balancerNetworkSwitchRequested({
+      network: config.network,
+    });
+    yield put(requestAction);
+    yield take((action: AllActions) => {
+      if (action.type === BALANCER.NETWORK_SWITCH_SUCCEEDED) {
+        return action.meta.id === requestAction.meta.id;
+      }
+      return false;
+    });
   }
 
   yield put(setManualSucceeded({ providerId }));

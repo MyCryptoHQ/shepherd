@@ -1,3 +1,4 @@
+import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import { getProviderCallById } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderStatsById } from '@src/ducks/providerBalancer/providerStats';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
@@ -221,5 +222,64 @@ describe('race condition tests', () => {
       /* tslint:enable */
     },
     7000,
+  );
+
+  it(
+    'should buffer network requests and process them one at a time',
+    async () => {
+      const { shepherd, redux: { store } } = getAPI();
+      await shepherd.init({
+        customProviders: { MockProvider: MockProviderImplem },
+        network: 'ETH',
+      });
+
+      const providerConfigs: StrIdx<IProviderConfig> = {
+        eth: makeMockProviderConfig({
+          concurrency: 2,
+          network: 'ETH',
+          requestFailureThreshold: 3,
+          timeoutThresholdMs: 5000,
+        }),
+
+        etc: makeMockProviderConfig({
+          concurrency: 2,
+          network: 'ETC',
+          requestFailureThreshold: 2,
+          timeoutThresholdMs: 5000,
+        }),
+      };
+
+      shepherd.useProvider(
+        'MockProvider',
+        'eth',
+        providerConfigs.eth,
+        new MockProvider(),
+        createMockProxyHandler({
+          baseDelay: 1000,
+          failureRate: 0,
+          numberOfFailuresBeforeConnection: 0,
+          getCurrentBlockDelay: 2000,
+        }),
+      );
+
+      shepherd.useProvider(
+        'MockProvider',
+        'etc',
+        providerConfigs.etc,
+        new MockProvider(),
+        createMockProxyHandler({
+          baseDelay: 1000,
+          failureRate: 0,
+          numberOfFailuresBeforeConnection: 0,
+          getCurrentBlockDelay: 3000,
+        }),
+      );
+      await shepherd.switchNetworks('ETC');
+      shepherd.switchNetworks('ETH');
+      await shepherd.switchNetworks('ETC');
+
+      expect(getNetwork(store.getState())).toEqual('ETC');
+    },
+    15000,
   );
 });

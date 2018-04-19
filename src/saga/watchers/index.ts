@@ -9,6 +9,8 @@ import { providerRequestWatcher } from './watchProviderCalls';
 import { providerHealthWatcher } from './watchProviderHealth';
 
 export const watchers = [
+  ...watchNetworkSwitches,
+
   ...subscriptionWatcher,
   ...addProviderConfigWatcher,
   ...balancerFlushWatcher,
@@ -16,6 +18,5 @@ export const watchers = [
   ...providerRequestWatcher,
   ...providerHealthWatcher,
   ...balancerHealthWatcher,
-  ...watchNetworkSwitches,
   ...manualModeWatcher,
 ];

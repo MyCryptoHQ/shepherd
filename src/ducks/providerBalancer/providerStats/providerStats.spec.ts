@@ -217,11 +217,14 @@ describe('Provider stats tests', () => {
         mock1: { ...mockProviderStats, workers: [] },
         mock2: { ...mockProviderStats, workers: [] },
       };
-      const action = balancerActions.balancerNetworkSwitchSucceeded({
-        network: 'ETC',
-        providerStats: mockProviderStatsState,
-        workers: {},
-      });
+      const action = balancerActions.balancerNetworkSwitchSucceeded(
+        {
+          network: 'ETC',
+          providerStats: mockProviderStatsState,
+          workers: {},
+        },
+        0,
+      );
       states.networkSwitchSucceeded = providerStatsReducer(
         states.providerAdded,
         action,
@@ -243,6 +246,7 @@ describe('Provider stats tests', () => {
           providerStats: belowZeroMockProviderStatsState,
           workers: {},
         },
+        0,
       );
       expect(() =>
         providerStatsReducer(undefined as any, belowZeroResponseTimeAction),
@@ -260,6 +264,7 @@ describe('Provider stats tests', () => {
           providerStats: nonZeroMockProviderStatsState,
           workers: {},
         },
+        0,
       );
       expect(() =>
         providerStatsReducer(undefined as any, nonZeroResponseTimeAction),
