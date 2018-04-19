@@ -9,14 +9,17 @@ import { workerProcessing } from '@src/ducks/providerBalancer/workers';
 import { getProviderInstAndTimeoutThreshold } from '@src/ducks/providerConfigs';
 import { providerChannels } from '@src/saga/channels';
 import { addProviderIdToCall, makeRetVal } from '@src/saga/sagaUtils';
-import { IProvider } from '@src/types';
+import { AllProviderMethods } from '@src/types';
 import { logger } from '@src/utils/logging';
 import { delay } from 'redux-saga';
 import { apply, call, cancelled, put, race, select } from 'redux-saga/effects';
 
+const isWeb3Method = (rpcMethod: AllProviderMethods) =>
+  rpcMethod === 'sendTransaction' || rpcMethod === 'signMessage';
+
 function* sendRequestToProvider(
   providerId: string,
-  rpcMethod: keyof IProvider,
+  rpcMethod: AllProviderMethods,
   rpcArgs: any,
 ) {
   try {
@@ -31,7 +34,12 @@ function* sendRequestToProvider(
     // make the call in the allotted timeout time
     const { result } = yield race({
       result: apply(provider, (provider as any)[rpcMethod], rpcArgs),
-      timeout: call(delay, timeoutThreshold),
+      // HACK: If it's an web3 method, then wait 5 minutes because it can be intercepted (see metamask) and then waits on user confirmation
+      // TODO: refactor this to support web3 providers natively
+      timeout: call(
+        delay,
+        isWeb3Method(rpcMethod) ? 60 * 1000 * 5 : timeoutThreshold,
+      ),
     });
 
     if (!result) {
@@ -81,13 +89,11 @@ function* processRequest(providerId: string, workerId: string) {
     });
     return yield put(action);
   } else {
-    const isWeb3SendTx =
-      rpcMethod === 'sendTransaction' || rpcMethod === 'signMessage';
     const actionParams = {
       providerCall: callWithPid,
       error,
     };
-    const action = isWeb3SendTx
+    const action = isWeb3Method(rpcMethod)
       ? providerCallFailed(actionParams)
       : providerCallTimeout(actionParams);
 
