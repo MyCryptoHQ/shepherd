@@ -73,6 +73,9 @@ export class MockProvider {
   public sendTransaction() {
     return true;
   }
+  public signMessage() {
+    return true;
+  }
   public sendRawTx() {
     return true;
   }
