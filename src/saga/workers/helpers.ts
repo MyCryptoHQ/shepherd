@@ -81,7 +81,8 @@ function* processRequest(providerId: string, workerId: string) {
     });
     return yield put(action);
   } else {
-    const isWeb3SendTx = rpcMethod === 'sendTransaction';
+    const isWeb3SendTx =
+      rpcMethod === 'sendTransaction' || rpcMethod === 'signMessage';
     const actionParams = {
       providerCall: callWithPid,
       error,

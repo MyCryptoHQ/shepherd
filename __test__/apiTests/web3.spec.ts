@@ -7,7 +7,7 @@ import {
 } from '@test/utils';
 
 describe('web3 tests', () => {
-  it('should instantly fail a web3 sendTransaction if it fails', async () => {
+  it('should instantly fail a web3 sendTransaction and signMessage if it fails', async () => {
     const { shepherd, redux } = getAPI();
     const node = await shepherd.init({
       customProviders: { MockProvider: MockProviderImplem },
@@ -32,11 +32,18 @@ describe('web3 tests', () => {
 
     /* tslint:disable */
     await node.sendTransaction({} as any).catch(() => {});
+    await node.signMessage({} as any, '').catch(() => {});
     /* tslint:enable */
-    const call = getProviderCallById(redux.store.getState(), 0);
+    const signTxCall = getProviderCallById(redux.store.getState(), 0);
 
-    expect(call.pending).toEqual(false);
-    expect(call.error).toBeTruthy();
-    expect(call.numOfRetries).toEqual(0);
+    expect(signTxCall.pending).toEqual(false);
+    expect(signTxCall.error).toBeTruthy();
+    expect(signTxCall.numOfRetries).toEqual(0);
+
+    const signMsgCall = getProviderCallById(redux.store.getState(), 1);
+
+    expect(signMsgCall.pending).toEqual(false);
+    expect(signMsgCall.error).toBeTruthy();
+    expect(signMsgCall.numOfRetries).toEqual(0);
   });
 });
