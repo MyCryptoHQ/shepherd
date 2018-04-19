@@ -25,11 +25,19 @@ export const triggerOnMatchingCallId = (
   }
 };
 
-export function waitForNetworkSwitch(dispatch: Dispatch<RootState>) {
+export function waitForNetworkSwitch(
+  dispatch: Dispatch<RootState>,
+  id: number,
+) {
   return new Promise(res =>
     dispatch(
       subscribeToAction({
-        trigger: BALANCER.NETWORK_SWITCH_SUCCEEDED,
+        trigger: (action: AllActions) => {
+          if (action.type === BALANCER.NETWORK_SWITCH_SUCCEEDED) {
+            return action.meta.id === id;
+          }
+          return false;
+        },
         callback: res,
       }),
     ),

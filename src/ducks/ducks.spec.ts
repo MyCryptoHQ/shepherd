@@ -102,11 +102,14 @@ describe('Ducks tests', () => {
       storage = undefined;
       storage = rootReducer(
         storage,
-        balancerConfigActions.balancerNetworkSwitchSucceeded({
-          network: 'ETC',
-          providerStats: {},
-          workers: {},
-        }),
+        balancerConfigActions.balancerNetworkSwitchSucceeded(
+          {
+            network: 'ETC',
+            providerStats: {},
+            workers: {},
+          },
+          0,
+        ),
       );
       storage = addAllProviderConfigs(storage, configs);
       storage = addAllProviderStats(storage, Object.keys(configs));

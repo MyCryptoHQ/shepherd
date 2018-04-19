@@ -32,6 +32,7 @@ export interface IBalancerConfigState {
 export interface IBalancerInit {
   type: BALANCER.INIT;
   payload: BalancerConfigInitConfig;
+  meta: { id: number };
 }
 
 export interface IBalancerFlush {
@@ -45,6 +46,7 @@ export interface IBalancerQueueTimeout {
 export interface IBalancerNetworkSwitchRequested {
   type: BALANCER.NETWORK_SWTICH_REQUESTED;
   payload: { network: string };
+  meta: { id: number };
 }
 
 export interface IBalancerNetworkSwitchSucceeded {
@@ -54,6 +56,7 @@ export interface IBalancerNetworkSwitchSucceeded {
     workers: IProviderBalancerState['workers'];
     network: string;
   };
+  meta: { id: number };
 }
 
 export interface IBalancerSetProviderCallRetryThreshold {

@@ -1,3 +1,4 @@
+import { idGeneratorFactory } from '@src/utils/idGenerator';
 import {
   BALANCER,
   IBalancerAuto,
@@ -18,18 +19,22 @@ export const balancerFlush = (): IBalancerFlush => ({
   type: BALANCER.FLUSH,
 });
 
+const networkIdGenerator = idGeneratorFactory();
 export const balancerNetworkSwitchRequested = (
   payload: IBalancerNetworkSwitchRequested['payload'],
 ): IBalancerNetworkSwitchRequested => ({
   payload,
   type: BALANCER.NETWORK_SWTICH_REQUESTED,
+  meta: { id: networkIdGenerator() },
 });
 
 export const balancerNetworkSwitchSucceeded = (
   payload: IBalancerNetworkSwitchSucceeded['payload'],
+  id: number,
 ): IBalancerNetworkSwitchSucceeded => ({
   type: BALANCER.NETWORK_SWITCH_SUCCEEDED,
   payload,
+  meta: { id },
 });
 
 export const balancerSetProviderCallRetryThreshold = (
@@ -41,7 +46,11 @@ export const balancerSetProviderCallRetryThreshold = (
 
 export const balancerInit = (
   payload: IBalancerInit['payload'],
-): IBalancerInit => ({ type: BALANCER.INIT, payload });
+): IBalancerInit => ({
+  type: BALANCER.INIT,
+  payload,
+  meta: { id: networkIdGenerator() },
+});
 
 export const setOffline = (): IBalancerOffline => ({
   type: BALANCER.OFFLINE,

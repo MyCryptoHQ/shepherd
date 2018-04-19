@@ -11,8 +11,11 @@ import { storeManager } from '@src/ducks/store';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { triggerOnMatchingCallId } from '@src/ducks/subscribe/utils';
 import { AllProviderMethods, IProvider, Reject, Resolve } from '@src/types';
+import { idGeneratorFactory } from '@src/utils/idGenerator';
 import { logger } from '@src/utils/logging';
 import { allRPCMethods } from './constants';
+
+const idGenerator = idGeneratorFactory();
 
 const respondToCallee = (resolve: Resolve, reject: Reject) => (
   action: IProviderCallFailed | IProviderCallSucceeded | IProviderCallFlushed,
@@ -30,15 +33,6 @@ const respondToCallee = (resolve: Resolve, reject: Reject) => (
   }
 };
 
-const generateCallId = (() => {
-  let callId = 0;
-  return () => {
-    const currValue = callId;
-    callId += 1;
-    return currValue;
-  };
-})();
-
 const makeProviderCall = (
   rpcMethod: AllProviderMethods,
   rpcArgs: string[],
@@ -46,7 +40,7 @@ const makeProviderCall = (
   const isManual = getManualMode(storeManager.getStore().getState());
 
   const providerCall: IProviderCall = {
-    callId: generateCallId(),
+    callId: idGenerator(),
     numOfRetries: 0,
     rpcArgs,
     rpcMethod,

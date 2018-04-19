@@ -110,11 +110,14 @@ describe('Worker tests', () => {
           currentPayload: null,
         },
       };
-      const action = balancerActions.balancerNetworkSwitchSucceeded({
-        network: 'ETC',
-        providerStats: {},
-        workers,
-      });
+      const action = balancerActions.balancerNetworkSwitchSucceeded(
+        {
+          network: 'ETC',
+          providerStats: {},
+          workers,
+        },
+        0,
+      );
       const selector = selectors.getWorkers;
       states.networkSwitchSucceeded = workerReducer(
         states.workerProcessing,
@@ -137,11 +140,14 @@ describe('Worker tests', () => {
           currentPayload: null,
         },
       };
-      const noTaskAction = balancerActions.balancerNetworkSwitchSucceeded({
-        network: 'ETC',
-        providerStats: {},
-        workers: noTaskWorkers,
-      });
+      const noTaskAction = balancerActions.balancerNetworkSwitchSucceeded(
+        {
+          network: 'ETC',
+          providerStats: {},
+          workers: noTaskWorkers,
+        },
+        0,
+      );
 
       expect(() => workerReducer(undefined as any, noTaskAction)).toThrow(
         'Worker worker2 has no saga task assigned',
@@ -161,11 +167,14 @@ describe('Worker tests', () => {
         },
       };
 
-      const payloadAction = balancerActions.balancerNetworkSwitchSucceeded({
-        network: 'ETC',
-        providerStats: {},
-        workers: payloadWorkers,
-      });
+      const payloadAction = balancerActions.balancerNetworkSwitchSucceeded(
+        {
+          network: 'ETC',
+          providerStats: {},
+          workers: payloadWorkers,
+        },
+        0,
+      );
       expect(() => workerReducer(undefined as any, payloadAction)).toThrow(
         'Worker worker1 should not have an existing payload',
       );

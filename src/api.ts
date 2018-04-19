@@ -59,9 +59,14 @@ class Shepherd implements IShepherd {
       config.providerCallRetryThreshold = 3;
     }
     const node = createProviderProxy();
-    const promise = waitForNetworkSwitch(storeManager.getStore().dispatch);
+    const initAction = balancerInit(config);
 
-    storeManager.getStore().dispatch(balancerInit(config));
+    const promise = waitForNetworkSwitch(
+      storeManager.getStore().dispatch,
+      initAction.meta.id,
+    );
+
+    storeManager.getStore().dispatch(initAction);
     await promise;
     return node;
   }
@@ -147,8 +152,12 @@ class Shepherd implements IShepherd {
     if (getManualMode(storeManager.getStore().getState())) {
       throw Error(`Can't switch networks when in manual mode!`);
     }
-    const promise = waitForNetworkSwitch(storeManager.getStore().dispatch);
     const action = balancerNetworkSwitchRequested({ network });
+
+    const promise = waitForNetworkSwitch(
+      storeManager.getStore().dispatch,
+      action.meta.id,
+    );
     storeManager.getStore().dispatch(action);
     await promise;
   }

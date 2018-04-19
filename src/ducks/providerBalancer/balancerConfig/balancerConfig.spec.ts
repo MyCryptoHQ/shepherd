@@ -91,11 +91,14 @@ describe('Balancer config tests', () => {
     });
 
     it('should set the network after a successful network switch, and set isSwitchingNetworks to false', () => {
-      const action = actions.balancerNetworkSwitchSucceeded({
-        network: 'ETC',
-        providerStats: {},
-        workers: {},
-      });
+      const action = actions.balancerNetworkSwitchSucceeded(
+        {
+          network: 'ETC',
+          providerStats: {},
+          workers: {},
+        },
+        0,
+      );
       const selector = selectors.getNetwork;
       const selector2 = selectors.isSwitchingNetworks;
       expect(selector(rootReducer(undefined as any, action))).toEqual('ETC');
