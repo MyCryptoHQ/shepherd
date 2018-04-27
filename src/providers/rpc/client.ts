@@ -20,7 +20,7 @@ export class RPCClient {
     jsonrpc: '2.0',
   });
 
-  public call = (request: RPCRequest | any): Promise<IJsonRpcResponse> => {
+  public call = (request: RPCRequest): Promise<IJsonRpcResponse> => {
     return fetch(this.endpoint, {
       method: 'POST',
       headers: this.createHeaders({
@@ -31,9 +31,7 @@ export class RPCClient {
     }).then(r => r.json());
   };
 
-  public batch = (
-    requests: RPCRequest[] | any,
-  ): Promise<IJsonRpcResponse[]> => {
+  public batch = (requests: RPCRequest[]): Promise<IJsonRpcResponse[]> => {
     return fetch(this.endpoint, {
       method: 'POST',
       headers: this.createHeaders({

@@ -1,31 +1,19 @@
-import { IHexStrWeb3Transaction } from '@src/types';
-import { RPCRequests } from '../rpc/requests';
-import {
-  IGetAccountsRequest,
-  ISendTransactionRequest,
-  ISignMessageRequest,
-} from './types';
+import { IWeb3Requests } from '@src/types';
+import { RpcMethodNames } from 'eth-rpc-types/primitives';
 
-export class Web3Requests extends RPCRequests {
-  public sendTransaction(
-    web3Tx: IHexStrWeb3Transaction,
-  ): ISendTransactionRequest {
-    return {
-      method: 'eth_sendTransaction',
-      params: [web3Tx],
-    };
-  }
+export class Web3Requests implements IWeb3Requests {
+  public sendTransaction: IWeb3Requests['sendTransaction'] = tx => ({
+    method: RpcMethodNames.ETH_SEND_TRANSACTION,
+    params: [tx],
+  });
 
-  public signMessage(msgHex: string, fromAddr: string): ISignMessageRequest {
-    return {
-      method: 'personal_sign',
-      params: [msgHex, fromAddr],
-    };
-  }
+  public signMessage: IWeb3Requests['signMessage'] = (msgHex, fromAddr) => ({
+    method: 'personal_sign',
+    params: [msgHex, fromAddr],
+  });
 
-  public getAccounts(): IGetAccountsRequest {
-    return {
-      method: 'eth_accounts',
-    };
-  }
+  public getAccounts: IWeb3Requests['getAccounts'] = () => ({
+    method: RpcMethodNames.ETH_ACCOUNTS,
+    params: [],
+  });
 }

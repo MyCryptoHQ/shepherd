@@ -1,82 +1,52 @@
-import { IHexStrTransaction, TxObj } from '@src/types';
-import { stripHexPrefix } from '@src/utils';
+import { IRPCRequests } from '@src/types';
 import {
-  ICallRequest,
-  IEstimateGasRequest,
-  IGetBalanceRequest,
-  IGetCurrentBlockRequest,
-  IGetNetVersionRequest,
-  IGetTransactionByHashRequest,
-  IGetTransactionCountRequest,
-  IGetTransactionReceiptRequest,
-  ISendRawTxRequest,
-} from './types';
+  ENUM_DEFAULT_BLOCK,
+  RpcMethodNames as RPC,
+} from 'eth-rpc-types/primitives';
 
-export class RPCRequests {
-  public getNetVersion(): IGetNetVersionRequest | any {
-    return { method: 'net_version' };
-  }
+export class RPCRequests implements IRPCRequests {
+  public getNetVersion: IRPCRequests['getNetVersion'] = () => ({
+    method: RPC.NET_VERSION,
+    params: [],
+  });
 
-  public sendRawTx(signedTx: string): ISendRawTxRequest | any {
-    return {
-      method: 'eth_sendRawTransaction',
-      params: [signedTx],
-    };
-  }
+  public sendRawTx: IRPCRequests['sendRawTx'] = signedTx => ({
+    method: RPC.ETH_SEND_RAW_TRANSACTION,
+    params: [signedTx],
+  });
 
-  public estimateGas(
-    transaction: Partial<IHexStrTransaction>,
-  ): IEstimateGasRequest | any {
-    return {
-      method: 'eth_estimateGas',
-      params: [transaction],
-    };
-  }
+  public estimateGas: IRPCRequests['estimateGas'] = transaction => ({
+    method: RPC.ETH_ESTIMATE_GAS,
+    params: [transaction],
+  });
 
-  public getBalance(address: string): IGetBalanceRequest | any {
-    return {
-      method: 'eth_getBalance',
-      params: [`0x${stripHexPrefix(address)}`, 'pending'],
-    };
-  }
+  public getBalance: IRPCRequests['getBalance'] = address => ({
+    method: RPC.ETH_GET_BALANCE,
+    params: [address, ENUM_DEFAULT_BLOCK.PENDING],
+  });
 
-  public ethCall(txObj: TxObj): ICallRequest | any {
-    return {
-      method: 'eth_call',
-      params: [txObj, 'pending'],
-    };
-  }
+  public ethCall: IRPCRequests['ethCall'] = txObj => ({
+    method: RPC.ETH_CALL,
+    params: [txObj, ENUM_DEFAULT_BLOCK.PENDING],
+  });
 
-  public getTransactionCount(
-    address: string,
-  ): IGetTransactionCountRequest | any {
-    return {
-      method: 'eth_getTransactionCount',
-      params: [address, 'pending'],
-    };
-  }
+  public getTransactionCount: IRPCRequests['getTransactionCount'] = address => ({
+    method: RPC.ETH_GET_TRANSACTION_COUNT,
+    params: [address, ENUM_DEFAULT_BLOCK.PENDING],
+  });
 
-  public getTransactionByHash(
-    txhash: string,
-  ): IGetTransactionByHashRequest | any {
-    return {
-      method: 'eth_getTransactionByHash',
-      params: [txhash],
-    };
-  }
+  public getTransactionByHash: IRPCRequests['getTransactionByHash'] = txhash => ({
+    method: RPC.ETH_GET_TRANSACTION_BY_HASH,
+    params: [txhash],
+  });
 
-  public getTransactionReceipt(
-    txhash: string,
-  ): IGetTransactionReceiptRequest | any {
-    return {
-      method: 'eth_getTransactionReceipt',
-      params: [txhash],
-    };
-  }
+  public getTransactionReceipt: IRPCRequests['getTransactionReceipt'] = txhash => ({
+    method: RPC.ETH_GET_TRANSACTION_RECEIPT,
+    params: [txhash],
+  });
 
-  public getCurrentBlock(): IGetCurrentBlockRequest | any {
-    return {
-      method: 'eth_blockNumber',
-    };
-  }
+  public getCurrentBlock: IRPCRequests['getCurrentBlock'] = () => ({
+    method: RPC.ETH_BLOCK_NUMBER,
+    params: [],
+  });
 }

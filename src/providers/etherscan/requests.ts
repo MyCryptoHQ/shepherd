@@ -1,90 +1,55 @@
-import { IHexStrTransaction } from '@src/types';
-import { RPCRequests } from '../rpc/requests';
+import { IEtherscanModule, IEtherscanRequests } from '@src/types';
 import {
-  ICallRequest,
-  IEstimateGasRequest,
-  IGetBalanceRequest,
-  IGetCurrentBlockRequest,
-  IGetTransactionByHashRequest,
-  IGetTransactionCountRequest,
-  IGetTransactionReceiptRequest,
-  ISendRawTxRequest,
-} from './types';
+  ENUM_DEFAULT_BLOCK,
+  RpcMethodNames as RPC,
+} from 'eth-rpc-types/primitives';
 
-export class EtherscanRequests extends RPCRequests {
-  public sendRawTx(signedTx: string): ISendRawTxRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_sendRawTransaction',
-      hex: signedTx,
-    };
-  }
+export class EtherscanRequests implements IEtherscanRequests {
+  public sendRawTx: IEtherscanRequests['sendRawTx'] = signedTx => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_SEND_RAW_TRANSACTION,
+    payload: [{ hex: signedTx }],
+  });
 
-  public estimateGas(
-    transaction: Pick<
-      IHexStrTransaction & { from: string },
-      'to' | 'data' | 'from' | 'value'
-    >,
-  ): IEstimateGasRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_estimateGas',
-      to: transaction.to,
-      value: transaction.value,
-      data: transaction.data,
-      from: transaction.from,
-    };
-  }
+  public estimateGas: IEtherscanRequests['estimateGas'] = transaction => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_ESTIMATE_GAS,
+    payload: [transaction],
+  });
 
-  public getBalance(address: string): IGetBalanceRequest {
-    return {
-      module: 'account',
-      action: 'balance',
-      tag: 'latest',
-      address,
-    };
-  }
+  public getBalance: IEtherscanRequests['getBalance'] = address => ({
+    module: IEtherscanModule.ACCOUNT,
+    action: 'balance',
+    payload: [{ address }, { tag: ENUM_DEFAULT_BLOCK.PENDING }],
+  });
 
-  public ethCall(
-    transaction: Pick<IHexStrTransaction, 'to' | 'data'>,
-  ): ICallRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_call',
-      to: transaction.to,
-      data: transaction.data,
-    };
-  }
+  public ethCall: IEtherscanRequests['ethCall'] = transaction => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_CALL,
+    payload: [transaction, { tag: ENUM_DEFAULT_BLOCK.PENDING }],
+  });
 
-  public getTransactionByHash(txhash: string): IGetTransactionByHashRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_getTransactionByHash',
-      txhash,
-    };
-  }
+  public getTransactionByHash: IEtherscanRequests['getTransactionByHash'] = txhash => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_GET_TRANSACTION_BY_HASH,
+    payload: [{ txhash }],
+  });
 
-  public getTransactionReceipt(txhash: string): IGetTransactionReceiptRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_getTransactionReceipt',
-      txhash,
-    };
-  }
+  public getTransactionReceipt: IEtherscanRequests['getTransactionReceipt'] = txhash => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_GET_TRANSACTION_RECEIPT,
+    payload: [{ txhash }],
+  });
 
-  public getTransactionCount(address: string): IGetTransactionCountRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_getTransactionCount',
-      tag: 'latest',
-      address,
-    };
-  }
+  public getTransactionCount: IEtherscanRequests['getTransactionCount'] = address => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_GET_TRANSACTION_COUNT,
+    payload: [{ address }, { tag: ENUM_DEFAULT_BLOCK.LATEST }],
+  });
 
-  public getCurrentBlock(): IGetCurrentBlockRequest {
-    return {
-      module: 'proxy',
-      action: 'eth_blockNumber',
-    };
-  }
+  public getCurrentBlock: IEtherscanRequests['getCurrentBlock'] = () => ({
+    module: IEtherscanModule.PROXY,
+    action: RPC.ETH_BLOCK_NUMBER,
+    payload: [],
+  });
 }

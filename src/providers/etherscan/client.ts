@@ -1,12 +1,11 @@
+import { IEtherscanRequests } from '@src/types';
 import URLSearchParams from 'url-search-params';
 import { RPCClient } from '../rpc/client';
-import { IJsonRpcResponse } from '../rpc/types';
-import { EtherscanRequest } from './types';
 
 export class EtherscanClient extends RPCClient {
-  public encodeRequest(request: EtherscanRequest): string {
+  public encodeRequest(request: IEtherscanRequests): string {
     const encoded = new URLSearchParams();
-    Object.keys(request).forEach((key: keyof EtherscanRequest) => {
+    Object.keys(request).forEach((key: keyof IEtherscanRequests) => {
       if (request[key]) {
         encoded.set(key, request[key]);
       }
@@ -14,7 +13,7 @@ export class EtherscanClient extends RPCClient {
     return encoded.toString();
   }
 
-  public call = (request: EtherscanRequest): Promise<IJsonRpcResponse> =>
+  public call = (request: IEtherscanRequests): Promise<IJsonRpcResponse> =>
     fetch(this.endpoint, {
       method: 'POST',
       headers: new Headers({
@@ -24,7 +23,7 @@ export class EtherscanClient extends RPCClient {
     }).then(r => r.json());
 
   public batch = (
-    requests: EtherscanRequest[],
+    requests: IEtherscanRequests[],
   ): Promise<IJsonRpcResponse[]> => {
     const promises = requests.map(req => this.call(req));
     return Promise.all(promises);
