@@ -1,4 +1,5 @@
 import { IHexStrWeb3Transaction, IProvider } from '@src/types';
+import { IWeb3Provider } from '@src/types';
 import {
   isValidGetAccounts,
   isValidGetNetVersion,
@@ -9,7 +10,7 @@ import { RPCProvider } from '../rpc';
 import { Web3Client } from './client';
 import { Web3Requests } from './requests';
 
-export class Web3Provider extends RPCProvider {
+export class Web3Provider extends RPCProvider implements IWeb3Provider {
   public client: Web3Client;
   public requests: Web3Requests;
 
@@ -19,33 +20,23 @@ export class Web3Provider extends RPCProvider {
     this.requests = new Web3Requests();
   }
 
-  public getNetVersion(): Promise<string> {
-    return this.client
-      .call(this.requests.getNetVersion())
-      .then(isValidGetNetVersion)
-      .then(({ result }) => result);
-  }
-
-  public sendTransaction(web3Tx: IHexStrWeb3Transaction): Promise<string> {
-    return this.client
+  public sendTransaction: IWeb3Provider['sendTransaction'] = web3Tx =>
+    this.client
       .call(this.requests.sendTransaction(web3Tx))
       .then(isValidSendTransaction)
       .then(({ result }) => result);
-  }
 
-  public signMessage(msgHex: string, fromAddr: string): Promise<string> {
-    return this.client
+  public signMessage: IWeb3Provider['signMessage'] = (msgHex, fromAddr) =>
+    this.client
       .call(this.requests.signMessage(msgHex, fromAddr))
       .then(isValidSignMessage)
       .then(({ result }) => result);
-  }
 
-  public getAccounts(): Promise<string> {
-    return this.client
+  public getAccounts: IWeb3Provider['getAccounts'] = () =>
+    this.client
       .call(this.requests.getAccounts())
       .then(isValidGetAccounts)
       .then(({ result }) => result);
-  }
 }
 
 export function isWeb3Provider(

@@ -24,6 +24,7 @@ import {
   ExcludeRpcVer,
   ExtractParams,
   ExtractReq,
+  ExtractResponse,
   ExtractResult,
   RpcMethodNames,
 } from 'eth-rpc-types/primitives';
@@ -118,6 +119,18 @@ interface IAccountEthSCReq<T extends AnyJsonRpc<boolean>> {
       : EP<T>;
 }
 
+export abstract class IBaseRpcClient {
+  public abstract decorateRequest<T extends AnyJsonRpc<boolean>>(
+    req: ProviderReq<T>,
+  ): T;
+  public abstract call<T extends AnyJsonRpc<boolean>>(
+    req: ProviderReq<T>,
+  ): Promise<ExtractResponse<T>>;
+  public abstract batch<T extends AnyJsonRpc<boolean>>(
+    reqs: ProviderReq<T>[],
+  ): Promise<ExtractResponse<T>[]>;
+}
+
 export interface IEtherscanRequests {
   getBalance(address: EP<EthGetBalance>[0]): IAccountEthSCReq<EthGetBalance>;
 
@@ -172,6 +185,17 @@ export interface IRPCRequests {
   getCurrentBlock(): ProviderReq<EthBlockNumber>;
 }
 
+export interface IWeb3Provider {
+  sendTransaction(
+    tx: EP<EthSendTransaction>[0],
+  ): Promise<ER<EthSendTransaction>>;
+  signMessage(
+    msg: EP<EthSign>[0],
+    fromAddr: EP<EthSign>[1],
+  ): Promise<ER<EthSign>>;
+  getAccounts(): Promise<ER<EthAccounts>>;
+}
+
 export interface IWeb3Requests {
   sendTransaction(
     tx: EP<EthSendTransaction>[0],
@@ -205,7 +229,9 @@ export interface IProvider extends IRPCProvider {
 
 export type AllProviderMethods = keyof IProvider;
 
-export interface StrIdx<T> { [key: string]: T }
+export interface StrIdx<T> {
+  [key: string]: T;
+}
 
 export interface RootState {
   providerBalancer: IProviderBalancerState;

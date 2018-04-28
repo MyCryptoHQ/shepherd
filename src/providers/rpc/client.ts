@@ -1,6 +1,10 @@
-import { StrIdx } from '@src/types';
+import { IBaseRpcClient, ProviderReq, StrIdx } from '@src/types';
 import { randomBytes } from 'crypto';
-import { IJsonRpcResponse, RPCRequest } from './types';
+import {
+  AnyJsonRpc,
+  ExtractReq,
+  ExtractResponse,
+} from 'eth-rpc-types/primitives';
 
 export class RPCClient {
   public endpoint: string;
@@ -14,13 +18,17 @@ export class RPCClient {
     return randomBytes(16).toString('hex');
   }
 
-  public decorateRequest = (req: RPCRequest) => ({
-    ...req,
+  public decorateRequest = <T extends AnyJsonRpc<boolean>>(
+    req: ProviderReq<T>,
+  ): ExtractReq<T> => ({
+    ...(req as any),
     id: this.id(),
     jsonrpc: '2.0',
   });
 
-  public call = (request: RPCRequest): Promise<IJsonRpcResponse> => {
+  public call = <T extends AnyJsonRpc<boolean>>(
+    request: ProviderReq<T>,
+  ): Promise<ExtractResponse<T>> => {
     return fetch(this.endpoint, {
       method: 'POST',
       headers: this.createHeaders({
@@ -31,7 +39,9 @@ export class RPCClient {
     }).then(r => r.json());
   };
 
-  public batch = (requests: RPCRequest[]): Promise<IJsonRpcResponse[]> => {
+  public batch = (
+    requests: ProviderReq<AnyJsonRpc<boolean>>[],
+  ): Promise<AnyJsonRpc<boolean>[]> => {
     return fetch(this.endpoint, {
       method: 'POST',
       headers: this.createHeaders({

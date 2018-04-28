@@ -1,7 +1,8 @@
 import { IWeb3Requests } from '@src/types';
 import { RpcMethodNames } from 'eth-rpc-types/primitives';
+import { RPCRequests } from '../rpc/requests';
 
-export class Web3Requests implements IWeb3Requests {
+export class Web3Requests extends RPCRequests implements IWeb3Requests {
   public sendTransaction: IWeb3Requests['sendTransaction'] = tx => ({
     method: RpcMethodNames.ETH_SEND_TRANSACTION,
     params: [tx],

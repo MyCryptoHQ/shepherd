@@ -17,10 +17,10 @@ export class Web3Client extends RPCClient {
     params: req.params || [], // default to empty array so MetaMask doesn't error
   });
 
-  public call = (request: RPCRequest | any): Promise<IJsonRpcResponse> =>
+  public call = (request: RPCRequest): Promise<IJsonRpcResponse> =>
     this.sendAsync(this.decorateRequest(request)) as Promise<IJsonRpcResponse>;
 
-  public batch = (requests: RPCRequest[] | any): Promise<IJsonRpcResponse[]> =>
+  public batch = (requests: RPCRequest[]): Promise<IJsonRpcResponse[]> =>
     this.sendAsync(requests.map(this.decorateRequest)) as Promise<
       IJsonRpcResponse[]
     >;

@@ -1,4 +1,5 @@
 import { IEtherscanRequests } from '@src/types';
+import { AnyJsonRpc } from 'eth-rpc-types';
 import URLSearchParams from 'url-search-params';
 import { RPCClient } from '../rpc/client';
 
@@ -13,7 +14,7 @@ export class EtherscanClient extends RPCClient {
     return encoded.toString();
   }
 
-  public call = (request: IEtherscanRequests): Promise<IJsonRpcResponse> =>
+  public call = (request: IEtherscanRequests): Promise<AnyJsonRpc<boolean>> =>
     fetch(this.endpoint, {
       method: 'POST',
       headers: new Headers({
@@ -24,7 +25,7 @@ export class EtherscanClient extends RPCClient {
 
   public batch = (
     requests: IEtherscanRequests[],
-  ): Promise<IJsonRpcResponse[]> => {
+  ): Promise<AnyJsonRpc<boolean>[]> => {
     const promises = requests.map(req => this.call(req));
     return Promise.all(promises);
   };
