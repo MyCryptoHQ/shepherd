@@ -9,7 +9,7 @@ export class Web3Requests extends RPCRequests implements IWeb3Requests {
   });
 
   public signMessage: IWeb3Requests['signMessage'] = (msgHex, fromAddr) => ({
-    method: 'personal_sign',
+    method: RpcMethodNames.ETH_PERSONAL_SIGN,
     params: [msgHex, fromAddr],
   });
 

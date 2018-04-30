@@ -8,6 +8,7 @@ import {
   EthCall,
   EthEstimateGas,
   EthGetBalance,
+  EthPersonalSIgn,
   EthSendRawTransaction,
   EthSendTransaction,
   EthSign,
@@ -201,9 +202,9 @@ export interface IWeb3Requests {
     tx: EP<EthSendTransaction>[0],
   ): ProviderReq<EthSendTransaction>;
   signMessage(
-    msg: EP<EthSign>[0],
-    fromAddr: EP<EthSign>[1],
-  ): ProviderReq<EthSign>;
+    msg: EP<EthPersonalSIgn>[0],
+    fromAddr: EP<EthPersonalSIgn>[1],
+  ): ProviderReq<EthPersonalSIgn>;
   getAccounts(): ProviderReq<EthAccounts>;
 }
 
