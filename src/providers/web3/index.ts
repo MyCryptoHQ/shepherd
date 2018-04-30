@@ -1,8 +1,6 @@
-import { IHexStrWeb3Transaction, IProvider } from '@src/types';
-import { IWeb3Provider } from '@src/types';
+import { IProvider, IWeb3Provider } from '@src/types';
 import {
   isValidGetAccounts,
-  isValidGetNetVersion,
   isValidSendTransaction,
   isValidSignMessage,
 } from '@src/validators';
@@ -10,7 +8,7 @@ import { RPCProvider } from '../rpc';
 import { Web3Client } from './client';
 import { Web3Requests } from './requests';
 
-export class Web3Provider extends RPCProvider implements IWeb3Provider {
+export class Web3Provider extends RPCProvider {
   public client: Web3Client;
   public requests: Web3Requests;
 
@@ -57,7 +55,7 @@ export async function setupWeb3Provider() {
   }
 
   const provider = new Web3Provider();
-  const networkId = await provider.getNetVersion();
+  const networkId = (await provider.getNetVersion()) as number | string;
   const accounts = await provider.getAccounts();
 
   if (!accounts.length) {
