@@ -8,7 +8,7 @@ import {
   EthCall,
   EthEstimateGas,
   EthGetBalance,
-  EthPersonalSIgn,
+  EthPersonalSign,
   EthSendRawTransaction,
   EthSendTransaction,
   EthSign,
@@ -202,9 +202,9 @@ export interface IWeb3Requests {
     tx: EP<EthSendTransaction>[0],
   ): ProviderReq<EthSendTransaction>;
   signMessage(
-    msg: EP<EthPersonalSIgn>[0],
-    fromAddr: EP<EthPersonalSIgn>[1],
-  ): ProviderReq<EthPersonalSIgn>;
+    msg: EP<EthPersonalSign<true>>[0],
+    fromAddr: EP<EthPersonalSign<true>>[1],
+  ): ProviderReq<EthPersonalSign<true>>;
   getAccounts(): ProviderReq<EthAccounts>;
 }
 
@@ -230,11 +230,11 @@ export interface IProvider extends IRPCProvider {
 
 export type AllProviderMethods = keyof IProvider;
 
-export interface StrIdx<T> {
+export interface IStrIdx<T> {
   [key: string]: T;
 }
 
-export interface RootState {
+export interface IRootState {
   providerBalancer: IProviderBalancerState;
   providerConfigs: IProviderConfigState;
 }
