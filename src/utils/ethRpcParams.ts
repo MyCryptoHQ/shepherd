@@ -44,15 +44,14 @@ type EthTypeToStr<T> = T extends EthType
 
 export function isValidPartialTransactionCallObj(
   obj: EthTypeToStr<Partial<ITransactionCallObject>>,
-) {
-  return Object.entries(obj).reduce(
-    (
-      isValid,
-      [curKey, curValue]: [
-        keyof EthTypeToStr<ExtractParams<EthEstimateGas>[0]>,
-        undefined | string
-      ],
-    ) => {
+): Assertable<Partial<ITransactionCallObject>> {
+  type Entry = [
+    keyof EthTypeToStr<ExtractParams<EthEstimateGas>[0]>,
+    undefined | string
+  ];
+
+  const valid = Object.entries(obj).reduce(
+    (isValid, [curKey, curValue]: Entry) => {
       if (curValue === undefined) {
         return isValid;
       }
@@ -70,15 +69,39 @@ export function isValidPartialTransactionCallObj(
     },
     true,
   );
+
+  if (valid) {
+    return Assertable.from({ res: obj as Partial<ITransactionCallObject> });
+  } else {
+    return Assertable.from({
+      err: `${JSON.stringify(
+        obj,
+        null,
+        1,
+      )} is not a valid partial transaction call object`,
+    });
+  }
 }
 
 export function isValidTransactionCallObj(
   obj: EthTypeToStr<ITransactionCallObject>,
-) {
-  return !!(obj.to && isValidPartialTransactionCallObj(obj));
+): Assertable<ITransactionCallObject> {
+  if (obj.to && isValidPartialTransactionCallObj(obj)) {
+    return Assertable.from({ res: obj as ITransactionCallObject });
+  }
+  return Assertable.from({
+    err: `${JSON.stringify(
+      obj,
+      null,
+      1,
+    )} is not a valid transaction call object`,
+  });
 }
-export function isValidTransactionObj(obj: EthTypeToStr<ITransactionObject>) {
-  let isValid = isValidPartialTransactionCallObj(obj);
+
+export function isValidTransactionObj(
+  obj: EthTypeToStr<ITransactionObject>,
+): Assertable<ITransactionObject> {
+  let isValid = isValidPartialTransactionCallObj(obj).ok();
   // check that it has a from address
   isValid = !!(isValid && obj.from);
 
@@ -90,7 +113,13 @@ export function isValidTransactionObj(obj: EthTypeToStr<ITransactionObject>) {
     isValid = !!(isValid && isValidEthQuantity(obj.nonce));
   }
 
-  return isValid;
+  if (isValid) {
+    return Assertable.from({ res: obj as ITransactionObject });
+  } else {
+    return Assertable.from({
+      err: `${JSON.stringify(obj, null, 1)} is not a valid transaction object`,
+    });
+  }
 }
 
 type RawTxParam = ExtractParams<EthSendRawTransaction>[0];
