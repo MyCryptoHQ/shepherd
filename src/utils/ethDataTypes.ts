@@ -5,40 +5,35 @@ import {
   DATA_32B,
   DATA_60B,
   DATA_8B,
+  EthType,
   QUANTITY,
 } from 'eth-rpc-types/primitives';
 
-type HexString = UnprefixedHexString | PrefixedHexString;
 type UnprefixedHexString = string & { tag: '__unprefixed__hex__' };
-type PrefixedHexString =
-  | string & { tag: '__prefixed__hex__' }
-  | DATA
-  | DATA_20B
-  | DATA_256B
-  | DATA_32B
-  | DATA_60B
-  | DATA_8B
-  | QUANTITY;
+type PrefixedHexString = string & { tag: '__prefixed__hex__' } | EthType;
+type HexString = UnprefixedHexString | PrefixedHexString;
 
-export interface AssertableOk<T> {
+export interface IAssertableOk<T> {
   res: T;
   err?: undefined;
 }
 
-export interface AssertableErr {
+export interface IAssertableErr {
   res?: undefined;
   err: string;
 }
 
-export type AssertableType<T> = AssertableOk<T> | AssertableErr;
+export type AssertableType<T> = IAssertableOk<T> | IAssertableErr;
 
 export class Assertable<T> {
-  private readonly val: AssertableType<T>;
-  constructor(value: AssertableType<T>) {
-    this.val = value;
-  }
   public static from<T>(value: AssertableType<T>) {
     return new Assertable(value);
+  }
+
+  private readonly val: AssertableType<T>;
+
+  constructor(value: AssertableType<T>) {
+    this.val = value;
   }
 
   public and<U>(func: (arg: T) => Assertable<U>) {
@@ -69,15 +64,15 @@ export class Assertable<T> {
   }
 
   public valueOf() {
-    !this.val.err;
-  }
-
-  private isOk(val: AssertableType<T>): val is AssertableOk<T> {
-    return !val.err;
+    return this.ok();
   }
 
   public toVal() {
     return this.val;
+  }
+
+  private isOk(val: AssertableType<T>): val is IAssertableOk<T> {
+    return !val.err;
   }
 }
 
@@ -120,11 +115,11 @@ export function isHexString(str: string): Assertable<HexString> {
   return Assertable.from({ err: `${str} is not a hex string` });
 }
 
-export function addHexPrefix(str: HexString): HexString {
+export function addHexPrefix(str: HexString): PrefixedHexString {
   if (isHexPrefixed(str)) {
-    return str;
+    return str as PrefixedHexString;
   }
-  return `0x${str}` as HexString;
+  return `0x${str}` as PrefixedHexString;
 }
 
 export function toHexString(str: string): HexString {
@@ -138,7 +133,7 @@ export function isPrefixedHexString(
 }
 
 export function toPrefixedHexString(str: string): PrefixedHexString {
-  return addHexPrefix(toHexString(str)) as PrefixedHexString;
+  return addHexPrefix(toHexString(str));
 }
 
 export const isValidBytesLength = (expectedBytesLength: number) => (

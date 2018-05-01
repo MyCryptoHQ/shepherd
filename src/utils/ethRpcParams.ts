@@ -1,23 +1,17 @@
 import {
-  DATA,
-  DATA_20B,
-  DATA_256B,
-  DATA_32B,
-  DATA_60B,
-  DATA_8B,
   EthCall,
   EthEstimateGas,
   EthGetBalance,
   EthGetTransactionByHash,
   EthGetTransactionCount,
   EthGetTransactionReceipt,
-  EthPersonalSIgn,
+  EthPersonalSign,
   EthSendRawTransaction,
   EthSendTransaction,
+  EthTypeToStr,
   ExtractParams,
   ITransactionCallObject,
   ITransactionObject,
-  QUANTITY,
 } from 'eth-rpc-types';
 import {
   Assertable,
@@ -26,21 +20,6 @@ import {
   isValidEthData32B,
   isValidEthQuantity,
 } from './ethDataTypes';
-
-type EthType =
-  | DATA
-  | DATA_20B
-  | DATA_256B
-  | DATA_32B
-  | DATA_60B
-  | DATA_8B
-  | QUANTITY;
-
-type EthTypeToStr<T> = T extends EthType
-  ? string
-  : T extends number | string | null | undefined | boolean
-    ? T
-    : { [K in keyof T]: EthTypeToStr<T[K]> };
 
 export function isValidPartialTransactionCallObj(
   obj: EthTypeToStr<Partial<ITransactionCallObject>>,
@@ -181,11 +160,28 @@ export function isValidGetTransactionReceipt(
   return isValidEthData32B(str);
 }
 
-type EthSignMessage1 = ExtractParams<EthPersonalSIgn>[0];
-type EthSignMessage2 = ExtractParams<EthPersonalSIgn>[1];
+type EthSignMessage1 = ExtractParams<EthPersonalSign<true>>[0];
+type EthSignMessage2 = ExtractParams<EthPersonalSign<true>>[1];
 export function isValidPersonalSignMessage(
-  msg: EthSignMessage1,
-  fromAddr: EthSignMessage2,
-) {
-  return;
+  msg: EthTypeToStr<EthSignMessage1>,
+  fromAddr: EthTypeToStr<EthSignMessage2>,
+): Assertable<{
+  msg: EthSignMessage1;
+  fromAddr: EthSignMessage2;
+}> {
+  if (isValidEthData(msg) && isValidEthData20B(fromAddr)) {
+    return Assertable.from({
+      res: {
+        msg: msg as EthSignMessage1,
+        fromAddr: fromAddr as EthSignMessage2,
+      },
+    });
+  }
+  return Assertable.from({
+    err: `
+    Message: ${msg}
+    From Address: ${fromAddr}
+    is not a valid sign personal message parameter
+  `,
+  });
 }
