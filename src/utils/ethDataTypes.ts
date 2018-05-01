@@ -65,15 +65,15 @@ export class Assertable<T> {
   }
 
   public ok() {
-    return !!this.val.res;
+    return !this.val.err;
   }
 
   public valueOf() {
-    this.val.res;
+    !this.val.err;
   }
 
   private isOk(val: AssertableType<T>): val is AssertableOk<T> {
-    return !!val.res;
+    return !val.err;
   }
 
   public toVal() {
