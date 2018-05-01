@@ -1,29 +1,30 @@
 import {
-  EthSendRawTransaction,
-  ExtractParams,
-  EthEstimateGas,
   DATA,
   DATA_20B,
   DATA_256B,
   DATA_32B,
   DATA_60B,
   DATA_8B,
-  QUANTITY,
-  EthGetBalance,
   EthCall,
-  ITransactionCallObject,
-  EthSendTransaction,
-  ITransactionObject,
-  EthGetTransactionCount,
+  EthEstimateGas,
+  EthGetBalance,
   EthGetTransactionByHash,
+  EthGetTransactionCount,
   EthGetTransactionReceipt,
   EthPersonalSIgn,
+  EthSendRawTransaction,
+  EthSendTransaction,
+  ExtractParams,
+  ITransactionCallObject,
+  ITransactionObject,
+  QUANTITY,
 } from 'eth-rpc-types';
 import {
+  Assertable,
   isValidEthData,
   isValidEthData20B,
-  isValidEthQuantity,
   isValidEthData32B,
+  isValidEthQuantity,
 } from './ethDataTypes';
 
 type EthType =
@@ -95,35 +96,35 @@ export function isValidTransactionObj(obj: EthTypeToStr<ITransactionObject>) {
 type RawTxParam = ExtractParams<EthSendRawTransaction>[0];
 export function isValidSendRawTx(
   str: EthTypeToStr<RawTxParam>,
-): str is RawTxParam {
+): Assertable<RawTxParam> {
   return isValidEthData(str);
 }
 
 type EstGasParam = ExtractParams<EthEstimateGas>[0];
 export function isValidEstimateGas(
   obj: EthTypeToStr<EstGasParam>,
-): obj is EstGasParam {
+): Assertable<EstGasParam> {
   return isValidPartialTransactionCallObj(obj);
 }
 
 type GetBalParam = ExtractParams<EthGetBalance>[0];
 export function isValidGetBalance(
   str: EthTypeToStr<GetBalParam>,
-): str is GetBalParam {
+): Assertable<GetBalParam> {
   return isValidEthData20B(str);
 }
 
 type EthCallParam = ExtractParams<EthCall>[0];
 export function isValidEthCall(
   obj: EthTypeToStr<EthCallParam>,
-): obj is EthCallParam {
+): Assertable<EthCallParam> {
   return isValidTransactionCallObj(obj);
 }
 
 type EthTxParam = ExtractParams<EthSendTransaction>[0];
 export function isValidEthTransaction(
   obj: EthTypeToStr<EthTxParam>,
-): obj is EthTxParam {
+): Assertable<EthTxParam> {
   return isValidTransactionObj(obj);
 }
 
@@ -132,7 +133,7 @@ type EthGetTxParam = ExtractParams<EthGetTransactionCount>[0];
 // as our provider doesnt support such option
 export function isValidGetTransactionCount(
   str: EthTypeToStr<EthGetTxParam>,
-): str is EthGetTxParam {
+): Assertable<EthGetTxParam> {
   return isValidEthData20B(str);
 }
 
@@ -140,14 +141,14 @@ type EthGetTxByHash = ExtractParams<EthGetTransactionByHash>[0];
 
 export function isValidGetTransactionByHash(
   str: EthTypeToStr<EthGetTxByHash>,
-): str is EthGetTxByHash {
+): Assertable<EthGetTxByHash> {
   return isValidEthData32B(str);
 }
 
 type EthGetTxReceipt = ExtractParams<EthGetTransactionReceipt>[0];
 export function isValidGetTransactionReceipt(
   str: EthTypeToStr<EthGetTxReceipt>,
-): str is EthGetTxReceipt {
+): Assertable<EthGetTxReceipt> {
   return isValidEthData32B(str);
 }
 
