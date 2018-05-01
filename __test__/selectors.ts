@@ -1,8 +1,8 @@
 import { getProviderCalls } from '@src/ducks/providerBalancer/providerCalls';
-import { RootState } from '@src/types';
+import { IRootState } from '@src/types';
 
 export const getFinishedCallsByProviderId = (
-  state: RootState,
+  state: IRootState,
   providerId: string,
 ) => {
   const providerCalls = getProviderCalls(state);

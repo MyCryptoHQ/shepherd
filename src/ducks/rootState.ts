@@ -1,7 +1,7 @@
 import { storeManager } from '@src/ducks/store';
-import { RootState } from '@src/types';
+import { IRootState } from '@src/types';
 
-export const getRootState = (s: any): RootState => {
+export const getRootState = (s: any): IRootState => {
   const customRoot = storeManager.getRoot();
   return customRoot ? s[customRoot] : s;
 };

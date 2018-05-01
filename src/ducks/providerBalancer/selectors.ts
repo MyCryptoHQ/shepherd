@@ -1,5 +1,5 @@
 import { getRootState } from '@src/ducks/rootState';
-import { RootState } from '@src/types';
+import { IRootState } from '@src/types';
 
-export const getProviderBalancer = (state: RootState) =>
+export const getProviderBalancer = (state: IRootState) =>
   getRootState(state).providerBalancer;

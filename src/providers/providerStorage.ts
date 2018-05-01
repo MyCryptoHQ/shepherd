@@ -8,7 +8,7 @@ import {
   IProviderContructor,
   IRPCProvider,
   IRPCProviderContructor,
-  StrIdx,
+  IStrIdx,
 } from '@src/types';
 
 interface IProviderStorage {
@@ -22,13 +22,13 @@ interface IProviderStorage {
 }
 
 class ProviderStorage implements IProviderStorage {
-  private readonly instances: Partial<StrIdx<IProvider | IRPCProvider>>;
+  private readonly instances: Partial<IStrIdx<IProvider | IRPCProvider>>;
   private readonly classes: Partial<
-    StrIdx<IProviderContructor | IRPCProviderContructor>
+    IStrIdx<IProviderContructor | IRPCProviderContructor>
   >;
 
   constructor(
-    providers: StrIdx<IProviderContructor | IRPCProviderContructor> = {},
+    providers: IStrIdx<IProviderContructor | IRPCProviderContructor> = {},
   ) {
     this.classes = providers;
     this.instances = {};

@@ -1,6 +1,6 @@
 import { INITIAL_ROOT_STATE } from '@src/ducks';
 import { ProviderCallWithPid } from '@src/ducks/providerBalancer/providerCalls';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import * as actions from './actions';
 import { providerCallsReducer } from './reducer';
 import * as selectors from './selectors';
@@ -21,7 +21,7 @@ export const mockCall: ProviderCallWithPid = {
   rpcMethod: 'ping',
 };
 
-const states: StrIdx<any> = {};
+const states: IStrIdx<any> = {};
 
 describe('Provider calls tests ', () => {
   describe('Selectors on initial state tests ', () => {

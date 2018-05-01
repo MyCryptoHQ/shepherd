@@ -1,11 +1,11 @@
-import { AllProviderMethods, StrIdx } from '@src/types';
+import { AllProviderMethods, IStrIdx } from '@src/types';
 
 export type ProviderCallState =
   | ISuccessfulProviderCall
   | IPendingProviderCall
   | IFailedProviderCall;
 
-export type ProviderCallsState = StrIdx<ProviderCallState>;
+export type ProviderCallsState = IStrIdx<ProviderCallState>;
 
 export enum PROVIDER_CALL {
   REQUESTED = 'PROVIDER_CALL_REQUESTED',

@@ -1,7 +1,7 @@
 import { getProviderCallById } from '@src/ducks/providerBalancer/providerCalls';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
 import { trackTime } from '@src/saga/sagaUtils';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import { createMockProxyHandler, MockProvider } from '@test/mockNode';
 import { getFinishedCallsByProviderId } from '@test/selectors';
 import {
@@ -20,7 +20,7 @@ describe('fallover tests', () => {
       network: 'ETG',
     });
 
-    const providerConfigs: StrIdx<IProviderConfig> = {
+    const providerConfigs: IStrIdx<IProviderConfig> = {
       etg1: makeMockProviderConfig({
         concurrency: 6,
         network: 'ETG',
@@ -91,7 +91,7 @@ describe('fallover tests', () => {
       network: 'ETG',
     });
 
-    const providerConfigs: StrIdx<IProviderConfig> = {
+    const providerConfigs: IStrIdx<IProviderConfig> = {
       etg1: makeMockProviderConfig({
         concurrency: 6,
         network: 'ETG',

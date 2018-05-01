@@ -1,4 +1,4 @@
-import { IBaseRpcClient, ProviderReq, StrIdx } from '@src/types';
+import { IBaseRpcClient, IStrIdx, ProviderReq } from '@src/types';
 import { randomBytes } from 'crypto';
 import {
   AnyJsonRpc,
@@ -8,8 +8,8 @@ import {
 
 export class RPCClient {
   public endpoint: string;
-  public headers: StrIdx<string>;
-  constructor(endpoint: string, headers: StrIdx<string> = {}) {
+  public headers: IStrIdx<string>;
+  constructor(endpoint: string, headers: IStrIdx<string> = {}) {
     this.endpoint = endpoint;
     this.headers = headers;
   }
@@ -52,7 +52,7 @@ export class RPCClient {
     }).then(r => r.json());
   };
 
-  private readonly createHeaders = (headerObject: StrIdx<string>) => {
+  private readonly createHeaders = (headerObject: IStrIdx<string>) => {
     const headers = new Headers();
     Object.keys(headerObject).forEach(name => {
       headers.append(name, headerObject[name]);

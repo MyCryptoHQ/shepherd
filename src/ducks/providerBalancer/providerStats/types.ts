@@ -1,5 +1,5 @@
 import { IWorker } from '@src/ducks/providerBalancer/workers';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 
 export interface IProviderStats {
   currWorkersById: string[];
@@ -38,7 +38,7 @@ export interface IProviderStatsAdded {
   payload: {
     providerId: string;
     stats: IProviderStats;
-    workers: StrIdx<IWorker>;
+    workers: IStrIdx<IWorker>;
   };
 }
 

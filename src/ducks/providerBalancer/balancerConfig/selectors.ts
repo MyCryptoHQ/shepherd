@@ -1,26 +1,27 @@
 import { IProviderCallTimeout } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
-import { RootState } from '@src/types';
+import { IRootState } from '@src/types';
 
-export const getBalancerConfig = (state: RootState) =>
+export const getBalancerConfig = (state: IRootState) =>
   getProviderBalancer(state).balancerConfig;
 
-export const getManualMode = (state: RootState) =>
+export const getManualMode = (state: IRootState) =>
   getBalancerConfig(state).manual;
 
-export const isOffline = (state: RootState) => getBalancerConfig(state).offline;
+export const isOffline = (state: IRootState) =>
+  getBalancerConfig(state).offline;
 
-export const getNetwork = (state: RootState) =>
+export const getNetwork = (state: IRootState) =>
   getBalancerConfig(state).network;
 
-export const getProviderCallRetryThreshold = (state: RootState) =>
+export const getProviderCallRetryThreshold = (state: IRootState) =>
   getBalancerConfig(state).providerCallRetryThreshold;
 
-export const isSwitchingNetworks = (state: RootState) =>
+export const isSwitchingNetworks = (state: IRootState) =>
   getBalancerConfig(state).networkSwitchPending;
 
 export const callMeetsBalancerRetryThreshold = (
-  state: RootState,
+  state: IRootState,
   { payload: { providerCall } }: IProviderCallTimeout,
 ) => {
   const providerCallRetryThreshold = getProviderCallRetryThreshold(state);

@@ -1,6 +1,6 @@
 import { rootReducer } from '@src/ducks';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import {
   makeMockCall,
   makeMockProviderConfig,
@@ -14,7 +14,10 @@ import * as workerActions from './providerBalancer/workers/actions';
 import * as providerConfigsActions from './providerConfigs/actions';
 import * as selectors from './selectors';
 
-const addAllProviderConfigs = (stor: any, configs: StrIdx<IProviderConfig>) => {
+const addAllProviderConfigs = (
+  stor: any,
+  configs: IStrIdx<IProviderConfig>,
+) => {
   for (const [id, config] of Object.entries(configs)) {
     const action = providerConfigsActions.addProviderConfig({ id, config });
 
@@ -41,7 +44,7 @@ const addAllProviderStats = (stor: any, providerIds: string[]) => {
 let storage: any;
 describe('Ducks tests', () => {
   describe('getAllProvidersOfCurrentNetwork selector', () => {
-    const providers: StrIdx<IProviderConfig> = {
+    const providers: IStrIdx<IProviderConfig> = {
       eth1: makeMockProviderConfig(),
       eth2: makeMockProviderConfig(),
       etc1: makeMockProviderConfig({ network: 'ETC' }),
@@ -67,7 +70,7 @@ describe('Ducks tests', () => {
   describe('getOnlineProviderIdsOfCurrentNetwork selector', () => {
     const selector = selectors.getOnlineProviderIdsOfCurrentNetwork;
 
-    const configs: StrIdx<IProviderConfig> = {
+    const configs: IStrIdx<IProviderConfig> = {
       eth1: makeMockProviderConfig({
         supportedMethods: { estimateGas: false },
       }),
@@ -332,7 +335,7 @@ describe('Ducks tests', () => {
 
     describe('testing priority filters of minPriorityProviderList and providerWhiteList ', () => {
       // setup a map of provider configs
-      const configs: StrIdx<IProviderConfig> = {
+      const configs: IStrIdx<IProviderConfig> = {
         eth1: makeMockProviderConfig({
           supportedMethods: { estimateGas: false },
         }),
@@ -412,7 +415,7 @@ describe('Ducks tests', () => {
 
     describe('testing prioritiation based on number of current requests given otherwise equal providers', () => {
       // setup a map of provider configs
-      const configs: StrIdx<IProviderConfig> = {
+      const configs: IStrIdx<IProviderConfig> = {
         eth1: makeMockProviderConfig(),
         eth2: makeMockProviderConfig(),
         eth3: makeMockProviderConfig(),
@@ -491,7 +494,7 @@ describe('Ducks tests', () => {
     const selector = selectors.providerExceedsRequestFailureThreshold;
 
     // setup a map of provider configs
-    const configs: StrIdx<IProviderConfig> = {
+    const configs: IStrIdx<IProviderConfig> = {
       eth1: makeMockProviderConfig({
         supportedMethods: { estimateGas: false },
       }),

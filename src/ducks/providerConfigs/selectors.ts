@@ -1,18 +1,18 @@
 import { getRootState } from '@src/ducks/rootState';
 import { providerStorage } from '@src/providers/providerStorage';
-import { AllProviderMethods, RootState } from '@src/types';
+import { AllProviderMethods, IRootState } from '@src/types';
 import { IProviderConfigState } from './types';
 
-export const getProviderConfigs = (state: RootState) =>
+export const getProviderConfigs = (state: IRootState) =>
   getRootState(state).providerConfigs;
 
 export const getProviderConfigById = (
-  state: RootState,
+  state: IRootState,
   id: string,
 ): IProviderConfigState[string] | undefined => getProviderConfigs(state)[id];
 
 export const providerSupportsMethod = (
-  state: RootState,
+  state: IRootState,
   id: string,
   method: AllProviderMethods,
 ): boolean => {
@@ -20,7 +20,7 @@ export const providerSupportsMethod = (
   return !!(config && config.supportedMethods[method]);
 };
 
-export const getProviderTimeoutThreshold = (state: RootState, id: string) => {
+export const getProviderTimeoutThreshold = (state: IRootState, id: string) => {
   const config = getProviderConfigById(state, id);
   if (!config) {
     throw Error(`Could not find config for provider ${id}`);
@@ -29,7 +29,7 @@ export const getProviderTimeoutThreshold = (state: RootState, id: string) => {
 };
 
 export const getProviderInstAndTimeoutThreshold = (
-  state: RootState,
+  state: IRootState,
   id: string,
 ) => {
   const provider = providerStorage.getInstance(id);

@@ -19,10 +19,10 @@ import {
 } from '@src/ducks/providerConfigs';
 import { filterAgainstArr } from '@src/ducks/utils';
 import { allRPCMethods } from '@src/providers/constants';
-import { AllProviderMethods, RootState, StrIdx } from '@src/types';
+import { AllProviderMethods, IRootState, IStrIdx } from '@src/types';
 
 export const providerExceedsRequestFailureThreshold = (
-  state: RootState,
+  state: IRootState,
   { payload }: IProviderCallTimeout,
 ) => {
   const {
@@ -42,10 +42,10 @@ export const providerExceedsRequestFailureThreshold = (
 };
 
 export const getAllProvidersOfNetwork = (
-  state: RootState,
+  state: IRootState,
   networkId: string,
 ) => {
-  const allProvidersOfNetworkId: StrIdx<IProviderConfig> = {};
+  const allProvidersOfNetworkId: IStrIdx<IProviderConfig> = {};
 
   const providerConfigs = getProviderConfigs(state);
 
@@ -60,7 +60,7 @@ export const getAllProvidersOfNetwork = (
   );
 };
 
-export const getOnlineProviderIdsOfCurrentNetwork = (state: RootState) => {
+export const getOnlineProviderIdsOfCurrentNetwork = (state: IRootState) => {
   const network = getNetwork(state);
   const onlineProviders = getOnlineProviders(state);
   const providersOfCurrentNetwork = Object.keys(onlineProviders).filter(id => {
@@ -70,7 +70,7 @@ export const getOnlineProviderIdsOfCurrentNetwork = (state: RootState) => {
   return providersOfCurrentNetwork;
 };
 
-export const getAllMethodsAvailable = (state: RootState): boolean => {
+export const getAllMethodsAvailable = (state: IRootState): boolean => {
   const availableProviderIds = getOnlineProviderIdsOfCurrentNetwork(state);
   const manualProvider = getManualMode(state);
 
@@ -123,7 +123,7 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
 // available providers -> providers that support the method -> providers that are whitelisted -> prioritized providers -> workers not busy
 // TODO: include response time in prioritization
 export const getAvailableProviderId = (
-  state: RootState,
+  state: IRootState,
   payload: IProviderCall,
 ) => {
   const onlineProviders = getOnlineProviderIdsOfCurrentNetwork(state);

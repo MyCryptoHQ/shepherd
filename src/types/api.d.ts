@@ -4,11 +4,11 @@ import {
   balancerNetworkSwitchRequested,
 } from '@src/ducks/providerBalancer/balancerConfig';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { IProvider, IProviderContructor, StrIdx } from '@src/types';
+import { IProvider, IProviderContructor, IStrIdx } from '@src/types';
 import { Store } from 'redux';
 
 export interface IInitConfig extends BalancerConfigInitConfig {
-  customProviders?: StrIdx<IProviderContructor>;
+  customProviders?: IStrIdx<IProviderContructor>;
   storeRoot?: string;
   store?: Store<any>;
 }

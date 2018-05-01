@@ -6,7 +6,7 @@ import {
 import { providerConfigs } from '@src/ducks/providerConfigs';
 import * as providerConfigsSelectors from '@src/ducks/providerConfigs/selectors';
 import { storeManager } from '@src/ducks/store';
-import { RootState } from '@src/types';
+import { IRootState } from '@src/types';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'remote-redux-devtools';
@@ -20,7 +20,7 @@ const composeEnhancers = composeWithDevTools({
   maxAge: 300,
 });
 
-const rootReducer = combineReducers<RootState>({
+const rootReducer = combineReducers<IRootState>({
   providerBalancer,
   providerConfigs,
 });
@@ -30,7 +30,7 @@ const middleware =
     ? composeEnhancers(applyMiddleware(sagaMiddleware, filterMiddlware))
     : applyMiddleware(sagaMiddleware, filterMiddlware);
 
-const store = createStore<RootState>(rootReducer, middleware);
+const store = createStore<IRootState>(rootReducer, middleware);
 storeManager.setStore(store);
 
 const INITIAL_ROOT_STATE = rootReducer(undefined as any, {} as any);

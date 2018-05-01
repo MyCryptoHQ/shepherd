@@ -6,7 +6,7 @@ import {
 import { PROVIDER_CALL } from '@src/ducks/providerBalancer/providerCalls';
 import { subscribeToAction } from '@src/ducks/subscribe';
 import { AllActions } from '@src/ducks/types';
-import { Reject, Resolve, RootState } from '@src/types';
+import { IRootState, Reject, Resolve } from '@src/types';
 import { Dispatch } from 'redux';
 
 export const triggerOnMatchingCallId = (
@@ -26,7 +26,7 @@ export const triggerOnMatchingCallId = (
 };
 
 export function waitForNetworkSwitch(
-  dispatch: Dispatch<RootState>,
+  dispatch: Dispatch<IRootState>,
   id: number,
 ) {
   return new Promise(res =>
@@ -45,7 +45,7 @@ export function waitForNetworkSwitch(
 }
 
 export function waitForManualMode(
-  dispatch: Dispatch<RootState>,
+  dispatch: Dispatch<IRootState>,
 ): Promise<string> {
   function triggerOnSuccessOrFail(action: AllActions) {
     return (

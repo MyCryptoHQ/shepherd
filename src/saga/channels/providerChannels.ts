@@ -4,12 +4,12 @@ import {
 } from '@src/ducks/providerBalancer/providerCalls';
 import { BaseChannel } from '@src/saga/channels/base';
 import { providerChannelFactory } from '@src/saga/channels/providerChannel';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import { SagaIterator } from 'redux-saga';
 import { apply, call, put } from 'redux-saga/effects';
 
 export class ProviderChannels {
-  private readonly providerChannels: StrIdx<BaseChannel>;
+  private readonly providerChannels: IStrIdx<BaseChannel>;
 
   constructor() {
     this.providerChannels = {};

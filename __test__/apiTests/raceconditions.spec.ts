@@ -2,7 +2,7 @@ import { getNetwork } from '@src/ducks/providerBalancer/balancerConfig/selectors
 import { getProviderCallById } from '@src/ducks/providerBalancer/providerCalls';
 import { getProviderStatsById } from '@src/ducks/providerBalancer/providerStats';
 import { IProviderConfig } from '@src/ducks/providerConfigs';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import { createMockProxyHandler, MockProvider } from '@test/mockNode';
 import {
   asyncTimeout,
@@ -19,7 +19,7 @@ describe('race condition tests', () => {
       network: 'ETH',
     });
 
-    const providerConfigs: StrIdx<IProviderConfig> = {
+    const providerConfigs: IStrIdx<IProviderConfig> = {
       eth1: makeMockProviderConfig({
         concurrency: 2,
         network: 'ETH',
@@ -106,7 +106,10 @@ describe('race condition tests', () => {
         => provider is online before network switch is successful \
         =>  watchOfflineProvider puts an action to a non existent provider id',
     async () => {
-      const { shepherd, redux: { store } } = getAPI();
+      const {
+        shepherd,
+        redux: { store },
+      } = getAPI();
       const failingProvider1 = makeMockProviderConfig({
         concurrency: 2,
         network: 'ETH',
@@ -172,7 +175,7 @@ describe('race condition tests', () => {
         network: 'ETH',
       });
 
-      const providerConfigs: StrIdx<IProviderConfig> = {
+      const providerConfigs: IStrIdx<IProviderConfig> = {
         eth: makeMockProviderConfig({
           concurrency: 2,
           network: 'ETH',
@@ -227,13 +230,16 @@ describe('race condition tests', () => {
   it(
     'should buffer network requests and process them one at a time',
     async () => {
-      const { shepherd, redux: { store } } = getAPI();
+      const {
+        shepherd,
+        redux: { store },
+      } = getAPI();
       await shepherd.init({
         customProviders: { MockProvider: MockProviderImplem },
         network: 'ETH',
       });
 
-      const providerConfigs: StrIdx<IProviderConfig> = {
+      const providerConfigs: IStrIdx<IProviderConfig> = {
         eth: makeMockProviderConfig({
           concurrency: 2,
           network: 'ETH',

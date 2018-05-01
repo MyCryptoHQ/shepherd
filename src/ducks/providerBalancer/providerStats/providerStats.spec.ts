@@ -1,7 +1,7 @@
 import { INITIAL_ROOT_STATE } from '@src/ducks';
 import { mockCall } from '@src/ducks/providerBalancer/providerCalls/providerCalls.spec';
 import { IProviderStats } from '@src/ducks/providerBalancer/providerStats';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import { Task } from 'redux-saga';
 import * as balancerActions from '../balancerConfig/actions';
 import * as providerCallActions from '../providerCalls/actions';
@@ -16,7 +16,7 @@ const stateAssigner = (reducerResult: any) => {
   return stateCopy;
 };
 
-const states: StrIdx<any> = {};
+const states: IStrIdx<any> = {};
 
 export const mockProviderStats: IProviderStats = {
   avgResponseTime: 0,

@@ -1,7 +1,7 @@
 import { INITIAL_ROOT_STATE } from '@src/ducks';
 import { mockCall } from '@src/ducks/providerBalancer/providerCalls/providerCalls.spec';
 import { mockProviderStats } from '@src/ducks/providerBalancer/providerStats/providerStats.spec';
-import { StrIdx } from '@src/types';
+import { IStrIdx } from '@src/types';
 import { Task } from 'redux-saga';
 import * as balancerActions from '../balancerConfig/actions';
 import * as providerCallActions from '../providerCalls/actions';
@@ -10,7 +10,7 @@ import * as workerActions from './actions';
 import { workerReducer } from './reducer';
 import * as selectors from './selectors';
 
-const states: StrIdx<any> = {};
+const states: IStrIdx<any> = {};
 
 const stateAssigner = (reducerResult: any) => {
   const stateCopy = { ...INITIAL_ROOT_STATE };

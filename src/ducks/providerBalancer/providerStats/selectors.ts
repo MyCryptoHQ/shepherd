@@ -3,13 +3,13 @@ import {
   IProviderStatsState,
 } from '@src/ducks/providerBalancer/providerStats';
 import { getProviderBalancer } from '@src/ducks/providerBalancer/selectors';
-import { RootState } from '@src/types';
+import { IRootState } from '@src/types';
 
-export const getProviderStats = (state: RootState) =>
+export const getProviderStats = (state: IRootState) =>
   getProviderBalancer(state).providerStats;
 
 export const getProviderStatsById = (
-  state: RootState,
+  state: IRootState,
   id: string,
 ): Readonly<IProviderStats> | null => getProviderStats(state)[id];
 
@@ -23,7 +23,7 @@ export type OnlineProviders = {
  * @description an available provider === it being online
  * @param state
  */
-export const getOnlineProviders = (state: RootState): OnlineProviders => {
+export const getOnlineProviders = (state: IRootState): OnlineProviders => {
   const providers = getProviderStats(state);
   const initialState: OnlineProviders = {};
 
