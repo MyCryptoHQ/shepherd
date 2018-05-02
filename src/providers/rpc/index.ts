@@ -14,8 +14,8 @@ import { RPCClient } from './client';
 import { RPCRequests } from './requests';
 
 export class RPCProvider implements IBaseProvider {
-  protected client: RPCClient;
-  protected requests: RPCRequests;
+  protected client: any;
+  protected requests: any;
 
   constructor(endpoint: string) {
     this.client = new RPCClient(endpoint);

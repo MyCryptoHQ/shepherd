@@ -1,10 +1,22 @@
-import { IEtherscanModule, IEtherscanRequests } from '@src/types';
+import {
+  IEtherscanModule,
+  IEtherscanRequests,
+} from '@src/providers/etherscan/types';
 import {
   ENUM_DEFAULT_BLOCK,
   RpcMethodNames as RPC,
 } from 'eth-rpc-types/primitives';
 
 export class EtherscanRequests implements IEtherscanRequests {
+  public getNetVersion: IEtherscanRequests['getNetVersion'] = () => {
+    throw Error('Not implemented');
+    return {
+      module: IEtherscanModule.PROXY,
+      action: RPC.NET_VERSION,
+      payload: [],
+    };
+  };
+
   public sendRawTx: IEtherscanRequests['sendRawTx'] = signedTx => ({
     module: IEtherscanModule.PROXY,
     action: RPC.ETH_SEND_RAW_TRANSACTION,

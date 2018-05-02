@@ -1,4 +1,5 @@
-import { IProvider, IWeb3Provider } from '@src/types';
+import { IWeb3Provider } from '@src/providers/web3/types';
+import { IProvider } from '@src/types';
 import {
   isValidGetAccounts,
   isValidSendTransaction,
