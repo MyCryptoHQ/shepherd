@@ -1,6 +1,6 @@
+import { BaseClient } from '@src/providers/base';
 import { IWeb3Provider } from '@src/providers/web3/types';
 import { AnyJsonRpc, ExtractResponse } from 'eth-rpc-types/primitives';
-import { BaseClient } from '../rpc/client';
 import { Web3Requests } from './requests';
 
 export class Web3Client extends BaseClient {

@@ -4,9 +4,9 @@ import { InfuraProvider } from '@src/providers/infura';
 import { RPCProvider } from '@src/providers/rpc';
 import { Web3Provider } from '@src/providers/web3';
 import {
+  IBaseProvider,
   IProvider,
   IProviderContructor,
-  IRPCProvider,
   IRPCProviderContructor,
   IStrIdx,
 } from '@src/types';
@@ -17,12 +17,12 @@ interface IProviderStorage {
     Provider: IProviderContructor | IRPCProviderContructor,
   ): void;
   getClass(providerName: string): IProviderContructor | IRPCProviderContructor;
-  setInstance(providerName: string, provider: IProvider | IRPCProvider): void;
-  getInstance(providerName: string): IProvider | IRPCProvider;
+  setInstance(providerName: string, provider: IProvider | IBaseProvider): void;
+  getInstance(providerName: string): IProvider | IBaseProvider;
 }
 
 class ProviderStorage implements IProviderStorage {
-  private readonly instances: Partial<IStrIdx<IProvider | IRPCProvider>>;
+  private readonly instances: Partial<IStrIdx<IProvider | IBaseProvider>>;
   private readonly classes: Partial<
     IStrIdx<IProviderContructor | IRPCProviderContructor>
   >;
@@ -54,7 +54,10 @@ class ProviderStorage implements IProviderStorage {
     return Provider;
   }
 
-  public setInstance(providerName: string, provider: IProvider | IRPCProvider) {
+  public setInstance(
+    providerName: string,
+    provider: IProvider | IBaseProvider,
+  ) {
     this.instances[providerName] = provider;
   }
 

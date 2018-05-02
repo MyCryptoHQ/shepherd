@@ -57,7 +57,7 @@ describe('fallover tests', () => {
     const promiseArr: any = [];
     for (let i = 0; i < 5; i++) {
       await asyncTimeout(70);
-      promiseArr.push(node.getBalance('0x'));
+      promiseArr.push(node.getBalance('0x' as any));
     }
 
     await Promise.all(promiseArr);
@@ -108,7 +108,7 @@ describe('fallover tests', () => {
       createMockProxyHandler({ baseDelay: 200, failureRate: 100 }),
     );
 
-    node.getBalance('0x').catch(e => {
+    node.getBalance('0x' as any).catch(e => {
       expect(e.message).toEqual('mock node error');
       expect(
         getProviderCallById(redux.store.getState(), 0).numOfRetries,

@@ -163,7 +163,10 @@ describe('manual mode tests', () => {
   it(
     'should successfully switch to manual mode on the same network',
     async () => {
-      const { shepherd, redux: { store } } = getAPI();
+      const {
+        shepherd,
+        redux: { store },
+      } = getAPI();
       // make all 3 providers form the full subset so calls only get resolved once all 3 are online
       const eth1 = makeMockProviderConfig({
         concurrency: 2,
@@ -234,12 +237,12 @@ describe('manual mode tests', () => {
       );
 
       await Promise.all([
-        node.getBalance('0x0'),
-        node.getBalance('0x1'),
-        node.getBalance('0x2'),
-        node.getBalance('0x3'),
-        node.getBalance('0x4'),
-        node.getBalance('0x5'),
+        node.getBalance('0x0' as any),
+        node.getBalance('0x1' as any),
+        node.getBalance('0x2' as any),
+        node.getBalance('0x3' as any),
+        node.getBalance('0x4' as any),
+        node.getBalance('0x5' as any),
       ]);
 
       let state = store.getState();
@@ -271,12 +274,12 @@ describe('manual mode tests', () => {
       expect(pid).toEqual('eth4');
 
       await Promise.all([
-        node.getBalance('0x6'),
-        node.getBalance('0x7'),
-        node.getBalance('0x8'),
-        node.getBalance('0x9'),
-        node.getBalance('0xa'),
-        node.getBalance('0xb'),
+        node.getBalance('0x6' as any),
+        node.getBalance('0x7' as any),
+        node.getBalance('0x8' as any),
+        node.getBalance('0x9' as any),
+        node.getBalance('0xa' as any),
+        node.getBalance('0xb' as any),
       ]);
 
       state = store.getState();
@@ -289,12 +292,12 @@ describe('manual mode tests', () => {
 
       shepherd.auto();
       await Promise.all([
-        node.getBalance('0xc'),
-        node.getBalance('0xd'),
-        node.getBalance('0xe'),
-        node.getBalance('0xf'),
-        node.getBalance('0x10'),
-        node.getBalance('0x11'),
+        node.getBalance('0xc' as any),
+        node.getBalance('0xd' as any),
+        node.getBalance('0xe' as any),
+        node.getBalance('0xf' as any),
+        node.getBalance('0x10' as any),
+        node.getBalance('0x11' as any),
       ]);
 
       state = store.getState();
@@ -310,7 +313,10 @@ describe('manual mode tests', () => {
   );
 
   it('should successfully switch networks if the manual provider is on a different network', async () => {
-    const { shepherd, redux: { store } } = getAPI();
+    const {
+      shepherd,
+      redux: { store },
+    } = getAPI();
 
     const eth = makeMockProviderConfig({
       concurrency: 2,
@@ -358,20 +364,20 @@ describe('manual mode tests', () => {
         getCurrentBlockDelay: 1,
       }),
     );
-    await node.getBalance('0x');
+    await node.getBalance('0x' as any);
     let state = store.getState();
     expect(getProviderCallById(state, 0).providerId).toEqual('eth');
 
     await shepherd.manual('etc', false);
 
-    await node.getBalance('0x');
+    await node.getBalance('0x' as any);
     state = store.getState();
     expect(getNetwork(state)).toEqual('ETC');
     expect(getProviderCallById(state, 1).providerId).toEqual('etc');
 
     await shepherd.manual('eth', false);
 
-    await node.getBalance('0x');
+    await node.getBalance('0x' as any);
     state = store.getState();
     expect(getNetwork(state)).toEqual('ETH');
     expect(getProviderCallById(state, 2).providerId).toEqual('eth');

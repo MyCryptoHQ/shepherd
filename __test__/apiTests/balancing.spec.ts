@@ -90,7 +90,7 @@ describe('provider balancing tests', () => {
       const promiseArr: any = [];
       for (let i = 0; i < 200; i++) {
         await asyncTimeout(70);
-        promiseArr.push(node.getBalance('0x'));
+        promiseArr.push(node.getBalance('0x' as any));
       }
 
       await Promise.all(promiseArr);

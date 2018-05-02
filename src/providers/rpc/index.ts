@@ -46,10 +46,7 @@ export class RPCProvider implements IBaseProvider {
       .then(r => r.map(({ result }) => result));
 
   public getBalance: IBaseProvider['getBalance'] = address =>
-    this.client
-      .call(this.requests.getBalance(address))
-      .then(isValidGetBalance)
-      .then(({ result }) => Wei(result));
+    this.client.call(this.requests.getBalance(address)).then(isValidGetBalance);
 
   public estimateGas: IBaseProvider['estimateGas'] = transaction =>
     this.client

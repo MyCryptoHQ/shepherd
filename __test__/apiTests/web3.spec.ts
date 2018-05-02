@@ -96,7 +96,7 @@ describe('web3 tests', () => {
       expect(signMsgCall.numOfRetries).toEqual(0);
 
       try {
-        await node.getBalance('0x');
+        await node.getBalance('0x' as any);
       } catch {
         const getBalanceCall = getProviderCallById(redux.store.getState(), 2);
 

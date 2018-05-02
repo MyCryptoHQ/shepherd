@@ -1,4 +1,4 @@
-import { IWeb3Requests } from '@src/types';
+import { IWeb3Requests } from '@src/providers/web3/types';
 import { RpcMethodNames } from 'eth-rpc-types/primitives';
 import { RPCRequests } from '../rpc/requests';
 

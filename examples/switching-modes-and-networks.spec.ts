@@ -1,5 +1,6 @@
 import { shepherd } from '@src/';
 import { IProviderConfig } from '@src/ducks/providerConfigs/types';
+import { DATA_20B } from 'eth-rpc-types';
 
 const myProviderConfig: IProviderConfig = {
   // size of the worker pool / maximum concurrent requests
@@ -61,7 +62,7 @@ async function main() {
   // make an rpc call
   console.log(
     await provider
-      .getBalance('0x829BD824B016326A401d083B33D092293333A830')
+      .getBalance('0x829BD824B016326A401d083B33D092293333A830' as any)
       .then(
         result =>
           `Balance of 0x829BD824B016326A401d083B33D092293333A830: ${result}`,

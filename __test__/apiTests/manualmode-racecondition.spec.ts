@@ -84,31 +84,31 @@ it(
 
     /* tslint:disable */
     Promise.all([
-      node.getBalance('0x0'),
-      node.getBalance('0x1'),
-      node.getBalance('0x2'),
-      node.getBalance('0x3'),
-      node.getBalance('0x4'),
-      node.getBalance('0x5'),
+      node.getBalance('0x0' as any),
+      node.getBalance('0x1' as any),
+      node.getBalance('0x2' as any),
+      node.getBalance('0x3' as any),
+      node.getBalance('0x4' as any),
+      node.getBalance('0x5' as any),
     ]).catch(() => {});
 
     Promise.all([
-      node.getBalance('0x0'),
-      node.getBalance('0x1'),
-      node.getBalance('0x2'),
-      node.getBalance('0x3'),
-      node.getBalance('0x4'),
-      node.getBalance('0x5'),
+      node.getBalance('0x0' as any),
+      node.getBalance('0x1' as any),
+      node.getBalance('0x2' as any),
+      node.getBalance('0x3' as any),
+      node.getBalance('0x4' as any),
+      node.getBalance('0x5' as any),
     ]).catch(() => {});
 
     try {
       await Promise.all([
-        node.getBalance('0x0'),
-        node.getBalance('0x1'),
-        node.getBalance('0x2'),
-        node.getBalance('0x3'),
-        node.getBalance('0x4'),
-        node.getBalance('0x5'),
+        node.getBalance('0x0' as any),
+        node.getBalance('0x1' as any),
+        node.getBalance('0x2' as any),
+        node.getBalance('0x3' as any),
+        node.getBalance('0x4' as any),
+        node.getBalance('0x5' as any),
       ]);
     } catch {}
     /* tslint:enable */

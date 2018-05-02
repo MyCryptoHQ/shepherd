@@ -29,7 +29,7 @@ describe('initialization tests', () => {
       ...providerArgs,
     );
 
-    const res = node.getBalance('0x');
+    const res = node.getBalance('0x' as any);
     expect(res).toBeTruthy();
   });
 
@@ -57,7 +57,7 @@ describe('initialization tests', () => {
       ...providerArgs,
     );
 
-    const res = node.getBalance('0x');
+    const res = node.getBalance('0x' as any);
     expect(res).toBeTruthy();
   });
 
@@ -68,7 +68,7 @@ describe('initialization tests', () => {
       network: 'ETC',
     });
 
-    node.getBalance('0x');
+    node.getBalance('0x' as any);
 
     const providerArgs = [
       new MockProvider(),
@@ -87,7 +87,7 @@ describe('initialization tests', () => {
       ...providerArgs,
     );
 
-    const res = await node.getBalance('0x');
+    const res = await node.getBalance('0x' as any);
     expect(res).toBeTruthy();
     done();
   });

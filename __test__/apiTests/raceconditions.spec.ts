@@ -44,7 +44,7 @@ describe('race condition tests', () => {
       }),
     };
 
-    node.getBalance('0x').catch(e => {
+    node.getBalance('0x' as any).catch(e => {
       expect(e.message).toEqual('Call Flushed');
     });
 
@@ -221,7 +221,7 @@ describe('race condition tests', () => {
       shepherd.auto();
 
       /* tslint:disable */
-      await node.getBalance('0x').catch(() => {});
+      await node.getBalance('0x' as any).catch(() => {});
       /* tslint:enable */
     },
     7000,

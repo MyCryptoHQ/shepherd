@@ -49,7 +49,7 @@ export interface IProviderContructor<T = any> {
 }
 
 export interface IRPCProviderContructor<T = any> {
-  new (args?: T): IRPCProvider;
+  new (args?: T): IBaseProvider;
 }
 
 type ER<T extends AnyJsonRpc<boolean>> = ExtractResult<T>;
@@ -87,7 +87,7 @@ export interface IBaseProvider {
   getCurrentBlock(): Promise<ER<EthBlockNumber>>;
 }
 
-export interface IProvider extends IRPCProvider {
+export interface IProvider extends IBaseProvider {
   /*Web3 methods*/
   sendTransaction(
     tx: ExtractParams<EthSendTransaction>[0],

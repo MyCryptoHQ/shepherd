@@ -58,7 +58,7 @@ describe('custom store tests', () => {
       ...providerArgs,
     );
 
-    const res = await node.getBalance('0x');
+    const res = await node.getBalance('0x' as any);
     const selectedCall = selectors.providerBalancerSelectors.providerCallsSelectors.getProviderCallById(
       store.getState(),
       0,

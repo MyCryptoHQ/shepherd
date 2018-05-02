@@ -33,7 +33,7 @@ describe('failed call handling tests', () => {
       createMockProxyHandler({ baseDelay: 0, failureRate: 100 }),
     );
     try {
-      await node.getBalance('0x');
+      await node.getBalance('0x' as any);
     } catch (e) {
       const state = redux.store.getState();
       // check that the number of retries is 3
@@ -62,7 +62,7 @@ describe('failed call handling tests', () => {
       createMockProxyHandler({ baseDelay: 0, failureRate: 0 }),
     );
 
-    await node.getBalance('0x');
+    await node.getBalance('0x' as any);
   });
 
   it('should handle a failed call via too many retries', async done => {
@@ -88,7 +88,7 @@ describe('failed call handling tests', () => {
       createMockProxyHandler({ baseDelay: 0, failureRate: 100 }),
     );
     try {
-      await node.getBalance('0x');
+      await node.getBalance('0x' as any);
     } catch (e) {
       const state = redux.store.getState();
       // check that the number of retries is 3
@@ -104,7 +104,10 @@ describe('failed call handling tests', () => {
   });
 
   it('should handle timeouts on a single provider', async () => {
-    const { shepherd, redux: { store } } = getAPI();
+    const {
+      shepherd,
+      redux: { store },
+    } = getAPI();
     const eth1 = makeMockProviderConfig({
       concurrency: 2,
       network: 'ETH',
@@ -130,7 +133,7 @@ describe('failed call handling tests', () => {
       }),
     );
     try {
-      await node.getBalance('0x');
+      await node.getBalance('0x' as any);
     } catch (e) {
       expect(getProviderCallById(store.getState(), 0).providerId).toEqual(
         'eth1',
