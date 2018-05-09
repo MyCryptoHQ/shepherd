@@ -2,7 +2,10 @@ import {
   BALANCER,
   balancerQueueTimeout,
 } from '@src/ducks/providerBalancer/balancerConfig';
-import { isOffline } from '@src/ducks/providerBalancer/balancerConfig/selectors';
+import {
+  getQueueTimeout,
+  isOffline,
+} from '@src/ducks/providerBalancer/balancerConfig/selectors';
 import {
   IProviderCallRequested,
   providerCallFailed,
@@ -67,13 +70,17 @@ function* handleRequest(): SagaIterator {
       }
     }
 
+    const queueTimeoutMs: ReturnType<typeof getQueueTimeout> = yield select(
+      getQueueTimeout,
+    );
+
     const { queueTimeout } = yield race({
       processed: call(process),
       // we cancel in case of a balancer flush
       // so we dont put an action that's about to be flushed
       // to a worker
       networkSwitch: take(BALANCER.FLUSH),
-      queueTimeout: call(delay, 5000),
+      queueTimeout: call(delay, queueTimeoutMs),
     });
 
     if (queueTimeout) {

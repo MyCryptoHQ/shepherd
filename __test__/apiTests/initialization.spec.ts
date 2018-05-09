@@ -91,4 +91,40 @@ describe('initialization tests', () => {
     expect(res).toBeTruthy();
     done();
   });
+
+  it(
+    'should properly set default queueTimeout',
+    async () => {
+      const { shepherd } = getAPI();
+      const node = await shepherd.init({
+        customProviders: { MockProvider: MockProviderImplem },
+      });
+
+      try {
+        await node.getBalance('0x');
+      } catch (e) {
+        expect((e as Error).message).toEqual('Call Flushed');
+      }
+    },
+    6000,
+  );
+
+  it(
+    'should allow a custom queueTimeout',
+    async () => {
+      const { shepherd } = getAPI();
+
+      const node = await shepherd.init({
+        customProviders: { MockProvider: MockProviderImplem },
+        queueTimeout: 1000,
+      });
+
+      try {
+        await node.getBalance('0x');
+      } catch (e) {
+        expect((e as Error).message).toEqual('Call Flushed');
+      }
+    },
+    1750,
+  );
 });

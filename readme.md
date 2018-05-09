@@ -127,6 +127,7 @@ Enables logging for the library
 | network                 | `string`     | The associated network name of this provider config to be used by the balancer when switching networks                                                                                                                                                                                                                   |
 | storeRoot               | `string`     | The root the shepherd rootReducer when using a custom store. E.g If the top level is { foo, shepherdReducer } then `storeRoot` would be `shepherdReducer`. Note that this setting only supports one level of nesting                                                                                                     |
 | store                   | `Store<any>` | The custom store to use if you want to use your own, make sure to supply the setting above too or else it will not work.                                                                                                                                                                                                 |
+| queueTimeout            | `number`     | Timeout based on when there are pending calls that have not been assigned to a worker. The most common case of this happening is when the balancer is offline and there's calls to the balancer still happening.                                                                                                         |
 
 # FAQ
 

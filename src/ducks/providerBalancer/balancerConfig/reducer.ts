@@ -13,6 +13,7 @@ const INITIAL_STATE: IBalancerConfigState = {
   network: 'ETH',
   providerCallRetryThreshold: 3,
   networkSwitchPending: false,
+  queueTimeout: 5000,
 };
 
 const handleBalancerAuto: Reducer<IBalancerConfigState> = (
