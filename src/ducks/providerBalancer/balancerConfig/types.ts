@@ -19,12 +19,14 @@ export enum BALANCER {
 export type BalancerConfigInitConfig = Partial<{
   providerCallRetryThreshold: number;
   network: string;
+  queueTimeout: number;
 }>;
 
 export interface IBalancerConfigState {
   network: string;
   manual: false | string;
   offline: boolean;
+  queueTimeout: number;
   providerCallRetryThreshold: number;
   networkSwitchPending: boolean;
 }

@@ -5,6 +5,9 @@ import { RootState } from '@src/types';
 export const getBalancerConfig = (state: RootState) =>
   getProviderBalancer(state).balancerConfig;
 
+export const getQueueTimeout = (state: RootState) =>
+  getBalancerConfig(state).queueTimeout;
+
 export const getManualMode = (state: RootState) =>
   getBalancerConfig(state).manual;
 

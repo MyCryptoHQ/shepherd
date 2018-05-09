@@ -26,6 +26,8 @@ class Shepherd implements IShepherd {
    * will initialize to, defaulting to 'ETH'. The {storeRoot} is the shepherd rootReducer when using a custom store.
    * E.g If the top level is { foo, shepherdReducer } then `storeRoot` would be `shepherdReducer`. Note that this setting only supports one level of nesting.
    * The {store} is the custom store to use if you want to use your own, make sure to supply the setting above too or else it will not work.
+   * {queueTimeout} is the timeout based on when there are pending calls that have not been assigned to a worker. The most common case of this happening
+   * is when the balancer is offline and there's calls to the balancer still happening.
    * @returns {Promise<IProvider>} A provider instances to be used for making rpc calls
    * @memberof Shepherd
    */

@@ -28,6 +28,10 @@ describe('Balancer config tests', () => {
       expect(selectors.isSwitchingNetworks(INITIAL_ROOT_STATE)).toEqual(false);
     });
 
+    it('should select the queueTimeout', () => {
+      expect(selectors.getQueueTimeout(INITIAL_ROOT_STATE)).toEqual(5000);
+    });
+
     it('should select the entire inital state', () => {
       expect(selectors.getBalancerConfig(INITIAL_ROOT_STATE)).toEqual({
         manual: false,
@@ -35,6 +39,7 @@ describe('Balancer config tests', () => {
         network: 'ETH',
         providerCallRetryThreshold: 3,
         networkSwitchPending: false,
+        queueTimeout: 5000,
       });
     });
   });
