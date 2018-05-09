@@ -1,6 +1,5 @@
 import { shepherd } from '@src/';
 import { IProviderConfig } from '@src/ducks/providerConfigs/types';
-import { DATA_20B } from 'eth-rpc-types';
 
 const myProviderConfig: IProviderConfig = {
   // size of the worker pool / maximum concurrent requests
