@@ -47,7 +47,7 @@ describe('web3 tests', () => {
     expect(signMsgCall.numOfRetries).toEqual(0);
   });
 
-  it.only(
+  it(
     'should wait for longer than configured timeout for web3 methods (5 minutes) to allow for user interaction (like metamask tx confirmation)',
     async () => {
       const { shepherd, redux } = getAPI();
