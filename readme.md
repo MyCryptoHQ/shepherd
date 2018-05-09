@@ -145,3 +145,13 @@ b) the balancer comes back online (if it takes too long, as set by queueTimeout,
 ## requestFailureThreshold vs providerCallRetryThreshold
 
 providerCallRetryThreshold determines how many times a provider can fail a call before its determined to be offline, while a request failure threshold is how many times a specific call can be retried before it fails. In the context of a single request failing with both providerCallRetryThreshold and request failure threshold being set to the same number, the provider will be set offline one iteration before providerCallRetryThreshold would take effect, because one keeps track of failures, while the other keeps track of retries.
+
+## Enabling redux dev tools for debugging
+
+Run the package with the environment variable `DEV_TOOLS` set.
+
+### Example
+
+```sh
+DEV_TOOLS=true yarn test
+```

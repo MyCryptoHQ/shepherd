@@ -25,10 +25,9 @@ const rootReducer = combineReducers<RootState>({
   providerConfigs,
 });
 
-const middleware =
-  process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
-    ? composeEnhancers(applyMiddleware(sagaMiddleware, filterMiddlware))
-    : applyMiddleware(sagaMiddleware, filterMiddlware);
+const middleware = process.env.DEV_TOOLS
+  ? composeEnhancers(applyMiddleware(sagaMiddleware, filterMiddlware))
+  : applyMiddleware(sagaMiddleware, filterMiddlware);
 
 const store = createStore<RootState>(rootReducer, middleware);
 storeManager.setStore(store);
