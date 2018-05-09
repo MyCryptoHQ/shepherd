@@ -157,11 +157,7 @@ const handleProviderRemoved: NReducer<IProviderStatsRemoved> = (
 
 const handleProviderCallTimeout: NReducer<IProviderCallTimeout> = (
   state: IProviderStatsState,
-  {
-    payload: {
-      providerCall: { providerId },
-    },
-  }: IProviderCallTimeout,
+  { payload: { providerCall: { providerId } } }: IProviderCallTimeout,
 ) => {
   // check for existence of provider
   const providerToChange = state[providerId];
