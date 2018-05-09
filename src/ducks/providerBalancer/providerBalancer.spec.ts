@@ -10,6 +10,7 @@ describe('Provider balancer tests', () => {
         offline: true,
         providerCallRetryThreshold: 3,
         networkSwitchPending: false,
+        queueTimeout: 5000,
       },
       providerCalls: {},
       providerStats: {},
