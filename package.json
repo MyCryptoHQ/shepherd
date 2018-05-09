@@ -61,7 +61,7 @@
     "ts-jest": "^22.4.2",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
-    "typescript": "^2.8.1"
+    "typescript": "^2.8.3"
   },
   "dependencies": {
     "@types/jest": "^22.2.2",
@@ -73,6 +73,7 @@
     "eth-rpc-types": "^3.4.0",
     "isomorphic-fetch": "^2.2.1",
     "jsonschema": "^1.2.4",
+    "nano-result": "^0.0.2",
     "randombytes": "^2.0.6",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.0",
