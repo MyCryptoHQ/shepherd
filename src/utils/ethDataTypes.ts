@@ -8,93 +8,129 @@ import {
   EthType,
   QUANTITY,
 } from 'eth-rpc-types/primitives';
+import { Result } from 'nano-result';
 
 type UnprefixedHexString = string & { tag: '__unprefixed__hex__' };
 type PrefixedHexString = string & { tag: '__prefixed__hex__' } | EthType;
 type HexString = UnprefixedHexString | PrefixedHexString;
 
-export interface IAssertableOk<T> {
-  res: T;
-  err?: undefined;
+/**
+ *
+ * @description Checks a string to see if the string is a hex string
+ * * Does not matter if the hex string contains a hex prefix or not
+ * @export
+ * @param {string} str
+ * @returns {Result<HexString>}
+ */
+export function isHexString(str: string): Result<HexString> {
+  if (str.match(/^(0x)?([0-9A-Fa-f]*)$/)) {
+    return Result.from({ res: str as HexString });
+  }
+  return Result.from({ err: `${str} is not a hex string` });
 }
 
-export interface IAssertableErr {
-  res?: undefined;
-  err: string;
-}
-
-export type AssertableType<T> = IAssertableOk<T> | IAssertableErr;
-
-export class Assertable<T> {
-  public static from<T>(value: AssertableType<T>) {
-    return new Assertable(value);
-  }
-
-  private readonly val: AssertableType<T>;
-
-  constructor(value: AssertableType<T>) {
-    this.val = value;
-  }
-
-  public and<U>(func: (arg: T) => Assertable<U>) {
-    if (this.isOk(this.val)) {
-      const nextAssertable = func(this.val.res);
-      const nextVal = nextAssertable.toVal();
-      if (nextAssertable.isOk(nextVal)) {
-        return Assertable.from({ res: nextVal.res });
-      } else {
-        return Assertable.from<U>({
-          err: nextVal.err,
-        });
-      }
-    } else {
-      return Assertable.from<U>({ err: this.val.err });
-    }
-  }
-
-  public unwrap() {
-    if (this.isOk(this.val)) {
-      return this.val.res;
-    }
-    throw Error(this.val.err);
-  }
-
-  public ok() {
-    return !this.val.err;
-  }
-
-  public valueOf() {
-    return this.ok();
-  }
-
-  public toVal() {
-    return this.val;
-  }
-
-  private isOk(val: AssertableType<T>): val is IAssertableOk<T> {
-    return !val.err;
-  }
-}
-
-export function isHexPrefixed(str: HexString): Assertable<PrefixedHexString> {
+export function isHexPrefixed(str: HexString): Result<PrefixedHexString> {
   if (str.length >= 2 && str.slice(0, 2) === '0x') {
-    return Assertable.from({ res: str as PrefixedHexString });
+    return Result.from({ res: str as PrefixedHexString });
   }
-  return Assertable.from({ err: `${str} does not have a hex prefix` });
+  return Result.from({ err: `${str} does not have a hex prefix` });
+}
+
+export function isPrefixedHexString(str: string): Result<PrefixedHexString> {
+  return isHexString(str).and(isHexPrefixed);
+}
+
+// check for negatives
+export const isHexStrValidBytesLen = (expectedBytesLength: number) => (
+  hexStr: HexString,
+): Result<HexString> => {
+  const prefixLength = isHexPrefixed(hexStr).ok() ? 2 : 0;
+  const bytesLenToHexLen = (num: number) => num * 2;
+
+  if (bytesLenToHexLen(expectedBytesLength) + prefixLength === hexStr.length) {
+    return Result.from({ res: hexStr });
+  }
+  return Result.from({
+    err: `${hexStr} is not a valid length, expected bytes length of ${expectedBytesLength}`,
+  });
+};
+
+export function isEvenlyPadded(str: HexString): Result<HexString> {
+  if (str.length % 2 === 0) {
+    return Result.from({ res: str });
+  }
+
+  return Result.from({ err: `${str} is not evenly padded` });
+}
+
+export function isZeroValueHex(str: HexString): Result<HexString> {
+  // these two cases are correctly converted to 0
+  // when using a buffer
+  // but NaN when using parseInt
+  if (str === '' || str === '0x') {
+    return Result.from({ res: str });
+  }
+  if (parseInt(str, 16) === 0) {
+    return Result.from({ res: str });
+  }
+  return Result.from({ err: `${str} does not have a value of zero` });
+}
+
+export function isValidEthData(str: string): Result<DATA> {
+  return isPrefixedHexString(str).and(isEvenlyPadded) as Result<DATA>;
+}
+
+export function isValidEthQuantity(str: string): Result<QUANTITY> {
+  // encoded as hex and prefixed
+  const prefixedHex = isPrefixedHexString(str);
+  if (!prefixedHex.ok()) {
+    return prefixedHex as Result<QUANTITY>;
+  }
+
+  // the most compact representation (slight exception: zero should be represented as "0x0").
+  if (prefixedHex.and(hasLeadingZeros) && str !== '0x0') {
+    return Result.from({
+      err: `${str} has leading zeros when it should be the most compact representation`,
+    });
+  }
+
+  return Result.from({ res: str as QUANTITY });
+}
+
+export function isValidEthData8B(str: string) {
+  return isValidEthData(str).and(isHexStrValidBytesLen(8)) as Result<DATA_8B>;
+}
+
+export function isValidEthData20B(str: string) {
+  return isValidEthData(str).and(isHexStrValidBytesLen(20)) as Result<DATA_20B>;
+}
+
+export function isValidEthData32B(str: string) {
+  return isValidEthData(str).and(isHexStrValidBytesLen(32)) as Result<DATA_32B>;
+}
+
+export function isValidEthData60B(str: string) {
+  return isValidEthData(str).and(isHexStrValidBytesLen(60)) as Result<DATA_60B>;
+}
+
+export function isValidEthData256B(str: string) {
+  return isValidEthData(str).and(isHexStrValidBytesLen(256)) as Result<
+    DATA_256B
+  >;
 }
 
 export function stripHexPrefix(str: HexString): HexString {
-  if (!isHexPrefixed(str)) {
+  if (!isHexPrefixed(str).ok()) {
     return str;
   }
   return str.slice(2) as HexString;
 }
 
-export function hasLeadingZeros(str: HexString): Assertable<HexString> {
+export function hasLeadingZeros(str: HexString): Result<HexString> {
   if (stripHexPrefix(str)[0] === '0') {
-    return Assertable.from({ res: str });
+    return Result.from({ res: str });
   }
-  return Assertable.from({ err: `${str} does not have leading zeros` });
+  return Result.from({ err: `${str} does not have leading zeros` });
 }
 
 export function stripLeadingZeros(str: HexString): HexString {
@@ -108,15 +144,8 @@ export function stripLeadingZeros(str: HexString): HexString {
   }
 }
 
-export function isHexString(str: string): Assertable<HexString> {
-  if (str.match(/^[0-9A-Fa-f]*$/)) {
-    return Assertable.from({ res: str as HexString });
-  }
-  return Assertable.from({ err: `${str} is not a hex string` });
-}
-
 export function addHexPrefix(str: HexString): PrefixedHexString {
-  if (isHexPrefixed(str)) {
+  if (isHexPrefixed(str).ok()) {
     return str as PrefixedHexString;
   }
   return `0x${str}` as PrefixedHexString;
@@ -126,54 +155,20 @@ export function toHexString(str: string): HexString {
   return isHexString(str).unwrap();
 }
 
-export function isPrefixedHexString(
-  str: string,
-): Assertable<PrefixedHexString> {
-  return isHexString(str).and(isHexPrefixed);
-}
-
 export function toPrefixedHexString(str: string): PrefixedHexString {
   return addHexPrefix(toHexString(str));
 }
 
-export const isValidBytesLength = (expectedBytesLength: number) => (
-  hexStr: HexString,
-): Assertable<HexString> => {
-  const prefixLength = isHexPrefixed(hexStr) ? 2 : 0;
-  const hexLenToBytesLen = (hex: HexString) => hex.length * 2;
-  if (expectedBytesLength === prefixLength + hexLenToBytesLen(hexStr)) {
-    return Assertable.from({ res: hexStr });
-  }
-  return Assertable.from({
-    err: `${hexStr} is not a valid length, expected bytes length of ${expectedBytesLength}`,
-  });
-};
-
-export function isEvenlyPadded(str: HexString) {
-  if (str.length % 2 === 0) {
-    return Assertable.from({ res: str });
-  }
-
-  return Assertable.from({ err: `${str} is not evenly padded` });
-}
-
 export function padHexToEven(str: HexString): HexString {
-  if (isEvenlyPadded(str)) {
+  if (isEvenlyPadded(str).ok()) {
     return str;
   }
 
-  if (isHexPrefixed(str)) {
+  if (isHexPrefixed(str).ok()) {
     return addHexPrefix(`0${stripHexPrefix(str)}` as HexString);
   }
 
   return `0${str}` as HexString;
-}
-
-export function isZeroValueHex(str: HexString): Assertable<HexString> {
-  if (parseInt(str, 16) === 0) {
-    return Assertable.from({ res: str });
-  }
-  return Assertable.from({ err: `${str} does not have a value of zero` });
 }
 
 export function encodeEthData(str: string): DATA {
@@ -184,7 +179,7 @@ export function encodeEthData(str: string): DATA {
   // pad to even bytes
   const dataStr = padHexToEven(hexStr);
 
-  if (isZeroValueHex(dataStr)) {
+  if (isZeroValueHex(dataStr).ok()) {
     return '0x' as DATA;
   }
 
@@ -201,58 +196,9 @@ export function encodeEthQuantity(str: string): QUANTITY {
   const quantStr = stripLeadingZeros(hexStr);
 
   // slight exception: zero should be represented as "0x0")
-  if (isZeroValueHex(quantStr)) {
+  if (isZeroValueHex(quantStr).ok()) {
     return '0x0' as QUANTITY;
   }
 
   return (quantStr as string) as QUANTITY;
-}
-
-export function isValidEthData(str: string): Assertable<DATA> {
-  return isPrefixedHexString(str).and(isEvenlyPadded) as Assertable<DATA>;
-}
-
-export function isValidEthQuantity(str: string): Assertable<QUANTITY> {
-  // encoded as hex and prefixed
-  const prefixedHex = isPrefixedHexString(str);
-  if (!prefixedHex.ok()) {
-    return prefixedHex as Assertable<QUANTITY>;
-  }
-
-  // the most compact representation (slight exception: zero should be represented as "0x0").
-  if (prefixedHex.and(hasLeadingZeros) && str !== '0x0') {
-    return Assertable.from({
-      err: `${str} has leading zeros when it should be the most compact representation`,
-    });
-  }
-
-  return Assertable.from({ res: str as QUANTITY });
-}
-
-export function isValidEthData8B(str: string) {
-  return isValidEthData(str).and(isValidBytesLength(8)) as Assertable<DATA_8B>;
-}
-
-export function isValidEthData20B(str: string) {
-  return isValidEthData(str).and(isValidBytesLength(20)) as Assertable<
-    DATA_20B
-  >;
-}
-
-export function isValidEthData32B(str: string) {
-  return isValidEthData(str).and(isValidBytesLength(32)) as Assertable<
-    DATA_32B
-  >;
-}
-
-export function isValidEthData60B(str: string) {
-  return isValidEthData(str).and(isValidBytesLength(60)) as Assertable<
-    DATA_60B
-  >;
-}
-
-export function isValidEthData256B(str: string) {
-  return isValidEthData(str).and(isValidBytesLength(256)) as Assertable<
-    DATA_256B
-  >;
 }

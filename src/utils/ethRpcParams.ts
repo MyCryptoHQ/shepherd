@@ -13,8 +13,8 @@ import {
   ITransactionCallObject,
   ITransactionObject,
 } from 'eth-rpc-types';
+import { Result } from 'nano-result/dist/lib';
 import {
-  Assertable,
   isValidEthData,
   isValidEthData20B,
   isValidEthData32B,
@@ -23,7 +23,7 @@ import {
 
 export function isValidPartialTransactionCallObj(
   obj: EthTypeToStr<Partial<ITransactionCallObject>>,
-): Assertable<Partial<ITransactionCallObject>> {
+): Result<Partial<ITransactionCallObject>> {
   type Entry = [
     keyof EthTypeToStr<ExtractParams<EthEstimateGas>[0]>,
     undefined | string
@@ -37,22 +37,22 @@ export function isValidPartialTransactionCallObj(
       switch (curKey) {
         case 'to':
         case 'from':
-          return isValid && isValidEthData20B(curValue);
+          return isValid && isValidEthData20B(curValue).ok();
         case 'gas':
         case 'gasPrice':
         case 'value':
-          return isValid && isValidEthQuantity(curValue);
+          return isValid && isValidEthQuantity(curValue).ok();
         case 'data':
-          return isValid && isValidEthData(curValue);
+          return isValid && isValidEthData(curValue).ok();
       }
     },
     true,
   );
 
   if (valid) {
-    return Assertable.from({ res: obj as Partial<ITransactionCallObject> });
+    return Result.from({ res: obj as Partial<ITransactionCallObject> });
   } else {
-    return Assertable.from({
+    return Result.from({
       err: `${JSON.stringify(
         obj,
         null,
@@ -64,11 +64,11 @@ export function isValidPartialTransactionCallObj(
 
 export function isValidTransactionCallObj(
   obj: EthTypeToStr<ITransactionCallObject>,
-): Assertable<ITransactionCallObject> {
-  if (obj.to && isValidPartialTransactionCallObj(obj)) {
-    return Assertable.from({ res: obj as ITransactionCallObject });
+): Result<ITransactionCallObject> {
+  if (obj.to && isValidPartialTransactionCallObj(obj).ok()) {
+    return Result.from({ res: obj as ITransactionCallObject });
   }
-  return Assertable.from({
+  return Result.from({
     err: `${JSON.stringify(
       obj,
       null,
@@ -79,7 +79,7 @@ export function isValidTransactionCallObj(
 
 export function isValidTransactionObj(
   obj: EthTypeToStr<ITransactionObject>,
-): Assertable<ITransactionObject> {
+): Result<ITransactionObject> {
   let isValid = isValidPartialTransactionCallObj(obj).ok();
   // check that it has a from address
   isValid = !!(isValid && obj.from);
@@ -89,13 +89,13 @@ export function isValidTransactionObj(
 
   // check for optional nonce
   if (obj.nonce) {
-    isValid = !!(isValid && isValidEthQuantity(obj.nonce));
+    isValid = !!(isValid && isValidEthQuantity(obj.nonce).ok());
   }
 
   if (isValid) {
-    return Assertable.from({ res: obj as ITransactionObject });
+    return Result.from({ res: obj as ITransactionObject });
   } else {
-    return Assertable.from({
+    return Result.from({
       err: `${JSON.stringify(obj, null, 1)} is not a valid transaction object`,
     });
   }
@@ -104,35 +104,35 @@ export function isValidTransactionObj(
 type RawTxParam = ExtractParams<EthSendRawTransaction>[0];
 export function isValidSendRawTx(
   str: EthTypeToStr<RawTxParam>,
-): Assertable<RawTxParam> {
+): Result<RawTxParam> {
   return isValidEthData(str);
 }
 
 type EstGasParam = ExtractParams<EthEstimateGas>[0];
 export function isValidEstimateGas(
   obj: EthTypeToStr<EstGasParam>,
-): Assertable<EstGasParam> {
+): Result<EstGasParam> {
   return isValidPartialTransactionCallObj(obj);
 }
 
 type GetBalParam = ExtractParams<EthGetBalance>[0];
 export function isValidGetBalance(
   str: EthTypeToStr<GetBalParam>,
-): Assertable<GetBalParam> {
+): Result<GetBalParam> {
   return isValidEthData20B(str);
 }
 
 type EthCallParam = ExtractParams<EthCall>[0];
 export function isValidEthCall(
   obj: EthTypeToStr<EthCallParam>,
-): Assertable<EthCallParam> {
+): Result<EthCallParam> {
   return isValidTransactionCallObj(obj);
 }
 
 type EthTxParam = ExtractParams<EthSendTransaction>[0];
 export function isValidEthTransaction(
   obj: EthTypeToStr<EthTxParam>,
-): Assertable<EthTxParam> {
+): Result<EthTxParam> {
   return isValidTransactionObj(obj);
 }
 
@@ -141,7 +141,7 @@ type EthGetTxParam = ExtractParams<EthGetTransactionCount>[0];
 // as our provider doesnt support such option
 export function isValidGetTransactionCount(
   str: EthTypeToStr<EthGetTxParam>,
-): Assertable<EthGetTxParam> {
+): Result<EthGetTxParam> {
   return isValidEthData20B(str);
 }
 
@@ -149,14 +149,14 @@ type EthGetTxByHash = ExtractParams<EthGetTransactionByHash>[0];
 
 export function isValidGetTransactionByHash(
   str: EthTypeToStr<EthGetTxByHash>,
-): Assertable<EthGetTxByHash> {
+): Result<EthGetTxByHash> {
   return isValidEthData32B(str);
 }
 
 type EthGetTxReceipt = ExtractParams<EthGetTransactionReceipt>[0];
 export function isValidGetTransactionReceipt(
   str: EthTypeToStr<EthGetTxReceipt>,
-): Assertable<EthGetTxReceipt> {
+): Result<EthGetTxReceipt> {
   return isValidEthData32B(str);
 }
 
@@ -165,19 +165,19 @@ type EthSignMessage2 = ExtractParams<EthPersonalSign<true>>[1];
 export function isValidPersonalSignMessage(
   msg: EthTypeToStr<EthSignMessage1>,
   fromAddr: EthTypeToStr<EthSignMessage2>,
-): Assertable<{
+): Result<{
   msg: EthSignMessage1;
   fromAddr: EthSignMessage2;
 }> {
-  if (isValidEthData(msg) && isValidEthData20B(fromAddr)) {
-    return Assertable.from({
+  if (isValidEthData(msg).ok() && isValidEthData20B(fromAddr).ok()) {
+    return Result.from({
       res: {
         msg: msg as EthSignMessage1,
         fromAddr: fromAddr as EthSignMessage2,
       },
     });
   }
-  return Assertable.from({
+  return Result.from({
     err: `
     Message: ${msg}
     From Address: ${fromAddr}
