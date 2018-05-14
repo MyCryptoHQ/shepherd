@@ -1,6 +1,6 @@
 {
-  "name": "myc-shepherd",
-  "version": "1.3.2",
+  "name": "mycrypto-shepherd",
+  "version": "1.3.3",
   "description": "Ensure high-availability for your JSON-RPC calls while improving user-experience. Shepherd automatically cancels calls that are taking too long to respond and executes them against fresh provider infrastructure. Shepherd is incredibly configurable — you can set filters on provider infrastructure to ensure that sensitive JSON-RPC calls are contained, dynamically bias against poorly performing provider infrastructure, and more!",
   "main": "dist/shepherd.umd.js",
   "module": "dist/shepherd.es6.js",
