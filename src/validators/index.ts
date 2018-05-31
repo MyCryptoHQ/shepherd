@@ -1,21 +1,59 @@
 import { IJsonRpcResponse } from '@src/providers/rpc/types';
-import { Validator } from 'jsonschema';
+import { Schema, Validator } from 'jsonschema';
 
 // JSONSchema Validations for Rpc responses
 const v = new Validator();
 
-export const schema = {
+export const schema: { [key: string]: Schema } = {
   RpcProvider: {
     type: 'object',
     additionalProperties: true,
+
     properties: {
       jsonrpc: { type: 'string' },
       id: { oneOf: [{ type: 'string' }, { type: 'integer' }] },
       result: {
         oneOf: [{ type: 'string' }, { type: 'array' }, { type: 'object' }],
       },
-      status: { type: 'string' },
-      message: { type: 'string', maxLength: 2 },
+
+      status: { type: 'string', pattern: '1' }, // 1 means pass from etherscan
+      message: { type: 'string', pattern: '^OK' },
+    },
+    oneOf: [
+      {
+        additionalProperties: true,
+        type: 'object',
+        required: ['jsonrpc'],
+        properties: { jsonrpc: { type: 'string' } },
+      },
+      {
+        additionalProperties: true,
+
+        type: 'object',
+        required: ['status'],
+        properties: { status: { type: 'string' } },
+      },
+    ],
+
+    dependencies: {
+      jsonrpc: ['id', 'result'],
+      status: ['message', 'result'],
+    },
+    not: {
+      anyOf: [
+        {
+          additionalProperties: true,
+          properties: {
+            error: {
+              anyOf: [
+                { type: 'string', minLength: 1 },
+                { type: ['array', 'object', 'number', 'boolean'] },
+              ],
+            },
+          },
+          required: ['error'],
+        },
+      ],
     },
   },
 };
@@ -28,16 +66,20 @@ function isValidResult(
 }
 
 function formatErrors(response: IJsonRpcResponse, apiType: string) {
-  if (response.error) {
-    // Metamask errors are sometimes full-blown stacktraces, no bueno. Instead,
-    // We'll just take the first line of it, and the last thing after all of
-    // the colons. An example error message would be:
-    // "Error: Metamask Sign Tx Error: User rejected the signature."
-    const lines = response.error.message.split('\n');
-    if (lines.length > 2) {
-      return lines[0].split(':').pop();
-    } else {
-      return `${response.error.message} ${response.error.data || ''}`;
+  if (response) {
+    if (response.error && response.error.message) {
+      // Metamask errors are sometimes full-blown stacktraces, no bueno. Instead,
+      // We'll just take the first line of it, and the last thing after all of
+      // the colons. An example error message would be:
+      // "Error: Metamask Sign Tx Error: User rejected the signature."
+      const lines = response.error.message.split('\n');
+      if (lines.length > 2) {
+        return lines[0].split(':').pop();
+      } else {
+        return `${response.error.message} ${response.error.data || ''}`;
+      }
+    } else if (response.result && (response as any).status) {
+      return response.result;
     }
   }
   return `Invalid ${apiType} Error`;
