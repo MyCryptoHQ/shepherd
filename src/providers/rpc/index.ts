@@ -1,4 +1,5 @@
 import {
+  IBlock,
   IHexStrTransaction,
   IRPCProvider,
   TransactionData,
@@ -7,6 +8,7 @@ import {
 } from '@src/types';
 import { hexToNumber, makeBN, Wei } from '@src/utils';
 import {
+  isValidBlockByNumber,
   isValidCallRequest,
   isValidCurrentBlock,
   isValidEstimateGas,
@@ -127,6 +129,25 @@ export class RPCProvider implements IRPCProvider {
         gasUsed: Wei(result.gasUsed),
         status: result.status ? hexToNumber(result.status) : null,
         root: result.root || null,
+      }));
+  }
+
+  public getBlockByNumber(txhash: string): Promise<IBlock> {
+    return this.client
+      .call(this.requests.getBlockByNumber(txhash))
+      .then(isValidBlockByNumber)
+      .then(({ result }) => ({
+        ...result,
+        number: result.number ? hexToNumber(result.number) : null,
+        difficulty: makeBN(result.difficulty),
+        totalDifficulty: makeBN(result.totalDifficulty),
+        size: hexToNumber(result.size),
+        gasLimit: hexToNumber(result.gasLimit),
+        gasUsed: hexToNumber(result.gasUsed),
+        timestamp: hexToNumber(result.timestamp),
+        minimumGasPrice: result.minimumGasPrice
+          ? +result.minimumGasPrice
+          : undefined,
       }));
   }
 }

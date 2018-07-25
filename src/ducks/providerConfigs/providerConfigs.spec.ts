@@ -32,6 +32,7 @@ export const mockConfig: IProviderConfig = {
     getTransactionByHash: true,
     getTransactionReceipt: true,
     getNetVersion: true,
+    getBlockByNumber: true,
 
     sendTransaction: true,
     signMessage: true,

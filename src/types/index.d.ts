@@ -1,6 +1,7 @@
 import { Wei } from '@src/utils';
 import { IProviderBalancerState } from '@src/ducks/providerBalancer';
 import { IProviderConfigState } from '@src/ducks/providerConfigs';
+import BN from 'bn.js';
 
 export type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
 
@@ -28,6 +29,7 @@ export interface IRPCProvider {
   sendCallRequest(txObj: TxObj): Promise<string>;
   sendCallRequests(txObj: TxObj[]): Promise<string[]>;
   getCurrentBlock(): Promise<string>;
+  getBlockByNumber(txhash: string): Promise<IBlock>;
 }
 
 export interface IProvider extends IRPCProvider {
@@ -38,7 +40,9 @@ export interface IProvider extends IRPCProvider {
 
 export type AllProviderMethods = keyof IProvider;
 
-export type StrIdx<T> = { [key: string]: T };
+export interface StrIdx<T> {
+  [key: string]: T;
+}
 
 export interface TxObj {
   to: string;
@@ -96,4 +100,27 @@ export interface TransactionReceipt {
 export interface RootState {
   providerBalancer: IProviderBalancerState;
   providerConfigs: IProviderConfigState;
+}
+
+export interface IBlock {
+  number: number | null;
+  hash: string | null;
+  parentHash: string;
+  nonce: string | null;
+  sha3Uncles: string;
+  logsBloom: string | null;
+  transactionsRoot: string;
+  stateRoot: string;
+  receiptsRoot: string;
+  miner: string;
+  difficulty: BN;
+  totalDifficulty: BN;
+  extraData: string;
+  size: number;
+  gasLimit: number;
+  gasUsed: number;
+  timestamp: number;
+  transactions: string[];
+  uncles: string[];
+  minimumGasPrice?: number; // defined in RSKIP-09 - https://github.com/rsksmart/RSKIPs/blob/master/IPs/RSKIP09.md
 }

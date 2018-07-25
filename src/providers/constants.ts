@@ -12,6 +12,7 @@ export const allRPCMethods: (AllProviderMethods)[] = [
   'getTransactionByHash',
   'getCurrentBlock',
   'sendRawTx',
+  'getBlockByNumber',
 
   /*web3 specific methods */
   'sendTransaction',
