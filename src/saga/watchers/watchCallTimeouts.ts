@@ -12,7 +12,9 @@ import { createRetryCall } from '@src/saga/sagaUtils';
 import { put, select, takeEvery } from 'redux-saga/effects';
 
 function* handleCallTimeouts(action: IProviderCallTimeout) {
-  const { payload: { error, providerCall } } = action;
+  const {
+    payload: { error, providerCall },
+  } = action;
   const { providerId } = providerCall;
 
   const shouldSetProviderOffline: ReturnType<

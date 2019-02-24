@@ -35,7 +35,7 @@ export interface IProvider extends IRPCProvider {
 
 export type AllProviderMethods = keyof IProvider;
 
-export type StrIdx<T> = { [key: string]: T };
+export interface StrIdx<T> { [key: string]: T }
 
 export interface TxObj {
   to: string;

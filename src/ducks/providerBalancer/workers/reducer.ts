@@ -116,7 +116,9 @@ const handleProviderCallSucceeded: WReducer = (
   state: IWorkerState,
   { payload }: IProviderCallSucceeded,
 ) => {
-  const { providerCall: { callId } } = payload;
+  const {
+    providerCall: { callId },
+  } = payload;
   const worker = Object.entries(state).find(
     ([_, { currentPayload }]) =>
       !!(currentPayload && currentPayload.callId === callId),
