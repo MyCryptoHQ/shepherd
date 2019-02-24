@@ -82,6 +82,10 @@ async function main() {
   await shepherd.switchNetworks('ETC');
 }
 
-it('should work', async () => {
-  await main();
-}, 7000);
+it(
+  'should work',
+  async () => {
+    await main();
+  },
+  7000
+);

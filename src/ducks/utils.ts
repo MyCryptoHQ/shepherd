@@ -10,6 +10,7 @@ export const filterAgainstArr = <T>(
   arr2: T[],
   invert: boolean = false,
 ) =>
-  arr1.filter(strToCheck =>
-    !invert ? arr2.includes(strToCheck) : !arr2.includes(strToCheck),
+  arr1.filter(
+    strToCheck =>
+      !invert ? arr2.includes(strToCheck) : !arr2.includes(strToCheck),
   );
