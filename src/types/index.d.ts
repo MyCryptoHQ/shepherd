@@ -9,11 +9,11 @@ export type Resolve = (value?: {} | PromiseLike<{}> | undefined) => void;
 export type Reject = (reason?: any) => void;
 
 export interface IProviderContructor<T = any> {
-  new (args?: T): IProvider;	
-}	
+  new (args?: T): IProvider;
+}
 
 export interface IRPCProviderContructor<T = any> {
-  new (args?: T): IRPCProvider;	
+  new (args?: T): IRPCProvider;
 }
 
 export interface IRPCProvider {
