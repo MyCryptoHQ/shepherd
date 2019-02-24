@@ -25,7 +25,9 @@ export const providerExceedsRequestFailureThreshold = (
   state: RootState,
   { payload }: IProviderCallTimeout,
 ) => {
-  const { providerCall: { providerId } } = payload;
+  const {
+    providerCall: { providerId },
+  } = payload;
   const providerStats = getProviderStatsById(state, providerId);
   const providerConfig = getProviderConfigById(state, providerId);
 
@@ -86,6 +88,7 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     sendRawTx: false,
     getTransactionByHash: false,
     getTransactionReceipt: false,
+    getCode: false,
 
     /* Web3 Methods*/
     sendTransaction: false,

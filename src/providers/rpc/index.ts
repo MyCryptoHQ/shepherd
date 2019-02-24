@@ -11,6 +11,7 @@ import {
   isValidCurrentBlock,
   isValidEstimateGas,
   isValidGetBalance,
+  isValidGetCode,
   isValidRawTxApi,
   isValidTransactionByHash,
   isValidTransactionCount,
@@ -128,5 +129,12 @@ export class RPCProvider implements IRPCProvider {
         status: result.status ? hexToNumber(result.status) : null,
         root: result.root || null,
       }));
+  }
+
+  public getCode(address: string): Promise<string> {
+    return this.client
+      .call(this.requests.getCode(address))
+      .then(isValidGetCode)
+      .then(({ result }) => result);
   }
 }
