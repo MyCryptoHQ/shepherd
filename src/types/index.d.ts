@@ -28,6 +28,7 @@ export interface IRPCProvider {
   sendCallRequest(txObj: TxObj): Promise<string>;
   sendCallRequests(txObj: TxObj[]): Promise<string[]>;
   getCurrentBlock(): Promise<string>;
+  getCode(address: string): Promise<string>;
 }
 
 export interface IProvider extends IRPCProvider {

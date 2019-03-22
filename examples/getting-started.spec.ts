@@ -18,6 +18,7 @@ const myProviderConfig: IProviderConfig = {
     getTransactionCount: true,
     getCurrentBlock: true,
     sendRawTx: true,
+    getCode: true,
 
     getTransactionByHash: true,
     getTransactionReceipt: true,
