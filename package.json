@@ -5,6 +5,9 @@
   "main": "dist/shepherd.umd.js",
   "module": "dist/shepherd.es6.js",
   "typings": "dist/lib",
+  "typesVersions": {
+    ">=2.8.1-0": { "*": ["ts2.8.1"] }
+  },
   "scripts": {
     "gulp": "node node_modules/gulp/bin/gulp.js",
     "test": "jest",
