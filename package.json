@@ -5,6 +5,13 @@
   "main": "dist/shepherd.umd.js",
   "module": "dist/shepherd.es6.js",
   "typings": "dist/lib",
+  "typesVersions": {
+    ">=2.8.1-0": {
+      "*": [
+        "ts2.8.1"
+      ]
+    }
+  },
   "scripts": {
     "gulp": "node node_modules/gulp/bin/gulp.js",
     "test": "jest",
@@ -22,6 +29,7 @@
     "prepublishOnly": "rimraf node_modules && npm i && npm run tsc && npm run test:prepublish && npm run build",
     "precommit": "lint-staged",
     "prepush": "npm run lint && npm run tsc",
+    "postinstall": "rimraf node_modules && npm i && npm run tsc && npm run test:prepublish && npm run buil",
     "report-coverage": " cat ./coverage/lcov.info | coveralls",
     "docs": "typedoc --out ./docs ./src --exclude '**/*.spec*' --externalPattern '*node_modules*' --excludeExternals  --includeDeclarations --tsconfig ./tsconfig-build.json  --mode file  --theme minimal"
   },
@@ -34,17 +42,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MyCryptoHQ/shepherd.git"
+    "url": "git+https://github.com/andreweximchain/shepherd.git"
   },
   "author": "MyCrypto <henry@mycrypto.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MyCryptoHQ/shepherd/issues"
+    "url": "https://github.com/andreweximchain/shepherd/issues"
   },
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
+  "homepage": "https://github.com/andreweximchain/shepherd#readme",
   "devDependencies": {
     "coveralls": "^3.0.0",
     "gulp": "^3.9.1",
