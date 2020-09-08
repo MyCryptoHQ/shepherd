@@ -19,7 +19,6 @@
     "lint:fix": "tslint --project . --fix",
     "prebuild": "rimraf dist",
     "build": "tsc -p ./tsconfig-declarations.json --module commonjs && rollup -c rollup.config.js",
-    "prepare": "npm run build",
     "prepublishOnly": "rimraf node_modules && npm i && npm run tsc && npm run test:prepublish && npm run build",
     "precommit": "lint-staged",
     "prepush": "npm run lint && npm run tsc",
