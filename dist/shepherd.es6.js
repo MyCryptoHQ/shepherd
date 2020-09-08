@@ -1,3 +1,4 @@
+import 'isomorphic-fetch';
 import btoa from 'btoa';
 import BN from 'bn.js';
 import { Validator } from 'jsonschema';
@@ -2235,8 +2236,6 @@ var index = /*#__PURE__*/Object.freeze({
     INITIAL_ROOT_STATE: INITIAL_ROOT_STATE,
     selectors: selectors
 });
-
-require('isomorphic-fetch');
 
 export { index as redux, shepherd };
 //# sourceMappingURL=shepherd.es6.js.map

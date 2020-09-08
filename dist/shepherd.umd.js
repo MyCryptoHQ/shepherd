@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('btoa'), require('bn.js'), require('jsonschema'), require('crypto'), require('url-search-params'), require('redux'), require('redux-saga'), require('remote-redux-devtools'), require('redux-saga/effects')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'btoa', 'bn.js', 'jsonschema', 'crypto', 'url-search-params', 'redux', 'redux-saga', 'remote-redux-devtools', 'redux-saga/effects'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.shepherd = {}, global.btoa, global.bn.js, global.jsonschema, global.crypto, global['url-search-params'], global.redux, global['redux-saga'], global['remote-redux-devtools'], global['redux-saga/effects']));
-}(this, (function (exports, btoa, BN, jsonschema, crypto, URLSearchParams, redux, createSagaMiddleware, remoteReduxDevtools, effects) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('isomorphic-fetch'), require('btoa'), require('bn.js'), require('jsonschema'), require('crypto'), require('url-search-params'), require('redux'), require('redux-saga'), require('remote-redux-devtools'), require('redux-saga/effects')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'isomorphic-fetch', 'btoa', 'bn.js', 'jsonschema', 'crypto', 'url-search-params', 'redux', 'redux-saga', 'remote-redux-devtools', 'redux-saga/effects'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.shepherd = {}, null, global.btoa, global.bn.js, global.jsonschema, global.crypto, global['url-search-params'], global.redux, global['redux-saga'], global['remote-redux-devtools'], global['redux-saga/effects']));
+}(this, (function (exports, isomorphicFetch, btoa, BN, jsonschema, crypto, URLSearchParams, redux, createSagaMiddleware, remoteReduxDevtools, effects) { 'use strict';
 
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -2238,8 +2238,6 @@
         INITIAL_ROOT_STATE: INITIAL_ROOT_STATE,
         selectors: selectors
     });
-
-    require('isomorphic-fetch');
 
     exports.redux = index;
     exports.shepherd = shepherd;
