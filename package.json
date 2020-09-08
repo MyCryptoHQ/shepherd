@@ -18,7 +18,7 @@
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc -p ./tsconfig-build.json --module commonjs && rollup -c rollup.config.ts && npm run gulp",
+    "build": "tsc -p ./tsconfig-declarations.json --module commonjs && rollup -c rollup.config.ts",
     "prepublishOnly": "rimraf node_modules && npm i && npm run tsc && npm run test:prepublish && npm run build",
     "precommit": "lint-staged",
     "prepush": "npm run lint && npm run tsc",
@@ -42,16 +42,15 @@
     "url": "https://github.com/MyCryptoHQ/shepherd/issues"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "gulp": "^3.9.1",
     "husky": "^0.14.3",
     "jest": "^22.4.3",
     "lint-staged": "^7.0.3",
-    "mycrypto-path-alias-resolver": "^1.0.5-alpha",
     "prettier": "^1.11.1",
     "remotedev-server": "^0.2.4",
     "rimraf": "^2.6.2",
@@ -61,7 +60,7 @@
     "ts-jest": "^22.4.2",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
-    "typescript": "^2.8.1"
+    "typescript": "^2.9.2"
   },
   "dependencies": {
     "@types/jest": "^22.2.2",

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/lib",
+    "target": "es6",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "module": "es6",
+    "allowJs": false,
+    "baseUrl": "./",
+    "lib": ["es2017", "dom"],
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@src*": ["src*"]
+    },
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "declaration": true,
+    "emitDeclarationOnly": true
+  },
+  "inlineSources": true,
+  "inlineSourceMap": true,
+  "include": ["src"],
+  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
+}
