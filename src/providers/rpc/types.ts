@@ -87,11 +87,6 @@ export interface IGetCurrentBlockRequest extends IRPCRequestBase {
   method: 'eth_blockNumber';
 }
 
-export interface IGetCodeRequest extends IRPCRequestBase {
-  method: 'eth_getCode';
-  params: [DATA, DEFAULT_BLOCK];
-}
-
 export type RPCRequest =
   | IRPCRequestBase //base added so I can add an empty params array in decorateRequest without TS complaining
   | IGetBalanceRequest
@@ -101,5 +96,4 @@ export type RPCRequest =
   | IGetTransactionCountRequest
   | IGetCurrentBlockRequest
   | IGetTransactionByHashRequest
-  | IGetTransactionReceiptRequest
-  | IGetCodeRequest;
+  | IGetTransactionReceiptRequest;

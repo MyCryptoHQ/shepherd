@@ -47,10 +47,4 @@ export interface IGetCurrentBlockRequest extends IEtherscanReqBase {
     module: 'proxy';
     action: 'eth_blockNumber';
 }
-export interface IGetCodeRequest extends IEtherscanReqBase {
-    module: 'proxy';
-    action: 'eth_getCode';
-    address: string;
-    tag: 'latest';
-}
-export declare type EtherscanRequest = ISendRawTxRequest | IGetBalanceRequest | ICallRequest | IEstimateGasRequest | IGetTransactionCountRequest | IGetCurrentBlockRequest | IGetCodeRequest;
+export declare type EtherscanRequest = ISendRawTxRequest | IGetBalanceRequest | ICallRequest | IEstimateGasRequest | IGetTransactionCountRequest | IGetCurrentBlockRequest;

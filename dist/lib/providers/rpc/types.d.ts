@@ -65,9 +65,5 @@ export interface IGetTransactionReceiptRequest extends IRPCRequestBase {
 export interface IGetCurrentBlockRequest extends IRPCRequestBase {
     method: 'eth_blockNumber';
 }
-export interface IGetCodeRequest extends IRPCRequestBase {
-    method: 'eth_getCode';
-    params: [DATA, DEFAULT_BLOCK];
-}
-export declare type RPCRequest = IRPCRequestBase | IGetBalanceRequest | IGetTokenBalanceRequest | ICallRequest | IEstimateGasRequest | IGetTransactionCountRequest | IGetCurrentBlockRequest | IGetTransactionByHashRequest | IGetTransactionReceiptRequest | IGetCodeRequest;
+export declare type RPCRequest = IRPCRequestBase | IGetBalanceRequest | IGetTokenBalanceRequest | ICallRequest | IEstimateGasRequest | IGetTransactionCountRequest | IGetCurrentBlockRequest | IGetTransactionByHashRequest | IGetTransactionReceiptRequest;
 export {};

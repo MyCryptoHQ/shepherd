@@ -1,4 +1,4 @@
-// import 'isomorphic-fetch';
+require('isomorphic-fetch');
 import { shepherd } from './api';
 import * as redux from './ducks';
 

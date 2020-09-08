@@ -10,7 +10,7 @@
     "arrow-parens": false,
     "no-unnecessary-type-assertion": true,
     "array-type": [true, "array"],
-    "interface-name": [true, "always-prefix"],
+    "interface-name": false,
     "no-duplicate-imports": true,
     "no-console": false,
     "no-var-requires": false,

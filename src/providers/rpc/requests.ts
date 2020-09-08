@@ -4,7 +4,6 @@ import {
   ICallRequest,
   IEstimateGasRequest,
   IGetBalanceRequest,
-  IGetCodeRequest,
   IGetCurrentBlockRequest,
   IGetNetVersionRequest,
   IGetTransactionByHashRequest,
@@ -78,13 +77,6 @@ export class RPCRequests {
   public getCurrentBlock(): IGetCurrentBlockRequest | any {
     return {
       method: 'eth_blockNumber',
-    };
-  }
-
-  public getCode(address: string): IGetCodeRequest | any {
-    return {
-      method: 'eth_getCode',
-      params: [`0x${stripHexPrefix(address)}`, 'pending'],
     };
   }
 }

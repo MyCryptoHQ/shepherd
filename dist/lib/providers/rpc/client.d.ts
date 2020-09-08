@@ -60,11 +60,6 @@ export declare class RPCClient {
         jsonrpc: string;
         method: "eth_blockNumber";
         params?: any[] | undefined;
-    } | {
-        id: string | number;
-        jsonrpc: string;
-        method: "eth_getCode";
-        params: [string, string];
     };
     call: (request: RPCRequest | any) => Promise<IJsonRpcResponse>;
     batch: (requests: RPCRequest[] | any) => Promise<IJsonRpcResponse[]>;

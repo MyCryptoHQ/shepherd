@@ -15,4 +15,3 @@ export declare const isValidSendTransaction: (response: IJsonRpcResponse) => any
 export declare const isValidSignMessage: (response: IJsonRpcResponse) => any;
 export declare const isValidGetAccounts: (response: IJsonRpcResponse) => any;
 export declare const isValidGetNetVersion: (response: IJsonRpcResponse) => any;
-export declare const isValidGetCode: (response: IJsonRpcResponse) => any;

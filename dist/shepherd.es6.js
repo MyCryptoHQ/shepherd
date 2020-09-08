@@ -794,7 +794,6 @@ var API_NAME;
     API_NAME["Net_Version"] = "Net Version";
     API_NAME["Transaction_By_Hash"] = "Transaction By Hash";
     API_NAME["Transaction_Receipt"] = "Transaction Receipt";
-    API_NAME["Get_Code"] = "Get Code";
 })(API_NAME || (API_NAME = {}));
 const isValidEthCall = (response, schemaType) => (apiName, cb) => {
     if (!isValidResult(response, schemaType)) {
@@ -817,7 +816,6 @@ const isValidSendTransaction = (response) => isValidEthCall(response, schema.Rpc
 const isValidSignMessage = (response) => isValidEthCall(response, schema.RpcProvider)(API_NAME.Sign_Message);
 const isValidGetAccounts = (response) => isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Accounts);
 const isValidGetNetVersion = (response) => isValidEthCall(response, schema.RpcProvider)(API_NAME.Net_Version);
-const isValidGetCode = (response) => isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Code);
 
 class RPCClient {
     constructor(endpoint, headers = {}) {
@@ -902,12 +900,6 @@ class RPCRequests {
             method: 'eth_blockNumber',
         };
     }
-    getCode(address) {
-        return {
-            method: 'eth_getCode',
-            params: [`0x${stripHexPrefix(address)}`, 'pending'],
-        };
-    }
 }
 
 class RPCProvider {
@@ -988,12 +980,6 @@ class RPCProvider {
             .call(this.requests.getTransactionReceipt(txhash))
             .then(isValidTransactionReceipt)
             .then(({ result }) => (Object.assign(Object.assign({}, result), { transactionIndex: hexToNumber(result.transactionIndex), blockNumber: hexToNumber(result.blockNumber), cumulativeGasUsed: Wei(result.cumulativeGasUsed), gasUsed: Wei(result.gasUsed), status: result.status ? hexToNumber(result.status) : null, root: result.root || null })));
-    }
-    getCode(address) {
-        return this.client
-            .call(this.requests.getCode(address))
-            .then(isValidGetCode)
-            .then(({ result }) => result);
     }
 }
 
@@ -1283,7 +1269,6 @@ const allRPCMethods = [
     'getTransactionByHash',
     'getCurrentBlock',
     'sendRawTx',
-    'getCode',
     /*web3 specific methods */
     'sendTransaction',
     'signMessage',
@@ -1904,7 +1889,6 @@ const getAllMethodsAvailable = (state) => {
         sendRawTx: false,
         getTransactionByHash: false,
         getTransactionReceipt: false,
-        getCode: false,
         /* Web3 Methods*/
         sendTransaction: false,
         signMessage: false,
@@ -2251,6 +2235,8 @@ var index = /*#__PURE__*/Object.freeze({
     INITIAL_ROOT_STATE: INITIAL_ROOT_STATE,
     selectors: selectors
 });
+
+require('isomorphic-fetch');
 
 export { index as redux, shepherd };
 //# sourceMappingURL=shepherd.es6.js.map

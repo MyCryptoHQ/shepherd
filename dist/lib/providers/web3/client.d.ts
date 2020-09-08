@@ -48,11 +48,6 @@ export declare class Web3Client extends RPCClient {
         jsonrpc: string;
         params: any[];
         method: "eth_blockNumber";
-    } | {
-        id: string | number;
-        jsonrpc: string;
-        params: any[];
-        method: "eth_getCode";
     };
     call: (request: RPCRequest | any) => Promise<IJsonRpcResponse>;
     batch: (requests: RPCRequest[] | any) => Promise<IJsonRpcResponse[]>;

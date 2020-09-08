@@ -86,7 +86,6 @@ export const getAllMethodsAvailable = (state: RootState): boolean => {
     sendRawTx: false,
     getTransactionByHash: false,
     getTransactionReceipt: false,
-    getCode: false,
 
     /* Web3 Methods*/
     sendTransaction: false,

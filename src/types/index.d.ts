@@ -1,6 +1,6 @@
-import { Wei } from '@src/utils';
 import { IProviderBalancerState } from '@src/ducks/providerBalancer';
 import { IProviderConfigState } from '@src/ducks/providerConfigs';
+import { Wei } from '@src/utils';
 
 export type DeepPartial<T> = Partial<{ [key in keyof T]: Partial<T[key]> }>;
 
@@ -28,7 +28,6 @@ export interface IRPCProvider {
   sendCallRequest(txObj: TxObj): Promise<string>;
   sendCallRequests(txObj: TxObj[]): Promise<string[]>;
   getCurrentBlock(): Promise<string>;
-  getCode(address: string): Promise<string>;
 }
 
 export interface IProvider extends IRPCProvider {
@@ -39,7 +38,9 @@ export interface IProvider extends IRPCProvider {
 
 export type AllProviderMethods = keyof IProvider;
 
-export type StrIdx<T> = { [key: string]: T };
+export interface StrIdx<T> {
+  [key: string]: T;
+}
 
 export interface TxObj {
   to: string;

@@ -99,7 +99,6 @@ enum API_NAME {
   Net_Version = 'Net Version',
   Transaction_By_Hash = 'Transaction By Hash',
   Transaction_Receipt = 'Transaction Receipt',
-  Get_Code = 'Get Code',
 }
 
 const isValidEthCall = (
@@ -150,6 +149,3 @@ export const isValidGetAccounts = (response: IJsonRpcResponse) =>
 
 export const isValidGetNetVersion = (response: IJsonRpcResponse) =>
   isValidEthCall(response, schema.RpcProvider)(API_NAME.Net_Version);
-
-export const isValidGetCode = (response: IJsonRpcResponse) =>
-  isValidEthCall(response, schema.RpcProvider)(API_NAME.Get_Code);

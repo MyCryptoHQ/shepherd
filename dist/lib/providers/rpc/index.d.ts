@@ -17,5 +17,4 @@ export declare class RPCProvider implements IRPCProvider {
     sendRawTx(signedTx: string): Promise<string>;
     getTransactionByHash(txhash: string): Promise<TransactionData>;
     getTransactionReceipt(txhash: string): Promise<TransactionReceipt>;
-    getCode(address: string): Promise<string>;
 }
