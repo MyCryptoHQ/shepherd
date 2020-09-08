@@ -18,7 +18,7 @@
     "lint": "tslint --project .",
     "lint:fix": "tslint --project . --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc -p ./tsconfig-declarations.json --module commonjs && rollup -c rollup.config.ts",
+    "build": "tsc -p ./tsconfig-declarations.json --module commonjs && rollup -c rollup.config.js",
     "prepare": "npm run build",
     "prepublishOnly": "rimraf node_modules && npm i && npm run tsc && npm run test:prepublish && npm run build",
     "precommit": "lint-staged",
@@ -29,8 +29,7 @@
   "lint-staged": {
     "{src,__test__,examples}/**/*.ts": [
       "npm run format",
-      "npm run lint:fix",
-      "git add"
+      "npm run lint:fix"
     ]
   },
   "repository": {
@@ -48,20 +47,22 @@
   ],
   "homepage": "https://github.com/MyCryptoHQ/shepherd#readme",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^3.1.1",
     "coveralls": "^3.0.0",
     "husky": "^0.14.3",
     "jest": "^22.4.3",
-    "lint-staged": "^7.0.3",
+    "lint-staged": "^7.3.0",
     "prettier": "^1.11.1",
     "remotedev-server": "^0.2.4",
     "rimraf": "^2.6.2",
-    "rollup": "^0.57.1",
+    "rollup": "^2.26.11",
     "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.12.0",
     "ts-jest": "^22.4.2",
+    "ts-node": "^9.0.0",
+    "tslib": "^2.0.1",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.10.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "@types/jest": "^22.2.2",

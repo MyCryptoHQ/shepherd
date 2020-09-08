@@ -20,7 +20,8 @@
     "strictPropertyInitialization": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitThis": true,
-    "pretty": true
+    "pretty": true,
+    "skipLibCheck": true
   },
   "include": ["./src/", "./__test__/", "examples"]
 }

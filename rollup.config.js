@@ -1,5 +1,5 @@
 import sourceMaps from 'rollup-plugin-sourcemaps';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 
 const pkg = require('./package.json');
 
@@ -44,10 +44,10 @@ export default {
   watch: {
     include: 'src/**',
   },
+
   plugins: [
     // Compile TypeScript files
     typescript({
-      useTsconfigDeclarationDir: true,
       tsconfig: './tsconfig-build.json',
     }),
 

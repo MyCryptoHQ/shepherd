@@ -2,7 +2,6 @@
   "compilerOptions": {
     "outDir": "./dist/lib",
     "target": "es6",
-    "noEmit": true,
     "sourceMap": true,
     "strictNullChecks": true,
     "module": "es6",
@@ -17,7 +16,8 @@
     "noEmitOnError": false,
     "noImplicitAny": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "skipLibCheck": true
   },
   "inlineSources": true,
   "inlineSourceMap": true,
