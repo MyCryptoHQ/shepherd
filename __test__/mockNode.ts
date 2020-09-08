@@ -85,7 +85,4 @@ export class MockProvider {
   public getCurrentBlock() {
     return true;
   }
-  public getCode() {
-    return true;
-  }
 }

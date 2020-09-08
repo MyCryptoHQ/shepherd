@@ -28,7 +28,6 @@ export const makeMockProviderConfig = (
       getTransactionByHash: true,
       getTransactionReceipt: true,
       getNetVersion: true,
-      getCode: true,
 
       /*web3 methods*/
       sendTransaction: true,
